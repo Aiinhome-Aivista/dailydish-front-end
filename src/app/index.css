@@ -1,20 +1,25 @@
-@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Patrick+Hand&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Nunito";
+  --color-brand-light: #CEDEBD;
+  --color-brand-dark: #435334;
+  --color-brand-accent: #95B974;
+  --color-brand-beige: #FAF1E4;
 }
+
+
 
 :root {
   /* Typography */
-  font-family: "Nunito" !important;
+  font-family: "Montserrat Alternates" !important;
   line-height: 1.5;
   font-weight: 400;
 
   /* Colors & Scheme */
   color-scheme: light dark;
   color: rgb(0, 0, 0);
-  background-color: #ffffff;
+  background-color:#FAF1E4;
 
   /* Transitions */
   --transition-default: 200ms;
