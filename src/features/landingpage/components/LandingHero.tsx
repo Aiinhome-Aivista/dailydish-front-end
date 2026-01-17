@@ -2,13 +2,15 @@ import React from 'react';
 import { Sparkles } from 'lucide-react';
 import cookerIcon from '../../../assets/cooker.svg';
 
+
 const LandingHero = () => {
+    
     return (
         <div className="flex flex-col items-center pt-16 pb-24 px-4">
             <div className="mb-6 animate-bounce-slow">
                 <img src={cookerIcon} alt="Bowl" className="w-24 h-24" />
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold text-center text-brand-dark mb-6 leading-tight">
+            <h1 className="text-5xl md:text-7xl font-bold text-center mb-6 leading-tight text-[#222222]">
                 Turn Your Fridge<br />
                 <span className="text-brand-dark">Into a Feast.</span>
             </h1>
