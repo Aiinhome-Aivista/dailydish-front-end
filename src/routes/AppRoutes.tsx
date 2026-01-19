@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import LandingPage from '../features/landingpage/pages/LandingPage';
 import Login from '../features/auth/pages/Login';
 import SplashScreen from '../features/splashscreen/pages/SplashScreen';
+import SignUp from "../features/auth/pages/SignUp";
 
 const SplashToLanding = () => {
   const [showSplash, setShowSplash] = useState(true);
@@ -23,6 +24,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<SplashToLanding />} />
       <Route path="login" element={<Login />} />
+      <Route path="signup" element={<SignUp/>} />
    
       </Routes>
   )

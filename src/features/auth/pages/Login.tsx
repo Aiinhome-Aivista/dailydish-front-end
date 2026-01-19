@@ -1,8 +1,9 @@
-import React from 'react';
 import { Mail, Lock } from 'lucide-react';
 import logo from '../../../assets/Vector.svg';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
+  const navigate = useNavigate();
   return (
     <div className='bg-[#435334] min-h-screen w-full flex justify-center items-center p-4'>
       <div className='w-full max-w-md bg-white/10 backdrop-blur-xl border-3 border-white/20 rounded-3xl p-8 shadow-2xl flex flex-col items-center gap-6'>
@@ -45,8 +46,8 @@ function Login() {
           </button>
 
           <p className='text-white/70 text-sm text-center'>
-            You don't have account? <a href='#' className='text-white font-semibold hover:underline hover:text-white/90'
-            >Signup</a>
+            You don't have account? <button className='text-white font-semibold hover:underline hover:text-white/90'
+            onClick={() => navigate('/signup')}>Signup</button>
           </p>
         </div>
 
