@@ -2,17 +2,10 @@ import { createContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import { authService } from "../api/authService";
 import type { LoginPayload } from "../types/login";
+import type { AuthContextType } from "../types/authTypes";
 
 
-export interface AuthContextType {
-  isLoggedIn: boolean;
-  userToken: string | null;
-  userId: string | null;
-  login: (credentials: LoginPayload) => Promise<void>;
-  logout: () => void;
-  isLoading: boolean;
-  error: string | null;
-}
+
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

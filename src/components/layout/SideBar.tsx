@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
+import Logo from '../../assets/cooker.svg';
 
 interface SideBarProps {
   isOpen: boolean;
@@ -55,48 +56,53 @@ const SideBar = ({ isOpen, onClose }: SideBarProps) => {
 
 
         {/* Navigation */}
-        <div className="flex-1 px-4 py-2 space-y-1 overflow-y-auto">
-          <NavItem
-            icon="skillet"
-            label="My Pantry"
-            to="/pantry"
-            isActive={currentPath === '/pantry'}
-          />
-          <NavItem
-            icon="bookmark"
-            label="Saved Recipes"
-            to="/saved-recipes"
-            isActive={currentPath === '/saved-recipes'}
-          />
-          <NavItem
-            icon="calendar_month"
-            label="Meal Plan"
-            to="/meal-plan"
-            isActive={currentPath === '/meal-plan'}
-          />
+        {/* Navigation */}
+        <div className="flex-1 flex flex-col px-4 py-2 space-y-1 overflow-y-auto">
+          {/* Top Section */}
+          <div className="space-y-1">
+            <NavItem
+              icon="skillet"
+              label="My Pantry"
+              to="/pantry"
+              isActive={currentPath === '/pantry'}
+            />
+            <NavItem
+              icon="bookmark"
+              label="Saved Recipes"
+              to="/saved-recipes"
+              isActive={currentPath === '/saved-recipes'}
+            />
+            <NavItem
+              icon="calendar_month"
+              label="Meal Plan"
+              to="/meal-plan"
+              isActive={currentPath === '/meal-plan'}
+            />
+          </div>
 
-          <div className="my-6 border-t border-brand-dark/10 mx-2" />
-
-          <NavItem
-            icon="help"
-            label="How it Works"
-            to="/how-it-works"
-          />
-          <NavItem
-            icon="payments"
-            label="Pricing"
-            to="/pricing"
-          />
-          <NavItem
-            icon="explore"
-            label="Explore Recipes"
-            to="/explore"
-          />
-          <NavItem
-            icon="group"
-            label="Community"
-            to="/community"
-          />
+          {/* Bottom Section - Pushed to bottom */}
+          <div className="mt-auto space-y-1 pb-4">
+            <NavItem
+              icon="help"
+              label="How it Works"
+              to="/how-it-works"
+            />
+            <NavItem
+              icon="payments"
+              label="Pricing"
+              to="/pricing"
+            />
+            <NavItem
+              icon="explore"
+              label="Explore Recipes"
+              to="/explore"
+            />
+            <NavItem
+              icon="group"
+              label="Community"
+              to="/community"
+            />
+          </div>
         </div>
       </aside>
     </>

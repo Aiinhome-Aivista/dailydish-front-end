@@ -41,8 +41,8 @@ export default function RecipeConfiguration() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FBF5E9] flex items-center justify-center p-6">
-      <div className="w-full max-w-full bg-[#FBF5E9] rounded-2xl">
+    <div className="h-full flex items-center justify-center">
+      <div className="w-full">
         <div className="mb-6">
           <h1 className="text-2xl font-semibold text-[#435334]">
             Recipe Configuration
@@ -57,7 +57,7 @@ export default function RecipeConfiguration() {
             1&nbsp; Add Ingredients
           </h2>
 
-          <div className="bg-[#F1EEDC] rounded-xl p-4 space-y-4">
+          <div className="rounded-xl p-4 space-y-4">
             <h2 className="text-sm font-semibold text-[#435334] mb-2">
               Ingredient Name
             </h2>

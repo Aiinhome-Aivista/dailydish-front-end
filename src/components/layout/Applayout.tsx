@@ -32,7 +32,7 @@ const AppLayout = () => {
 
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen ">
       {/* Sidebar - Controlled by state for mobile responsiveness */}
       <SideBar
         isOpen={isSidebarOpen}

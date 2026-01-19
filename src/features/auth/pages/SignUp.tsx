@@ -3,9 +3,11 @@ import { Mail, Lock, User } from 'lucide-react';
 import logo from '../../../assets/icons/Recipe logo.svg';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../api/authService';
+import { useToast } from '../../../shared/context/ToastContext';
 
 function SignUp() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -33,8 +35,15 @@ function SignUp() {
     try {
       const response = await authService.register(formData);
       if (response && response.status === 'success') {
-        // Redirect to login to allow user to login with new credentials
-        navigate('/login');
+
+          showToast(
+            "success",
+            "Success",
+            response.message || "Registration Successful!"
+          );
+          setTimeout(() => {
+            navigate("/login");
+          }, 1500);
       } else {
         setError(response?.message || 'Registration failed');
       }

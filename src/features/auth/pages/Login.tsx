@@ -3,9 +3,11 @@ import { Mail, Lock } from 'lucide-react';
 import logo from '../../../assets/icons/Recipe logo.svg';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../../../shared/context/ToastContext';
 
 function Login() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const { login, isLoading, error } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,7 +18,7 @@ function Login() {
     setLocalError(null);
     try {
       await login({ email, password });
-
+   
       navigate('/recipe-configuration');
     } catch (err) {
 
