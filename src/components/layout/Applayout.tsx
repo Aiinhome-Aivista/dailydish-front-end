@@ -1,12 +1,15 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "./NavBar";
-import Sidebar from "./SideBar";
-import Header from "./Header";
+import SideBar from './SideBar';
+import Header from './Header';
 import { useAuth } from "../../features/auth/hooks/useAuth";
+
 
 const AppLayout = () => {
   const { isLoggedIn } = useAuth();
- 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   // ------------------------------------------------------------------
   // CASE 1: PUBLIC USER (Not Logged In)
   // Shows: Navbar -> Page Content
@@ -16,7 +19,9 @@ const AppLayout = () => {
       <div className="flex min-h-screen flex-col">
         {/* Public Navigation */}
         <Navbar />
-        
+
+
+
         {/* The Page Content (Homepage, Login, Register) */}
         <main className="flex-1">
           <Outlet />
@@ -25,16 +30,20 @@ const AppLayout = () => {
     );
   }
 
+
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar - Controlled by state for mobile responsiveness */}
-      <Sidebar  />
+      <SideBar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
 
       {/* Main Content Area (Right side of Sidebar) */}
       <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-        
+
         {/* Dashboard Header */}
-        <Header />
+        <Header onMenuClick={() => setIsSidebarOpen(true)} />
 
         {/* Dashboard Page Content */}
         <main>
