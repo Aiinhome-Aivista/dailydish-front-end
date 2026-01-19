@@ -1,5 +1,5 @@
 import React from 'react';
-import  LogoSvg  from "../../assets/Vector.svg";
+import LogoSvg from '../../../assets/Vector.svg';
 const AnimatedLogo = () => {
   return (
     <div className="relative flex justify-center items-center">
