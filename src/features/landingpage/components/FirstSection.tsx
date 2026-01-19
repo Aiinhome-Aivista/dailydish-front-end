@@ -19,17 +19,17 @@ const LandingHero = () => {
             </p>
 
             <div className="w-full max-w-2xl relative ">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#435334]">
-                    <span className="material-symbols-outlined">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2">
+                    <span className="material-symbols-outlined text-brand-dark text-[24px]">
                         menu_book_2
                     </span>
                 </div>
                 <input
                     type="text"
                     placeholder="Enter Ingredients (e.g. Tomato, Garlic, Chicken...)"
-                    className="w-full pl-12 pr-32 py-4 bg-[#CEDEBD] rounded-lg placeholder:[#435334] focus:outline-none focus:ring-2 focus:ring-brand-dark/20 backdrop-blur-sm"
+                    className="font-normal w-full pl-12 pr-32 py-4 rounded-lg placeholder:[#435334] focus:outline-none focus:ring-2 focus:ring-brand-dark/20 bg-brand-light"
                 />
-                <button className="absolute right-2 top-2 bottom-2 bg-[#435334] text-[#FAF1E4] px-6 rounded-md font-bold flex items-center gap-2 hover:bg-opacity-90 transition-all">
+                <button className="absolute right-2 top-2 bottom-2 bg-brand-dark text-[#FAF1E4] px-6 rounded-md font-bold flex items-center gap-2 hover:bg-opacity-90 transition-all">
                     Generate <Sparkles size={16} />
                 </button>
             </div>

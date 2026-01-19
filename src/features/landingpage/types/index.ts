@@ -1,7 +1,7 @@
 export interface Feature {
     title: string;
     description: string;
-    icon: React.ElementType;
+    iconName: string;
 }
 
 export interface Recipe {
