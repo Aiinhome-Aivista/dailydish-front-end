@@ -1,5 +1,5 @@
 import { Mail, Lock, User } from 'lucide-react';
-import logo from '../../../assets/Vector.svg';
+import logo from '../../../assets/icons/Recipe logo.svg';
 import { useNavigate } from 'react-router-dom';
 
 function SignUp() {
