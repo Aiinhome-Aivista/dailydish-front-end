@@ -24,5 +24,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "src/features/landingpage/components/LandingHero.tsx"]
+  "include": ["src", "src/features/landingpage/components/FirstSection.tsx"]
 }

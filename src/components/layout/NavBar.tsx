@@ -8,11 +8,11 @@ const NavBar = () => {
     const navigate = useNavigate();
 
     return (
-        <nav className="w-full py-4 px-6 md:px-12 flex justify-between items-center bg-[#CEDEBD] relative z-50">
+        <nav className="w-full py-3 px-5 md:px-12 flex justify-between items-center bg-[#CEDEBD] relative z-50">
             {/* Logo */}
             <div className="flex items-center gap-2">
                 <img src={cookerIcon} alt="DailyDish Logo" className="w-8 h-8" />
-                <span className="text-brand-dark font-bold text-xl">DailyDish</span>
+                <span className="text-[#435334] font-bold text-xl">DailyDish</span>
             </div>
 
             {/* Desktop Menu */}

@@ -3,7 +3,7 @@ import { ChefHat, Send } from 'lucide-react';
 
 const LandingFooter = () => {
   return (
-    <footer className="bg-brand-beige/50 pt-16 pb-8 border-t border-brand-dark/5">
+    <footer className="pt-10">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid md:grid-cols-4 gap-12 mb-16">
           {/* Brand */}

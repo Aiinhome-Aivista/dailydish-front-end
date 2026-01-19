@@ -1,0 +1,40 @@
+import React from 'react';
+import { Sparkles } from 'lucide-react';
+import cookerIcon from '../../../assets/cooker.svg';
+
+
+const LandingHero = () => {
+
+    return (
+        <div className="flex flex-col items-center pt-16 pb-24 px-4">
+            <div className="mb-6 animate-bounce-slow">
+                <img src={cookerIcon} alt="Bowl" className="w-24 h-24" />
+            </div>
+            <h1 className="text-5xl md:text-7xl font-bold text-center mb-10 leading-none text-[#435334]">
+                Turn Your Fridge<br />
+                <span className="bg-linear-to-r from-[#435334] to-[#95B974] bg-clip-text text-transparent leading-none">Into a Feast.</span>
+            </h1>
+            <p className="text-[#95B974] text-center text-base md:text-xl max-w-2xl mb-12 font-medium">
+                Enter your ingredients and let our AI craft the perfect recipe tailored to your cuisine preference and nutritional needs.
+            </p>
+
+            <div className="w-full max-w-2xl relative ">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#435334]">
+                    <span className="material-symbols-outlined">
+                        menu_book_2
+                    </span>
+                </div>
+                <input
+                    type="text"
+                    placeholder="Enter Ingredients (e.g. Tomato, Garlic, Chicken...)"
+                    className="w-full pl-12 pr-32 py-4 bg-[#CEDEBD] rounded-lg placeholder:[#435334] focus:outline-none focus:ring-2 focus:ring-brand-dark/20 backdrop-blur-sm"
+                />
+                <button className="absolute right-2 top-2 bottom-2 bg-[#435334] text-[#FAF1E4] px-6 rounded-md font-bold flex items-center gap-2 hover:bg-opacity-90 transition-all">
+                    Generate <Sparkles size={16} />
+                </button>
+            </div>
+        </div>
+    );
+};
+
+export default LandingHero;

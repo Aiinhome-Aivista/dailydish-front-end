@@ -1,6 +1,6 @@
 import React from 'react';
 import NavBar from '../../../components/layout/NavBar';
-import LandingHero from '../components/LandingHero';
+import LandingHero from '../components/FirstSection';
 import LandingFeatures from '../components/Features';
 import LandingLeftovers from '../components/Leftovers';
 import LandingCTA from '../components/CTA';
@@ -8,7 +8,7 @@ import LandingFooter from '../components/Footer';
 
 function LandingPage() {
   return (
-    <div className="min-h-screen bg-brand-beige selection:bg-brand-accent selection:text-white">
+    <div className="h-full w-full">
       <NavBar />
       <main>
         <LandingHero />
