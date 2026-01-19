@@ -44,7 +44,7 @@ export default function RecipeConfiguration() {
     <div className="h-full flex items-center justify-center">
       <div className="w-full">
         <div className="mb-6">
-          <h1 className="text-2xl font-semibold text-[#435334]">
+          <h1 className="text-2xl font-bold text-brand-dark">
             Recipe Configuration
           </h1>
           <p className="text-sm text-[#95B974]">
@@ -53,29 +53,33 @@ export default function RecipeConfiguration() {
           </p>
         </div>
         <div className="mb-6">
-          <h2 className="text-sm font-semibold text-[#435334] mb-2">
-            1&nbsp; Add Ingredients
+          <h2 className="text-sm font-bold text-brand-dark mb-3 flex items-center gap-3">
+            <span className="rounded-full bg-brand-dark w-7 h-7 flex  items-center justify-center text-[#FAF1E4]">
+              1
+            </span>
+
+             Add Ingredients
           </h2>
 
-          <div className="rounded-xl p-4 space-y-4">
-            <h2 className="text-sm font-semibold text-[#435334] mb-2">
+          <div className="bg-[#CEDEBD36] border border-[#CEDEBD] rounded-xl p-4 space-y-4">
+            <h2 className="text-sm  text-[#95B974] font-bold mb-2">
               Ingredient Name
             </h2>
             <div className="grid grid-cols-12 gap-3">
               <input
-                className="col-span-6 rounded-lg px-4 py-2 text-sm bg-[#F7F4E8] outline-none"
+                className="col-span-6 rounded-lg px-4 py-2 text-sm bg-[#FAF1E4] outline-none text-brand-accent"
                 placeholder="e.g. Fresh Atlantic Salmon"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
               <input
-                className="col-span-2 rounded-lg px-4 py-2 text-sm bg-[#F7F4E8] outline-none"
+                className="col-span-2 rounded-lg px-4 py-2 text-sm bg-[#FAF1E4] outline-none text-brand-accent"
                 placeholder="0"
                 value={qty}
                 onChange={(e) => setQty(e.target.value)}
               />
               <select
-                className="col-span-3 rounded-lg px-3 py-2 text-sm bg-[#F7F4E8] outline-none"
+                className="col-span-3 rounded-lg px-3 py-2 text-sm bg-[#FAF1E4] outline-none text-brand-accent"
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
               >
@@ -85,21 +89,21 @@ export default function RecipeConfiguration() {
               </select>
               <button
                 onClick={addIngredient}
-                className="col-span-1 bg-[#95B974] text-white rounded-lg text-sm font-medium"
+                className="col-span-1 bg-brand-accent text-brand-dark rounded-lg text-sm font-medium"
               >
                 + Add
               </button>
             </div>
           </div>
           <div className="mt-4">
-            <div className="bg-[#EFEAD6] rounded-xl">
-              <div className="grid grid-cols-12 text-xs text-[#95B974] bg-[#CEDEBD36] px-4 py-2">
+            <div className="bg-[#CEDEBD36] border border-[#CEDEBD] rounded-2xl">
+              <div className="grid grid-cols-12 text-xs text-brand-accent font-bold bg-[#CEDEBD36] px-4 py-2">
                 <div className="col-span-5">INGREDIENT NAME</div>
                 <div className="col-span-3">QUANTITY</div>
                 <div className="col-span-3">UNIT</div>
                 <div className="col-span-1 text-right">ACTION</div>
               </div>
-              <div className="border-t border-[#DDD7BF]">
+              <div className="">
                 {ingredients.map((ing) => (
                   <Row
                     key={ing.id}
@@ -112,8 +116,10 @@ export default function RecipeConfiguration() {
           </div>
         </div>
         <div className="mb-6">
-          <h2 className="text-sm font-semibold text-[#4A5D3B] mb-3">
-            2&nbsp; Cuisine Preferences
+          <h2 className="text-sm font-bold text-[#4A5D3B] mb-3 flex items-center gap-3">
+            <span className="rounded-full bg-brand-dark w-7 h-7 flex  items-center justify-center text-[#FAF1E4]">
+              2
+            </span> Cuisine Preferences
           </h2>
           <div className="grid grid-cols-5 gap-3">
             <Cuisine
@@ -149,14 +155,16 @@ export default function RecipeConfiguration() {
           </div>
         </div>
         <div className="mb-6">
-          <h2 className="text-sm font-semibold text-[#4A5D3B] mb-3">
-            3&nbsp; Meal Settings
+          <h2 className="text-sm font-bold text-[#4A5D3B] mb-3 flex items-center gap-3">
+            <span className="rounded-full bg-brand-dark w-7 h-7 flex  items-center justify-center text-[#FAF1E4]">
+              3
+            </span> Time and Servings
           </h2>
 
           <div className="grid grid-cols-2 gap-4">
             {/* Servings */}
-            <div className="bg-[#F1EEDC] rounded-xl p-4">
-              <p className="text-sm text-[#4A5D3B] mb-2">Number of Servings</p>
+            <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-xl p-4">
+              <p className="text-sm text-brand-dark font-bold mb-2">Number of Servings</p>
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setServings(Math.max(1, servings - 1))}
@@ -178,8 +186,8 @@ export default function RecipeConfiguration() {
             </div>
 
             {/* Cooking Time */}
-            <div className="bg-[#F1EEDC] rounded-xl p-4">
-              <p className="text-sm text-[#4A5D3B] mb-2">Cooking Time</p>
+            <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-xl p-4">
+              <p className="text-sm text-brand-dark font-bold mb-2">Cooking Time</p>
               <div className="flex gap-3">
                 <Time
                   active={time === "15m"}
@@ -202,17 +210,17 @@ export default function RecipeConfiguration() {
         </div>
 
         {/* Footer */}
-        <div className="bg-[#D9E8C6] rounded-xl p-4 flex items-center justify-between">
+        <div className="bg-brand-light rounded-xl p-4 flex items-center justify-between border border-[#43533414] py-6">
           <div>
-            <p className="text-sm font-semibold text-[#4A5D3B]">
+            <p className="text-lg font-bold text-brand-dark">
               Ready for your AI Creation?
             </p>
-            <p className="text-xs text-[#6E8B5C]">
+            <p className="text-xs text-brand-accent font-medium">
               We have enough information to craft a unique 5-star recipe for
               you.
             </p>
           </div>
-          <button className="bg-[#8FB573] text-white px-6 py-2 rounded-lg text-sm font-medium">
+          <button className="bg-brand-accent text-brand-dark px-6 py-2 rounded-lg text-sm font-bold">
             Generate Now
           </button>
         </div>
@@ -256,9 +264,9 @@ function Cuisine({ label, active, icon, onClick }: OptionProps) {
   return (
     <div
       onClick={onClick}
-      className={`rounded-xl p-4 text-center text-xs font-semibold
+      className={`rounded-xl p-4 text-center text-xs font-semibold border border-[#43533414]
         cursor-pointer ${
-          active ? "bg-[#D6E3C1] text-[#4A5D3B]" : "bg-[#F1EEDC] text-[#7A8F63]"
+          active ? "bg-[#D6E3C1] text-[#4A5D3B]" : " text-[#7A8F63] bg-[#CEDEBD36] "
         }`}
     >
       {icon && <img src={icon} alt={label} className="w-8 h-8 mx-auto mb-2" />}

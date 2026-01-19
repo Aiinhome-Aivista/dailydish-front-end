@@ -21,7 +21,7 @@ const NavItem = ({
   <Link
     to={to}
     className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors font-medium text-sm ${isActive
-      ? 'bg-brand-light text-[#95B974] font-bold'
+      ? 'bg-brand-light text-[#95B974]'
       : 'text-[#95B974] hover:bg-brand-light/50 hover:text-brand-dark '
       }`}
   >
@@ -47,19 +47,21 @@ const SideBar = ({ isOpen, onClose }: SideBarProps) => {
       {/* Sidebar Container */}
       <aside
         className={`
-          fixed top-0 left-0 z-50 h-screen w-64 bg-brand-beige border-r border-[#95B974]
+          fixed top-0 left-0 z-50 h-full w-60 bg-brand-beige border-r border-[#95B974]
           transition-transform duration-300 ease-in-out flex flex-col
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
           md:translate-x-0 md:static md:block
         `}
       >
-
-
+        {/* Logo and Title - Matches Header Background */}
+        <div className="flex items-center gap-4 px-6 h-20 bg-[#CEDEBD] shrink-0">
+          <img src={Logo} alt="DailyDish Logo" className="w-10 h-10 object-contain" />
+          <h1 className="text-[#435334] text-xl font-bold">DailyDish</h1>
+        </div>
         {/* Navigation */}
-        {/* Navigation */}
-        <div className="flex-1 flex flex-col px-4 py-2 space-y-1 overflow-y-auto">
-          {/* Top Section */}
-          <div className="space-y-1">
+        <div className="flex-1 flex flex-col px-4 py-2">
+          {/* Top Section - scrollable nav */}
+          <div className="flex-1 space-y-1 overflow-y-auto ">
             <NavItem
               icon="skillet"
               label="My Pantry"
@@ -80,28 +82,12 @@ const SideBar = ({ isOpen, onClose }: SideBarProps) => {
             />
           </div>
 
-          {/* Bottom Section - Pushed to bottom */}
-          <div className="mt-auto space-y-1 pb-4">
-            <NavItem
-              icon="help"
-              label="How it Works"
-              to="/how-it-works"
-            />
-            <NavItem
-              icon="payments"
-              label="Pricing"
-              to="/pricing"
-            />
-            <NavItem
-              icon="explore"
-              label="Explore Recipes"
-              to="/explore"
-            />
-            <NavItem
-              icon="group"
-              label="Community"
-              to="/community"
-            />
+          {/* Bottom Section - stays pinned */}
+          <div className="mt-85 space-y-2 p-4">
+            <a href="#" className="flex items-center gap-3 text-brand-dark">How it works</a>
+            <a href="#" className="flex items-center gap-3 text-brand-dark">Pricing</a>
+            <a href="#" className="flex items-center gap-3 text-brand-dark">Explore recipes</a>
+            <a href="#" className="flex items-center gap-3 text-brand-dark">Community</a>
           </div>
         </div>
       </aside>
