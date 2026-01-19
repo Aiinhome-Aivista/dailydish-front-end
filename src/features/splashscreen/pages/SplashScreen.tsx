@@ -1,5 +1,5 @@
 import React from 'react';
-import LogoSvg from '../../../assets/Vector.svg';
+import LogoSvg from '../../../assets/withoutSmoke.svg';
 const AnimatedLogo = () => {
   return (
     <div className="relative flex justify-center items-center">
@@ -72,7 +72,7 @@ const AnimatedLogo = () => {
 const SplashScreen = () => {
   return (
     <div className="min-h-screen bg-[#435334] flex items-center justify-center overflow-hidden">
-      <div className="w-[96%] h-[92vh] bg-olive rounded-2xl flex flex-col items-center justify-center relative shadow-2xl">
+      <div className="w-[96%] h-[92vh] bg-olive rounded-2xl flex flex-col items-center justify-center relative">
         
         {/* Main Content */}
         <div className="text-center z-10">
