@@ -4,6 +4,7 @@ import LandingPage from '../features/landingpage/pages/LandingPage';
 import Login from '../features/auth/pages/Login';
 import SplashScreen from '../features/splashscreen/pages/SplashScreen';
 import SignUp from "../features/auth/pages/SignUp";
+import RecipeConfiguration from "../features/recipeconfiguration/pages/RecipeConfiguration";
 
 const SplashToLanding = () => {
   const [showSplash, setShowSplash] = useState(true);
@@ -25,8 +26,8 @@ function AppRoutes() {
       <Route path="/" element={<SplashToLanding />} />
       <Route path="login" element={<Login />} />
       <Route path="signup" element={<SignUp/>} />
-   
-      </Routes>
+      <Route path="recipe-configuration" element={<RecipeConfiguration />} />
+    </Routes>
   )
 }
 
