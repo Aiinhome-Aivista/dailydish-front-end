@@ -83,7 +83,7 @@ const SideBar = ({ isOpen, onClose }: SideBarProps) => {
           </div>
 
           {/* Bottom Section - stays pinned */}
-          <div className="mt-85 space-y-2 p-4">
+          <div className="mt-80 space-y-2 p-4">
             <a href="#" className="flex items-center gap-3 text-brand-dark">How it works</a>
             <a href="#" className="flex items-center gap-3 text-brand-dark">Pricing</a>
             <a href="#" className="flex items-center gap-3 text-brand-dark">Explore recipes</a>
