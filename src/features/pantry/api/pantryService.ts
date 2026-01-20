@@ -6,7 +6,7 @@ export const pantryService = {
     getSavedMenus: async () => {
         try {
             const response = await axiosApi<SavedMenuResponse>(API_ENDPOINTS.SAVEMENU, {
-                method: 'GET',
+                method: 'POST',
             });
             return response;
         } catch (error) {
