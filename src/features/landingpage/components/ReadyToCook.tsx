@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LandingCTA = () => {
+const ReadyToCook= () => {
     return (
         <div className="py-24 px-6 md:px-12 bg-[#CEDEBD36]">
             <div className="max-w-4xl mx-auto text-center">
@@ -24,4 +24,4 @@ const LandingCTA = () => {
     );
 };
 
-export default LandingCTA;
+export default ReadyToCook;

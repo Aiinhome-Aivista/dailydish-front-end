@@ -9,7 +9,7 @@ const LandingPage = lazy(() => import('../features/landingpage/pages/LandingPage
 const Login = lazy(() => import('../features/auth/pages/Login'));
 const SignUp = lazy(() => import("../features/auth/pages/SignUp"));
 const SplashScreen = lazy(() => import('../features/splashscreen/pages/SplashScreen'));
-const RecipeConfiguration = lazy(() => import("../features/recipeconfiguration/pages/RecipeConfiguration"));
+const RecipeConfiguration = lazy(() => import("../features/pantry/components/RecipeConfiguration"));
 
 const SplashToLanding = () => {
   const [showSplash, setShowSplash] = useState(true);

@@ -3,7 +3,7 @@ import { Sparkles } from 'lucide-react';
 import cookerIcon from '../../../assets/cooker.svg';
 
 
-const LandingHero = () => {
+const FirstSection = () => {
 
     return (
         <div className="flex flex-col items-center pt-16 pb-24 px-4">
@@ -37,4 +37,4 @@ const LandingHero = () => {
     );
 };
 
-export default LandingHero;
+export default FirstSection;
