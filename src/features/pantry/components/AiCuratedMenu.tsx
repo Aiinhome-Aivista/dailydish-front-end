@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Heart, ChevronRight } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import type { GeneratedRecipe } from '../types/recipeTypes';
 import brocooli from '../../../assets/Broccolli_image.svg';
 
@@ -16,6 +16,7 @@ interface Recipe {
 
 const AiMenuDashboard: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [selectedId, setSelectedId] = useState<number>(0);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
 
@@ -104,7 +105,20 @@ const AiMenuDashboard: React.FC = () => {
                     </button>
                   </div>
 
-                  <div className="flex items-center gap-1 text-xs font-bold text-[#9dbd87] group-hover:text-[#7a9d63] transition-colors">
+                  <div
+                    className="flex items-center gap-1 text-xs font-bold text-[#9dbd87] group-hover:text-[#7a9d63] transition-colors cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate('/recipe-details', {
+                        state: {
+                          menu_name: recipe.title,
+                          cooking_time: recipe.time,
+                          description: recipe.description,
+                          image_url: recipe.image
+                        }
+                      });
+                    }}
+                  >
                     <span>View Recipe</span>
                     <ChevronRight size={16} />
                   </div>

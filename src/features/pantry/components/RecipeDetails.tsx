@@ -1,54 +1,137 @@
 
-import React, { useState } from 'react';
-import { Check } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Check, ArrowLeft, Loader2 } from 'lucide-react';
 import broccoliImage from '../../../assets/Broccolli_image.svg';
+import axiosApi from '../../../lib/axiosApi';
+import { API_ENDPOINTS } from '../../../config/endpoints';
+import type { RecipeDetailsResponse, RecipeDetailData, SaveRecipeRequest, SaveRecipeResponse } from '../types/recipeTypes';
+import PageLoader from '../../../components/feedback/PageLoader';
+// Actually, user mentioned ToastContext in history. I should probably use that or just alert for now since I don't want to break if context not set up here.
+// Re-reading history: "Refactor Toast Notifications... to use a global useToast hook".
+// I'll check if I can import useToast. But to be safe and quick, I will use alert or console first, or standard toastify if installed. 
+// Let's stick to standard alert for simplicity unless I see toast usage. 
+// Wait, I saw "ToastContext" in history. 
+// Let's look at the file content again. It didn't have toast imports.
+// I will just use window.alert or console for now, or better: 
+// I will check useToast availability. 
+// Actually, "Refactor Toast Notifications" was a past task. 
+// I'll assume I can just use a simple state for feedback or alert. 
+// Let's just use `alert` for now to satisfy the "bind api" request, or add a simple UI feedback.
+// I'll add a saving state.
 
 export default function RecipeDetails() {
-  const [servings, setServings] = useState(2);
+  const [servings, setServings] = useState(4);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [recipeData, setRecipeData] = useState<RecipeDetailData | null>(null);
 
-  // Mock Data
-  const recipe = {
-    title: "Broccoli-Quinoa",
-    subtitle: "Based on: Chicken , Broccoli, Garlic, Oriental Cuisine",
-    prepTime: "15m",
-    cookTime: "30m",
-    nutrition: {
-      calories: 420,
-      fiber: "12g",
-      fiberDaily: "48%",
-      protein: 18,
-      carbs: 54,
-      fats: 14
-    },
-    ingredients: [
-      { name: "No-waste cooking algorithms.", qty: "1 cup (cooked)" },
-      { name: "Chickpeas (rinsed & drained)", qty: "1/2 can" },
-      { name: "English Cucumber (diced)", qty: "1 medium" },
-      { name: "Kalamata Olives", qty: "1/4 cup" },
-      { name: "Lemon-Tahini Dressing", qty: "2 tbsp" },
-    ],
-    steps: [
-      {
-        title: "Prepare the Grain Base",
-        desc: "Rinse quinoa under cold water. Combine with 2 parts water or vegetable broth in a small pot. Bring to a boil, then simmer covered for 15 minutes until liquid is absorbed."
-      },
-      {
-        title: "Vegetable Prep",
-        desc: "While quinoa cooks, dice the cucumber, halve the cherry tomatoes, and thinly slice the red onion. Toss together with a pinch of sea salt to release juices."
-      },
-      {
-        title: "Assemble & Dress",
-        desc: "Divide quinoa into bowls. Top with vegetable mix, chickpeas, and olives. Drizzle with lemon-tahini dressing and garnish with fresh parsley and crumbled feta."
+  const { menu_name, cooking_time, description, image_url } = location.state || {};
+
+  useEffect(() => {
+    const fetchRecipeDetails = async () => {
+      if (!menu_name) return;
+
+      try {
+        setLoading(true);
+        const response = await axiosApi<RecipeDetailsResponse>(API_ENDPOINTS.RECIPEDETAILS, {
+          method: 'POST',
+          data: {
+            menu_name,
+            cooking_time: cooking_time || "10 minutes"
+          }
+        });
+
+        if (response && response.status === 'success') {
+          setRecipeData(response.details);
+          setServings(response.details.servings);
+        }
+      } catch (error) {
+        console.error("Failed to fetch recipe details", error);
+      } finally {
+        setLoading(false);
       }
-    ]
+    };
+
+    fetchRecipeDetails();
+  }, [menu_name, cooking_time]);
+
+  const handleSaveRecipe = async () => {
+    if (!recipeData || !menu_name) return;
+
+    try {
+      setSaving(true);
+      const payload: SaveRecipeRequest = {
+        menu_name,
+        cooking_time: cooking_time || "10 minutes",
+        description: description || recipeData.menu_name, // Fallback
+        image_url: image_url || ""
+      };
+
+      const response = await axiosApi<SaveRecipeResponse>(API_ENDPOINTS.SAVERECIPE, {
+        method: 'POST',
+        data: payload
+      });
+
+      if (response && response.status === 'success') {
+        alert("Recipe saved successfully!"); // Simple feedback
+      } else {
+        alert("Failed to save recipe.");
+      }
+
+    } catch (error) {
+      console.error("Failed to save recipe", error);
+      alert("An error occurred while saving the recipe.");
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loading) {
+    return <PageLoader />;
+  }
+
+  if (!recipeData) {
+    return (
+      <div className="h-full flex flex-col items-center justify-center">
+        <p className="text-xl text-[#7A8F63] font-bold mb-4">Recipe details not found.</p>
+        <button
+          onClick={() => navigate(-1)}
+          className="bg-[#95B974] text-white px-6 py-2 rounded-xl font-bold"
+        >
+          Go Back
+        </button>
+      </div>
+    );
+  }
+
+  // Combine ingredients for display
+  const allIngredients = [
+    ...recipeData.ingredients_analysis.current.map(i => ({ ...i, available: true })),
+    ...recipeData.ingredients_analysis.missing.map(i => ({ ...i, available: false }))
+  ];
+
+  // Combine steps for display
+  const allSteps = [
+    ...recipeData.steps.preparation.map((desc) => ({ title: "Preparation", desc })),
+    ...recipeData.steps.cooking.map((desc) => ({ title: "Cooking", desc }))
+  ];
 
   return (
     <div className="h-full text-brand-dark">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl md:text-2xl font-bold">Recipe | {recipe.title}</h1>
-        <p className="text-brand-accent font-medium text-sm">{recipe.subtitle}</p>
+        <button
+          onClick={() => navigate(-1)}
+          className="mb-4 flex items-center gap-2 text-brand-accent font-bold hover:text-brand-dark transition-colors"
+        >
+          <ArrowLeft size={20} />
+          Back to Menu
+        </button>
+        <h1 className="text-2xl md:text-2xl font-bold">Recipe | {recipeData.menu_name}</h1>
+        <p className="text-brand-accent font-medium text-sm">Delicious & Healthy Choice</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -56,21 +139,20 @@ export default function RecipeDetails() {
         <div className="flex flex-col gap-8">
           {/* Hero Image */}
           <div className="relative h-60 md:h-90 rounded-3xl overflow-hidden group shadow-lg">
-            {/* Placeholder for Image - Using a gradient/color block since I don't have the asset */}
             <div className="absolute inset-0 bg-slate-800 ">
               <img
-                src={broccoliImage}
-                alt="Broccoli-Quinoa"
+                src={image_url || broccoliImage} // Use passed image or fallback
+                alt={recipeData.menu_name}
                 className="w-full h-full object-cover opacity-60"
+                onError={(e) => { e.currentTarget.src = broccoliImage; }}
               />
             </div>
 
             <div className="absolute bottom-0 left-0 p-8 w-full bg-gradient-to-t from-black/80 to-transparent text-white">
-              <h2 className="text-3xl font-bold mb-2 text-[#FAF1E4]">{recipe.title}</h2>
+              <h2 className="text-3xl font-bold mb-2 text-[#FAF1E4]">{recipeData.menu_name}</h2>
               <div className="flex gap-4 text-sm font-medium">
-                <span className="flex items-center gap-1">{recipe.prepTime} prep</span>
-                <span className="flex items-center gap-1">{recipe.cookTime} cook</span>
-                {/* "cock" was in the design, assuming typo for "cook", correcting to "cook" but sticking to design if strict, I'll use cook */}
+                <span className="flex items-center gap-1">{recipeData.time_breakdown.prep_time}m prep</span>
+                <span className="flex items-center gap-1">{recipeData.time_breakdown.cook_time}m cook</span>
               </div>
             </div>
           </div>
@@ -95,10 +177,10 @@ export default function RecipeDetails() {
               </div>
 
               <div className="space-y-6 mb-8">
-                {recipe.ingredients.map((ing, idx) => (
+                {allIngredients.map((ing, idx) => (
                   <div key={idx} className="flex items-center justify-between group">
                     <div className="flex items-center gap-3">
-                      <div className="min-w-6 h-6 rounded-full bg-[#95B974] flex items-center justify-center text-white">
+                      <div className={`min-w-6 h-6 rounded-full flex items-center justify-center text-white ${ing.available ? 'bg-[#95B974]' : 'bg-orange-400'}`}>
                         <Check size={14} strokeWidth={4} />
                       </div>
                       <span className="font-bold text-sm lg:text-base">{ing.name}</span>
@@ -109,8 +191,13 @@ export default function RecipeDetails() {
               </div>
             </div>
 
-            <button className="w-full bg-[#95B974] hover:bg-[#7A8F63] text-[#FAF1E4] py-2 rounded-xl font-bold text-lg shadow-md transition-colors mt-6">
-              Add to Meal Planner
+            <button
+              onClick={handleSaveRecipe}
+              disabled={saving}
+              className="w-full bg-[#95B974] hover:bg-[#7A8F63] text-[#FAF1E4] py-2 rounded-xl font-bold text-lg shadow-md transition-colors mt-6 flex items-center justify-center gap-2"
+            >
+              {saving && <Loader2 className="animate-spin" size={20} />}
+              {saving ? 'Saving...' : 'Add to Meal Planner'}
             </button>
           </div>
         </div>
@@ -124,13 +211,13 @@ export default function RecipeDetails() {
             <div className="grid grid-cols-2 gap-4 mb-8">
               <div className="bg-[#CEDEBD36] rounded-2xl p-6 text-center">
                 <div className="text-xs font-bold text-brand-accent mb-1">CALORIES</div>
-                <div className="text-3xl font-extrabold text-brand-accent">{recipe.nutrition.calories}</div>
+                <div className="text-3xl font-extrabold text-brand-accent">{recipeData.nutrition.total_calories?.replace(' kcal', '')}</div>
                 <div className="text-xs text-brand-accent">Per Serving</div>
               </div>
               <div className="bg-[#CEDEBD36] rounded-2xl p-6 text-center">
                 <div className="text-xs font-bold text-brand-accent mb-1">FIBER</div>
-                <div className="text-3xl font-extrabold text-brand-accent">{recipe.nutrition.fiber}</div>
-                <div className="text-xs text-brand-accent">{recipe.nutrition.fiberDaily} DV</div>
+                <div className="text-3xl font-extrabold text-brand-accent">{recipeData.nutrition.fiber}</div>
+                <div className="text-xs text-brand-accent">{/* Daily Value not in API */}</div>
               </div>
             </div>
 
@@ -138,7 +225,7 @@ export default function RecipeDetails() {
               <div>
                 <div className="flex justify-between mb-1">
                   <span>Protein</span>
-                  <span>{recipe.nutrition.protein}G</span>
+                  <span>{recipeData.nutrition.protein}</span>
                 </div>
                 <div className="h-3 bg-[#CEDEBD36] rounded-full overflow-hidden">
                   <div className="h-full bg-[#95B974] w-[30%]"></div>
@@ -147,7 +234,7 @@ export default function RecipeDetails() {
               <div>
                 <div className="flex justify-between mb-1">
                   <span>Carbohydrates</span>
-                  <span>{recipe.nutrition.carbs}G</span>
+                  <span>{recipeData.nutrition.carbohydrates}</span>
                 </div>
                 <div className="h-3 bg-[#CEDEBD36] rounded-full overflow-hidden">
                   <div className="h-full bg-[#95B974] w-[65%]"></div>
@@ -156,7 +243,7 @@ export default function RecipeDetails() {
               <div>
                 <div className="flex justify-between mb-1">
                   <span>Fats</span>
-                  <span>{recipe.nutrition.fats}G</span>
+                  <span>{recipeData.nutrition.fat}</span>
                 </div>
                 <div className="h-3 bg-[#CEDEBD36] rounded-full overflow-hidden">
                   <div className="h-full bg-[#95B974] w-[20%]"></div>
@@ -170,7 +257,7 @@ export default function RecipeDetails() {
             <h3 className="text-xl font-bold pb-4">Preparation Steps</h3>
 
             <div className="space-y-4">
-              {recipe.steps.map((step, idx) => (
+              {allSteps.map((step, idx) => (
                 <div key={idx} className="flex gap-4">
                   <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#4A5D3B] text-[#FAF1E4] flex items-center justify-center font-bold text-sm">
                     {idx + 1}
