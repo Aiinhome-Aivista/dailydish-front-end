@@ -3,6 +3,7 @@ import { Route, Routes, Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../features/auth/hooks/useAuth";
 import AppLayout from "../components/layout/Applayout";
 import PageLoader from "../components/feedback/PageLoader";
+import AiCuratedMenu from "../features/pantry/components/AiCuratedMenu";
 
 // Lazy Load Pages
 const LandingPage = lazy(() => import('../features/landingpage/pages/LandingPage'));
@@ -44,7 +45,7 @@ const PublicRoute = () => {
   }
 
   // Redirect to dashboard/configured page if already logged in
-  return !isLoggedIn ? <Outlet /> : <Navigate to="/recipe-configuration" replace />;
+  return !isLoggedIn ? <Outlet /> : <Navigate to="/ai-menu" replace />;
 };
 
 function AppRoutes() {
@@ -62,6 +63,7 @@ function AppRoutes() {
         <Route element={<PrivateRoute />}>
           <Route element={<AppLayout />}>
             <Route path="recipe-configuration" element={<RecipeConfiguration />} />
+               <Route path="ai-menu" element={<AiCuratedMenu />} />
             {/* Add more protected routes here */}
           </Route>
         </Route>
