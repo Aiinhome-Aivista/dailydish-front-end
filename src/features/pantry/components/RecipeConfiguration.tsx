@@ -4,6 +4,10 @@ import japanese_curry from "../../../assets/japanese_curry.svg";
 import kebab_dining from "../../../assets/kebab_dining.svg";
 import dinner_dining from "../../../assets/dinner_dining.svg";
 import yoshoku from "../../../assets/yoshoku.svg";
+import { generateRecipes } from "../api/recipeService";
+import { useNavigate } from "react-router-dom";
+import type { RecipeGenerationRequest } from "../types/recipeTypes";
+
 
 interface Ingredient {
   id: string;
@@ -13,16 +17,16 @@ interface Ingredient {
 }
 
 export default function RecipeConfiguration() {
+  const navigate = useNavigate();
   const [servings, setServings] = useState(4);
-  const [ingredients, setIngredients] = useState<Ingredient[]>([
-    { id: "1", name: "Chicken Breast", qty: "500", unit: "Grams" },
-    { id: "2", name: "Garlic", qty: "3", unit: "Cloves" },
-  ]);
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [name, setName] = useState("");
   const [qty, setQty] = useState("");
   const [unit, setUnit] = useState("Unit");
   const [cuisine, setCuisine] = useState("ORIENTAL");
   const [time, setTime] = useState("15m");
+  const [mealType, setMealType] = useState("Daily");
+  const [isLoading, setIsLoading] = useState(false);
 
   const addIngredient = () => {
     if (name && qty && unit !== "Unit") {
@@ -38,6 +42,32 @@ export default function RecipeConfiguration() {
 
   const removeIngredient = (id: string) => {
     setIngredients(ingredients.filter((item) => item.id !== id));
+  };
+
+  const handleGenerate = async () => {
+    setIsLoading(true);
+    try {
+      const payload: RecipeGenerationRequest = {
+        ingredients: ingredients.map(i => ({ name: i.name, qty: `${i.qty}${i.unit}` })), // Naive qty formatting, can be improved
+        cuisine_preference: cuisine,
+        number_of_people: servings,
+        cooking_time: time,
+        cooking_preference: mealType,
+      };
+
+      const response = await generateRecipes(payload);
+
+      if (response && response.status === "success") {
+        navigate('/ai-menu', { state: { recipes: response.data.recipes } });
+      } else {
+        console.error("Failed to generate recipes");
+        // Optionally handle error UI
+      }
+    } catch (error) {
+      console.error("Error generating recipes:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -58,7 +88,7 @@ export default function RecipeConfiguration() {
               1
             </span>
 
-             Add Ingredients
+            Add Ingredients
           </h2>
 
           <div className="bg-[#CEDEBD36] border border-[#CEDEBD] rounded-xl p-4 space-y-4">
@@ -95,25 +125,28 @@ export default function RecipeConfiguration() {
               </button>
             </div>
           </div>
-          <div className="mt-4">
-            <div className="bg-[#CEDEBD36] border border-[#CEDEBD] rounded-2xl">
-              <div className="grid grid-cols-12 text-xs text-brand-accent font-bold bg-[#CEDEBD36] px-4 py-2">
-                <div className="col-span-5">INGREDIENT NAME</div>
-                <div className="col-span-3">QUANTITY</div>
-                <div className="col-span-3">UNIT</div>
-                <div className="col-span-1 text-right">ACTION</div>
-              </div>
-              <div className="">
-                {ingredients.map((ing) => (
-                  <Row
-                    key={ing.id}
-                    {...ing}
-                    onDelete={() => removeIngredient(ing.id)}
-                  />
-                ))}
+          {ingredients.length > 0 && (
+            <div className="mt-4">
+              <div className="bg-[#CEDEBD36] border border-[#CEDEBD] rounded-2xl">
+                <div className="grid grid-cols-12 text-xs text-brand-accent font-bold bg-[#CEDEBD36] px-4 py-2">
+                  <div className="col-span-5">INGREDIENT NAME</div>
+                  <div className="col-span-3">QUANTITY</div>
+                  <div className="col-span-3">UNIT</div>
+                  <div className="col-span-1 text-right">ACTION</div>
+                </div>
+                <div className="">
+                  {ingredients.map((ing) => (
+                    <Row
+                      key={ing.id}
+                      {...ing}
+                      onDelete={() => removeIngredient(ing.id)}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          )}
+
         </div>
         <div className="mb-6">
           <h2 className="text-sm font-bold text-[#4A5D3B] mb-3 flex items-center gap-3">
@@ -161,7 +194,7 @@ export default function RecipeConfiguration() {
             </span> Time and Servings
           </h2>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             {/* Servings */}
             <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-xl p-4">
               <p className="text-sm text-brand-dark font-bold mb-2">Number of Servings</p>
@@ -206,6 +239,23 @@ export default function RecipeConfiguration() {
                 />
               </div>
             </div>
+
+            {/* Meal Type */}
+            <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-xl p-4">
+              <p className="text-sm text-brand-dark font-bold mb-2">Meal Type</p>
+              <div className="flex gap-3">
+                <Time
+                  active={mealType === "Daily"}
+                  label="Daily"
+                  onClick={() => setMealType("Daily")}
+                />
+                <Time
+                  active={mealType === "Special"}
+                  label="Special"
+                  onClick={() => setMealType("Special")}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -220,8 +270,12 @@ export default function RecipeConfiguration() {
               you.
             </p>
           </div>
-          <button className="bg-brand-accent text-brand-dark px-6 py-2 rounded-lg text-sm font-bold">
-            Generate Now
+          <button
+            onClick={handleGenerate}
+            disabled={isLoading}
+            className={`bg-brand-accent text-brand-dark px-6 py-2 rounded-lg text-sm font-bold ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            {isLoading ? "Generating..." : "Generate Now"}
           </button>
         </div>
       </div>
@@ -245,9 +299,9 @@ function Row({ name, qty, unit, onDelete }: RowProps) {
       <div className="col-span-3">{qty}</div>
       <div className="col-span-3">{unit}</div>
       <div className="col-span-1 text-right cursor-pointer" onClick={onDelete}>
-       <span className="material-symbols-outlined">
-delete
-</span>
+        <span className="material-symbols-outlined">
+          delete
+        </span>
       </div>
     </div>
   );
@@ -265,8 +319,7 @@ function Cuisine({ label, active, icon, onClick }: OptionProps) {
     <div
       onClick={onClick}
       className={`rounded-xl p-4 text-center text-xs font-semibold border border-[#43533414]
-        cursor-pointer ${
-          active ? "bg-[#D6E3C1] text-[#4A5D3B]" : " text-[#7A8F63] bg-[#CEDEBD36] "
+        cursor-pointer ${active ? "bg-[#D6E3C1] text-[#4A5D3B]" : " text-[#7A8F63] bg-[#CEDEBD36] "
         }`}
     >
       {icon && <img src={icon} alt={label} className="w-8 h-8 mx-auto mb-2" />}
@@ -280,8 +333,7 @@ function Time({ label, active, onClick }: OptionProps) {
     <button
       onClick={onClick}
       className={`px-4 py-2 rounded-lg text-sm
-        ${
-          active ? "bg-[#B9D3A4] text-[#4A5D3B]" : "bg-[#E6E1CA] text-[#7A8F63]"
+        ${active ? "bg-[#B9D3A4] text-[#4A5D3B]" : "bg-[#E6E1CA] text-[#7A8F63]"
         }`}
     >
       {label}

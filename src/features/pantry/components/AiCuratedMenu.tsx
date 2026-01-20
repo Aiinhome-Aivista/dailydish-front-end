@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Heart, ChevronRight } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import type { GeneratedRecipe } from '../types/recipeTypes';
+import brocooli from '../../../assets/Broccolli_image.svg';
 
 // Define the shape of a recipe item
 interface Recipe {
@@ -12,105 +15,109 @@ interface Recipe {
 }
 
 const AiMenuDashboard: React.FC = () => {
-  // Simulating the selection state. In the image, the second item is selected.
-  const [selectedId, setSelectedId] = useState<number>(2);
+  const location = useLocation();
+  const [selectedId, setSelectedId] = useState<number>(0);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
 
-  const recipes: Recipe[] = [
-    {
-      id: 1,
-      title: "Rise-jira",
-      description: "A fresh Mediterranean delight with roasted garlic, aromatic herbs, and had-squeezed lemon zest.",
-      time: "20 mins",
-      image: "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&q=80&w=800",
-    },
-    {
-      id: 2,
-      title: "Broccoli-Quinoa",
-      description: "Nutrient-dense bowl perfect for a healthy lunch. Packed with fiber and antioxidants.",
-      time: "45 mins",
-      image: "https://images.unsplash.com/photo-1623428187969-5da2dcea5ebf?auto=format&fit=crop&q=80&w=800",
-    },
-    {
-      id: 3,
-      title: "Pesto Pasta",
-      description: "Classic basil pesto with a healthy AI twist, incorporating blended broccoli for extra nutrition.",
-      time: "65 mins",
-      image: "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&q=80&w=800",
-    },
-    {
-      id: 4,
-      title: "Garlic-Brocco",
-      description: "Flash-fried broccoli and spinach with a kick of red chili and toasted with garlic.",
-      time: "20 mins",
-      image: "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&q=80&w=800",
-    },
-  ];
+
+
+  useEffect(() => {
+    if (location.state && location.state.recipes) {
+      const generatedRecipes: GeneratedRecipe[] = location.state.recipes;
+      const mappedRecipes: Recipe[] = generatedRecipes.map((rec, index) => ({
+        id: index + 1,
+        title: rec.menu_name,
+        description: rec.description,
+        time: rec.cooking_time,
+        image: rec.image_url,
+      }));
+      setRecipes(mappedRecipes);
+      setSelectedId(0);
+
+    } else {
+      setRecipes([]);
+      ;
+    }
+  }, [location.state]);
+
+
 
   return (
-    <div className="min-h-screen p-4 text-[#3f4f3a]">
+    <div className="h-full">
       {/* Header Section */}
-      <div className="max-w-full mb-10">
-        <h1 className="text-4xl font-bold mb-2 tracking-tight text-[#3e5035]">
+      <div className="max-w-full mb-8">
+        <h1 className="text-3xl font-bold text-brand-dark">
           Your AI-Curated Menu
         </h1>
-        <p className="text-lg text-[#95b87f] font-medium">
-          Based on: <span className="opacity-80">Chicken , Broccoli, Garlic, Oriental Cuisine</span>
+        <p className="text-sm text-brand-accent font-medium">
+          Based on: <span className="">Chicken , Broccoli, Garlic, Oriental Cuisine</span>
         </p>
       </div>
 
       {/* Grid Section */}
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {recipes.map((recipe) => (
-          <div
-            key={recipe.id}
-            onClick={() => setSelectedId(recipe.id)}
-            className={`
-              group relative flex flex-col p-4 rounded-[32px] cursor-pointer transition-all duration-300
-              ${selectedId === recipe.id 
-                ? 'bg-[#d2e4c4] ring-[3px] ring-[#3ba9f5] shadow-lg scale-[1.02]' 
-                : 'bg-[#d2e4c4] hover:shadow-md hover:scale-[1.01]'
-              }
-            `}
-          >
-            {/* Image Container */}
-            <div className="h-48 w-full mb-5 overflow-hidden rounded-2xl">
-              <img
-                src={recipe.image}
-                alt={recipe.title}
-                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-              />
-            </div>
+        {recipes.length > 0 ? (
+          recipes.map((recipe) => (
+            <div
+              key={recipe.id}
+              onClick={() => setSelectedId(recipe.id)}
+              className={`
+                group relative flex flex-col p-4 rounded-4xl cursor-pointer transition-all duration-300
+                ${selectedId === recipe.id
+                  ? 'bg-[#d2e4c4] ring-[3px] ring-[#95B974] shadow-lg scale-[1.02]'
+                  : 'bg-[#d2e4c4] hover:shadow-md hover:scale-[1.01]'
+                }
 
-            {/* Content */}
-            <div className="flex flex-col flex-grow">
-              <h3 className="text-xl font-bold mb-2 text-[#3e5035]">
-                {recipe.title}
-              </h3>
-              
-              <p className="text-sm leading-relaxed text-[#5e7054] mb-6 line-clamp-3">
-                {recipe.description}
-              </p>
+                `}
+            >
+              {/* Image Container */}
+              <div className="h-40 w-full mb-5 overflow-hidden rounded-2xl">
+                <img
+                  src={recipe.image}
+                  alt={recipe.title}
+                  onError={(e) => {
+                    e.currentTarget.src = brocooli;
+                  }}
+                  className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                />
+              </div>
 
-              {/* Footer: Meta & Action */}
-              <div className="mt-auto flex items-center justify-between">
-                <div className="flex flex-col gap-3">
+              {/* Content */}
+              <div className="flex flex-col flex-grow">
+                <h3 className="text-xl font-bold mb-2 text-[#3e5035]">
+                  {recipe.title}
+                </h3>
+
+                <p className="text-sm leading-relaxed text-[#5e7054] mb-6 line-clamp-3">
+                  {recipe.description}
+                </p>
+
+                {/* Footer: Meta & Action */}
+                <div className="mt-auto flex items-center justify-between">
+                  <div className="flex flex-col gap-3">
                     <span className="text-xs font-bold text-[#3e5035]">
-                    {recipe.time}
+                      {recipe.time}
                     </span>
-                     {/* Heart Icon */}
+                    {/* Heart Icon */}
                     <button className="text-[#8ba37a] hover:text-[#3e5035] transition-colors">
-                        <Heart size={18} fill="currentColor" className="opacity-60 hover:opacity-100" />
+                      <Heart size={18} fill="currentColor" className="opacity-60 hover:opacity-100" />
                     </button>
-                </div>
+                  </div>
 
-                <div className="flex items-center gap-1 text-xs font-bold text-[#9dbd87] group-hover:text-[#7a9d63] transition-colors">
-                  <span>View Recipe</span>
-                  <ChevronRight size={16} />
+                  <div className="flex items-center gap-1 text-xs font-bold text-[#9dbd87] group-hover:text-[#7a9d63] transition-colors">
+                    <span>View Recipe</span>
+                    <ChevronRight size={16} />
+                  </div>
                 </div>
               </div>
             </div>
+          ))
+        ) : (
+          <div className="col-span-full flex justify-center items-center py-20">
+            <p className="text-xl text-[#7A8F63] font-bold">No recipe found</p>
           </div>
-        ))}
+        )}
+
       </div>
     </div>
   );

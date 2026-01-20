@@ -4,5 +4,6 @@ export const BASE_URL = 'http://122.163.121.176:3029/';
 
 export const API_ENDPOINTS = {
   LOGIN: `${BASE_URL}/login`,
-  REGISTER: `${BASE_URL}/register`,    
+  REGISTER: `${BASE_URL}/register`, 
+  GENERATERECIPE: `${BASE_URL}/generate-recipe`,   
 } as const;

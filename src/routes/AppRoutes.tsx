@@ -49,7 +49,8 @@ const PublicRoute = () => {
 
   // Redirect to dashboard/configured page if already logged in
   // return !isLoggedIn ? <Outlet /> : <Navigate to="/recipe-details" replace />;
-  return !isLoggedIn ? <Outlet /> : <Navigate to="/ai-menu" replace />;
+  // return !isLoggedIn ? <Outlet /> : <Navigate to="/ai-menu" replace />;
+  return !isLoggedIn ? <Outlet /> : <Navigate to="/recipe-configuration" replace />;
 };
 
 function AppRoutes() {
