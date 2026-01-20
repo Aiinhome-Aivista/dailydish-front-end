@@ -27,17 +27,30 @@ export default function RecipeConfiguration() {
   const [time, setTime] = useState("15m");
   const [mealType, setMealType] = useState("Daily");
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<{ name?: string; qty?: string; unit?: string }>({});
+  const [generateError, setGenerateError] = useState("");
 
   const addIngredient = () => {
-    if (name && qty && unit !== "Unit") {
-      setIngredients([
-        ...ingredients,
-        { id: Date.now().toString(), name, qty, unit },
-      ]);
-      setName("");
-      setQty("");
-      setUnit("Unit");
+    const newErrors: { name?: string; qty?: string; unit?: string } = {};
+    if (!name.trim()) newErrors.name = "Required";
+    if (!qty.trim()) {
+      newErrors.qty = "Required";
+    } else if (isNaN(Number(qty)) || Number(qty) <= 0) {
+      newErrors.qty = "Invalid";
     }
+    if (unit === "Unit") newErrors.unit = "Required";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setIngredients([...ingredients, { id: Date.now().toString(), name, qty, unit }]);
+    setName("");
+    setQty("");
+    setUnit("Unit");
+    setErrors({});
+    setGenerateError("");
   };
 
   const removeIngredient = (id: string) => {
@@ -45,6 +58,11 @@ export default function RecipeConfiguration() {
   };
 
   const handleGenerate = async () => {
+    if (ingredients.length === 0) {
+      setGenerateError("Please add at least one ingredient to generate recipes.");
+      return;
+    }
+
     setIsLoading(true);
     try {
       const payload: RecipeGenerationRequest = {
@@ -95,31 +113,60 @@ export default function RecipeConfiguration() {
             <h2 className="text-sm  text-[#95B974] font-bold mb-2">
               Ingredient Name
             </h2>
-            <div className="grid grid-cols-12 gap-3">
-              <input
-                className="col-span-6 rounded-lg px-4 py-2 text-sm bg-[#FAF1E4] outline-none text-brand-accent"
-                placeholder="e.g. Fresh Atlantic Salmon"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-              <input
-                className="col-span-2 rounded-lg px-4 py-2 text-sm bg-[#FAF1E4] outline-none text-brand-accent"
-                placeholder="0"
-                value={qty}
-                onChange={(e) => setQty(e.target.value)}
-              />
-              <select
-                className="col-span-3 rounded-lg px-3 py-2 text-sm bg-[#FAF1E4] outline-none text-brand-accent"
-                value={unit}
-                onChange={(e) => setUnit(e.target.value)}
-              >
-                <option>Unit</option>
-                <option>Grams</option>
-                <option>Cloves</option>
-              </select>
+            <div className="grid grid-cols-12 gap-3 items-start">
+              <div className="col-span-6 flex flex-col gap-1">
+                <input
+                  className={`w-full rounded-lg px-4 py-2 text-sm bg-[#FAF1E4] outline-none text-brand-accent ${
+                    errors.name ? "border border-red-500" : ""
+                  }`}
+                  placeholder="e.g. Fresh Atlantic Salmon"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    if (errors.name) setErrors({ ...errors, name: undefined });
+                  }}
+                />
+                {errors.name && <span className="text-[10px] text-red-500 pl-1">{errors.name}</span>}
+              </div>
+
+              <div className="col-span-2 flex flex-col gap-1">
+                <input
+                  className={`w-full rounded-lg px-4 py-2 text-sm bg-[#FAF1E4] outline-none text-brand-accent ${
+                    errors.qty ? "border border-red-500" : ""
+                  }`}
+                  placeholder="0"
+                  value={qty}
+                  onChange={(e) => {
+                    setQty(e.target.value);
+                    if (errors.qty) setErrors({ ...errors, qty: undefined });
+                  }}
+                />
+                {errors.qty && <span className="text-[10px] text-red-500 pl-1">{errors.qty}</span>}
+              </div>
+
+              <div className="col-span-3 flex flex-col gap-1">
+                <select
+                  className={`w-full rounded-lg px-3 py-2 text-sm bg-[#FAF1E4] outline-none text-brand-accent ${
+                    errors.unit ? "border border-red-500" : ""
+                  }`}
+                  value={unit}
+                  onChange={(e) => {
+                    setUnit(e.target.value);
+                    if (errors.unit) setErrors({ ...errors, unit: undefined });
+                  }}
+                >
+                  <option value="Unit">Unit</option>
+                  <option value="Grams">Grams</option>
+                  <option value="Cloves">Cloves</option>
+                  <option value="Pieces">Pieces</option>
+                  <option value="Cups">Cups</option>
+                </select>
+                {errors.unit && <span className="text-[10px] text-red-500 pl-1">{errors.unit}</span>}
+              </div>
+
               <button
                 onClick={addIngredient}
-                className="col-span-1 bg-brand-accent text-brand-dark rounded-lg text-sm font-medium"
+                className="col-span-1 bg-brand-accent text-brand-dark rounded-lg text-sm font-medium py-2"
               >
                 + Add
               </button>
@@ -269,6 +316,7 @@ export default function RecipeConfiguration() {
               We have enough information to craft a unique 5-star recipe for
               you.
             </p>
+            {generateError && <p className="text-xs text-red-500 font-bold mt-1">{generateError}</p>}
           </div>
           <button
             onClick={handleGenerate}
