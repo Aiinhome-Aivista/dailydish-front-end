@@ -20,8 +20,8 @@ const NavItem = ({
 }) => (
   <Link
     to={to}
-    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors font-medium text-sm ${isActive
-      ? 'bg-brand-light text-[#95B974]'
+    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors font-bold text-sm ${isActive
+      ? 'bg-brand-light text-brand-accent'
       : 'text-[#95B974] hover:bg-brand-light/50 hover:text-brand-dark '
       }`}
   >
@@ -63,19 +63,19 @@ const SideBar = ({ isOpen, onClose }: SideBarProps) => {
           {/* Top Section - scrollable nav */}
           <div className="flex-1 space-y-1 overflow-y-auto ">
             <NavItem
-              icon="skillet"
+              icon="award_meal"
               label="My Pantry"
               to="/pantry"
               isActive={currentPath === '/pantry'}
             />
             <NavItem
-              icon="bookmark"
+              icon="dine_heart"
               label="Saved Recipes"
               to="/saved-recipes"
               isActive={currentPath === '/saved-recipes'}
             />
             <NavItem
-              icon="calendar_month"
+              icon="kitchen"
               label="Meal Plan"
               to="/meal-plan"
               isActive={currentPath === '/meal-plan'}
