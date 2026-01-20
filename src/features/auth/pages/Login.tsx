@@ -19,7 +19,8 @@ function Login() {
     try {
       await login({ email, password });
    
-      navigate('/recipe-configuration');
+      // navigate('/recipe-configuration');
+        navigate('/recipe-details');
     } catch (err) {
 
     }
