@@ -1,6 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ReadyToCook= () => {
+    const navigate = useNavigate();
     return (
         <div className="py-24 px-6 md:px-12 bg-[#CEDEBD36]">
             <div className="max-w-4xl mx-auto text-center">
@@ -12,7 +14,10 @@ const ReadyToCook= () => {
                 </p>
 
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
-                    <button className="px-8 py-3 bg-brand-accent text-white font-bold rounded-lg hover:bg-opacity-90 transition-opacity">
+                    <button
+                        onClick={() => navigate("/signup")}
+                        className="px-8 py-3 bg-brand-accent text-white font-bold rounded-lg hover:bg-opacity-90 transition-opacity"
+                    >
                         Get Started - It's Free
                     </button>
                     <button className="px-8 py-3 bg-brand-dark/10 text-brand-dark font-bold rounded-lg hover:bg-brand-dark/20 transition-colors">

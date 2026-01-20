@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Heart, ChevronRight } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
-import type { GeneratedRecipe } from '../types/recipeTypes';
-import brocooli from '../../../assets/Broccolli_image.svg';
+import React, { useState, useEffect } from "react";
+import { Heart, ChevronRight } from "lucide-react";
+import { useLocation } from "react-router-dom";
+import type { GeneratedRecipe } from "../types/recipeTypes";
+import brocooli from "../../../assets/Broccolli_image.svg";
 
 // Define the shape of a recipe item
 interface Recipe {
@@ -19,28 +19,33 @@ const AiMenuDashboard: React.FC = () => {
   const [selectedId, setSelectedId] = useState<number>(0);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
 
-
-
   useEffect(() => {
     if (location.state && location.state.recipes) {
       const generatedRecipes: GeneratedRecipe[] = location.state.recipes;
-      const mappedRecipes: Recipe[] = generatedRecipes.map((rec, index) => ({
-        id: index + 1,
-        title: rec.menu_name,
-        description: rec.description,
-        time: rec.cooking_time,
-        image: rec.image_url,
-      }));
+      // const mappedRecipes: Recipe[] = generatedRecipes.map((rec, index) => ({
+      //   id: index + 1,
+      //   title: rec.menu_name,
+      //   description: rec.description,
+      //   time: rec.cooking_time,
+      //   image: `${rec.image_url}&cache=${index}`,
+      // }));
+
+      const mappedRecipes: Recipe[] = generatedRecipes.map((rec, index) => {
+        const seed = Date.now() + index; // 🔑 unique seed per recip
+        return {
+          id: index + 1,
+          title: rec.menu_name,
+          description: rec.description,
+          time: rec.cooking_time,
+          image: `${rec.image_url.replace(/seed=\d+/, `seed=${seed}`)}`,
+        };
+      });
       setRecipes(mappedRecipes);
       setSelectedId(0);
-
     } else {
       setRecipes([]);
-      ;
     }
   }, [location.state]);
-
-
 
   return (
     <div className="h-full">
@@ -50,7 +55,8 @@ const AiMenuDashboard: React.FC = () => {
           Your AI-Curated Menu
         </h1>
         <p className="text-sm text-brand-accent font-medium">
-          Based on: <span className="">Chicken , Broccoli, Garlic, Oriental Cuisine</span>
+          Based on:{" "}
+          <span className="">Chicken , Broccoli, Garlic, Oriental Cuisine</span>
         </p>
       </div>
 
@@ -63,9 +69,10 @@ const AiMenuDashboard: React.FC = () => {
               onClick={() => setSelectedId(recipe.id)}
               className={`
                 group relative flex flex-col p-4 rounded-4xl cursor-pointer transition-all duration-300
-                ${selectedId === recipe.id
-                  ? 'bg-[#d2e4c4] ring-[3px] ring-[#95B974] shadow-lg scale-[1.02]'
-                  : 'bg-[#d2e4c4] hover:shadow-md hover:scale-[1.01]'
+                ${
+                  selectedId === recipe.id
+                    ? "bg-[#d2e4c4] ring-[3px] ring-[#95B974] shadow-lg scale-[1.02]"
+                    : "bg-[#d2e4c4] hover:shadow-md hover:scale-[1.01]"
                 }
 
                 `}
@@ -74,11 +81,11 @@ const AiMenuDashboard: React.FC = () => {
               <div className="h-40 w-full mb-5 overflow-hidden rounded-2xl">
                 <img
                   src={recipe.image}
-                  alt={recipe.title}
+                  loading="lazy"
+                  className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.src = brocooli;
                   }}
-                  className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
                 />
               </div>
 
@@ -100,7 +107,11 @@ const AiMenuDashboard: React.FC = () => {
                     </span>
                     {/* Heart Icon */}
                     <button className="text-[#8ba37a] hover:text-[#3e5035] transition-colors">
-                      <Heart size={18} fill="currentColor" className="opacity-60 hover:opacity-100" />
+                      <Heart
+                        size={18}
+                        fill="currentColor"
+                        className="opacity-60 hover:opacity-100"
+                      />
                     </button>
                   </div>
 
@@ -117,7 +128,6 @@ const AiMenuDashboard: React.FC = () => {
             <p className="text-xl text-[#7A8F63] font-bold">No recipe found</p>
           </div>
         )}
-
       </div>
     </div>
   );
