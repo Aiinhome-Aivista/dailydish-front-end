@@ -7,6 +7,7 @@ import yoshoku from "../../../assets/yoshoku.svg";
 import { generateRecipes } from "../api/recipeService";
 import { useNavigate } from "react-router-dom";
 import type { RecipeGenerationRequest } from "../types/recipeTypes";
+import CuisineLoader from '../../../components/feedback/DailyDishLoader';
 
 
 interface Ingredient {
@@ -26,9 +27,9 @@ export default function RecipeConfiguration() {
   const [cuisine, setCuisine] = useState("ORIENTAL");
   const [time, setTime] = useState("15m");
   const [mealType, setMealType] = useState("Daily");
-  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ name?: string; qty?: string; unit?: string }>({});
   const [generateError, setGenerateError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const addIngredient = () => {
     const newErrors: { name?: string; qty?: string; unit?: string } = {};
@@ -63,7 +64,7 @@ export default function RecipeConfiguration() {
       return;
     }
 
-    setIsLoading(true);
+    setLoading(true);
     try {
       const payload: RecipeGenerationRequest = {
         ingredients: ingredients.map(i => ({ name: i.name, qty: `${i.qty}${i.unit}` })), // Naive qty formatting, can be improved
@@ -84,10 +85,14 @@ export default function RecipeConfiguration() {
     } catch (error) {
       console.error("Error generating recipes:", error);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
+
+  if (loading) {
+    return <CuisineLoader />;
+  }
   return (
     <div className="h-full flex items-center justify-center">
       <div className="w-full">
@@ -320,10 +325,10 @@ export default function RecipeConfiguration() {
           </div>
           <button
             onClick={handleGenerate}
-            disabled={isLoading}
-            className={`bg-brand-accent text-brand-dark px-6 py-2 rounded-lg text-sm font-bold ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={loading}
+            className={`bg-brand-accent text-brand-dark px-6 py-2 rounded-lg text-sm font-bold ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            {isLoading ? "Generating..." : "Generate Now"}
+            {loading ? "Generating..." : "Generate Now"}
           </button>
         </div>
       </div>

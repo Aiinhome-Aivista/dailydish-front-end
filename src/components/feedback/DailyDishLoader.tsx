@@ -4,14 +4,14 @@ import React, { useState, useEffect } from "react";
 
 const icons = [
   { icon: "soup_kitchen", color: "#D9D9D9" },
-  { icon: "kebab_dining", color: "#8D6E63" },
-  { icon: "bakery_dining", color: "#FFCA28" },
-  { icon: "restaurant", color: "#556B2F" },
-  { icon: "lunch_dining", color: "#435334" },
-  { icon: "ramen_dining", color: "#FFA000" },
-  { icon: "local_pizza", color: "#EF5350" },
-  { icon: "icecream", color: "#EC407A" },
-  { icon: "local_cafe", color: "#6D4C41" },
+  { icon: "kebab_dining", color: "#D9D9D9" },
+  { icon: "bakery_dining", color: "#D9D9D9" },
+  { icon: "restaurant", color: "#D9D9D9" },
+  { icon: "lunch_dining", color: "#D9D9D9" },
+  { icon: "ramen_dining", color: "#D9D9D9" },
+  { icon: "local_pizza", color: "#D9D9D9" },
+  { icon: "icecream", color: "#D9D9D9" },
+  { icon: "local_cafe", color: "#D9D9D9" },
 ];
 
 const CuisineLoader: React.FC = () => {
@@ -48,8 +48,8 @@ const CuisineLoader: React.FC = () => {
           <span
             key={item.key}
             className={`material-symbols-outlined absolute transition-all duration-700 ease-in-out
-              ${item.position === "center" ? "text-5xl opacity-100 z-20" : ""}
-              ${item.position === "left" || item.position === "right" ? "text-3xl opacity-40 z-10 blur-[1px]" : ""}
+              ${item.position === "center" ? "text-6xl opacity-100 z-20" : ""}
+              ${item.position === "left" || item.position === "right" ? "text-3xl z-10" : ""}
               ${item.position === "far-left" || item.position === "far-right" ? "text-xl opacity-0 z-0" : ""}
             `}
             style={{
@@ -63,7 +63,7 @@ const CuisineLoader: React.FC = () => {
                   : item.position === "far-left"
                   ? "translateX(-120px) translateY(25px) scale(0.5)"
                   : "translateX(120px) translateY(25px) scale(0.5)",
-              color: item.color,
+              color: item.position === "center" ? "#435334" : item.color,
             }}
           >
             {item.icon}
@@ -72,7 +72,7 @@ const CuisineLoader: React.FC = () => {
       </div>
 
      
-      <p className="text-sm text-[#8FBF6A] tracking-wide animate-pulse">
+      <p className="text-sm text-brand-accent tracking-wide animate-pulse">
         Preparing your Cuisine...
       </p>
     </div>
