@@ -1,8 +1,10 @@
 import React, { useState, useEffect, } from "react";
-import { Heart, ChevronRight } from "lucide-react";
-import { useLocation, useNavigate} from "react-router-dom";
-import type { GeneratedRecipe } from "../types/recipeTypes";
+import { Heart, ChevronRight, Loader2 } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import type { GeneratedRecipe, SaveRecipeRequest, SaveRecipeResponse } from "../types/recipeTypes";
 import brocooli from "../../../assets/Broccolli_image.svg";
+import axiosApi from "../../../lib/axiosApi";
+import { API_ENDPOINTS } from "../../../config/endpoints";
 
 // Define the shape of a recipe item
 interface Recipe {
@@ -18,6 +20,7 @@ const AiMenuDashboard: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [selectedId, setSelectedId] = useState<number>(0);
+  const [savingId, setSavingId] = useState<number | null>(null);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
 
   useEffect(() => {
@@ -48,6 +51,37 @@ const AiMenuDashboard: React.FC = () => {
     }
   }, [location.state]);
 
+  const handleSaveRecipe = async (e: React.MouseEvent, recipe: Recipe) => {
+    e.stopPropagation();
+    if (savingId) return;
+
+    try {
+      setSavingId(recipe.id);
+      const payload: SaveRecipeRequest = {
+        menu_name: recipe.title,
+        cooking_time: recipe.time,
+        description: recipe.description,
+        image_url: recipe.image
+      };
+
+      const response = await axiosApi<SaveRecipeResponse>(API_ENDPOINTS.SAVEMENU, {
+        method: 'POST',
+        data: payload
+      });
+
+      if (response && response.status === 'success') {
+        alert("Recipe saved successfully!");
+      } else {
+        alert("Failed to save recipe.");
+      }
+    } catch (error) {
+      console.error("Failed to save recipe", error);
+      alert("An error occurred while saving the recipe.");
+    } finally {
+      setSavingId(null);
+    }
+  };
+
   return (
     <div className="h-full">
       {/* Header Section */}
@@ -70,10 +104,9 @@ const AiMenuDashboard: React.FC = () => {
               onClick={() => setSelectedId(recipe.id)}
               className={`
                 group relative flex flex-col p-4 rounded-4xl cursor-pointer transition-all duration-300
-                ${
-                  selectedId === recipe.id
-                    ? "bg-[#d2e4c4] ring-[3px] ring-[#95B974] shadow-lg scale-[1.02]"
-                    : "bg-[#d2e4c4] hover:shadow-md hover:scale-[1.01]"
+                ${selectedId === recipe.id
+                  ? "bg-[#d2e4c4] ring-[3px] ring-[#95B974] shadow-lg scale-[1.02]"
+                  : "bg-[#d2e4c4] hover:shadow-md hover:scale-[1.01]"
                 }
 
                 `}
@@ -107,12 +140,20 @@ const AiMenuDashboard: React.FC = () => {
                       {recipe.time}
                     </span>
                     {/* Heart Icon */}
-                    <button className="text-[#8ba37a] hover:text-[#3e5035] transition-colors">
-                      <Heart
-                        size={18}
-                        fill="currentColor"
-                        className="opacity-60 hover:opacity-100"
-                      />
+                    <button
+                      onClick={(e) => handleSaveRecipe(e, recipe)}
+                      disabled={savingId === recipe.id}
+                      className="text-[#8ba37a] hover:text-[#3e5035] transition-colors disabled:opacity-50"
+                    >
+                      {savingId === recipe.id ? (
+                        <Loader2 size={18} className="animate-spin" />
+                      ) : (
+                        <Heart
+                          size={18}
+                          fill="currentColor"
+                          className="opacity-60 hover:opacity-100"
+                        />
+                      )}
                     </button>
                   </div>
 

@@ -6,19 +6,8 @@ import broccoliImage from '../../../assets/Broccolli_image.svg';
 import axiosApi from '../../../lib/axiosApi';
 import { API_ENDPOINTS } from '../../../config/endpoints';
 import type { RecipeDetailsResponse, RecipeDetailData, SaveRecipeRequest, SaveRecipeResponse } from '../types/recipeTypes';
-import PageLoader from '../../../components/feedback/PageLoader';
-// Actually, user mentioned ToastContext in history. I should probably use that or just alert for now since I don't want to break if context not set up here.
-// Re-reading history: "Refactor Toast Notifications... to use a global useToast hook".
-// I'll check if I can import useToast. But to be safe and quick, I will use alert or console first, or standard toastify if installed. 
-// Let's stick to standard alert for simplicity unless I see toast usage. 
-// Wait, I saw "ToastContext" in history. 
-// Let's look at the file content again. It didn't have toast imports.
-// I will just use window.alert or console for now, or better: 
-// I will check useToast availability. 
-// Actually, "Refactor Toast Notifications" was a past task. 
-// I'll assume I can just use a simple state for feedback or alert. 
-// Let's just use `alert` for now to satisfy the "bind api" request, or add a simple UI feedback.
-// I'll add a saving state.
+import CuisineLoader from '../../../components/feedback/DailyDishLoader';
+
 
 export default function RecipeDetails() {
   const [servings, setServings] = useState(4);
@@ -70,7 +59,7 @@ export default function RecipeDetails() {
         image_url: image_url || ""
       };
 
-      const response = await axiosApi<SaveRecipeResponse>(API_ENDPOINTS.SAVERECIPE, {
+      const response = await axiosApi<SaveRecipeResponse>(API_ENDPOINTS.SAVEMENU, {
         method: 'POST',
         data: payload
       });
@@ -90,7 +79,7 @@ export default function RecipeDetails() {
   };
 
   if (loading) {
-    return <PageLoader />;
+    return <CuisineLoader />;
   }
 
   if (!recipeData) {
