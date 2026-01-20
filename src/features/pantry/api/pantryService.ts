@@ -5,7 +5,7 @@ import type { SavedMenuResponse } from '../types/recipeTypes';
 export const pantryService = {
     getSavedMenus: async () => {
         try {
-            const response = await axiosApi<SavedMenuResponse>(API_ENDPOINTS.GET_SAVED_MENU, {
+            const response = await axiosApi<SavedMenuResponse>(API_ENDPOINTS.SAVEMENU, {
                 method: 'GET',
             });
             return response;
