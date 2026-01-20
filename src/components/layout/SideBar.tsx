@@ -21,7 +21,7 @@ const NavItem = ({
   <Link
     to={to}
     className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-bold text-sm ${isActive
-      ? 'bg-brand-light text-brand-accent'
+      ? 'bg-[#CEDEBD36] text-brand-accent border border-brand-light'
       : 'text-[#95B974] hover:bg-brand-light/50 hover:text-brand-dark '
       } ${!label ? 'justify-center px-2' : ''}`}
     title={!label ? "Navigation Item" : label}
