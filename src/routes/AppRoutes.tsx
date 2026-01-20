@@ -15,6 +15,7 @@ const RecipeConfiguration = lazy(() => import("../features/pantry/components/Rec
 const RecipeDetails = lazy(() => import("../features/pantry/components/RecipeDetails"));
 const AiCuratedMenu = lazy(() => import("../features/pantry/components/AiCuratedMenu"));
 const SavedRecipes = lazy(() => import("../features/pantry/pages/SavedRecipes"));
+const MealPlan = lazy(() => import("../features/pantry/pages/MealPlan"));
 
 const SplashToLanding = () => {
   const [showSplash, setShowSplash] = useState(true);
@@ -72,6 +73,7 @@ function AppRoutes() {
             <Route path="recipe-details" element={<RecipeDetails />} />
             <Route path="ai-menu" element={<AiCuratedMenu />} />
             <Route path="saved-recipes" element={<SavedRecipes />} />
+            <Route path="meal-plan" element={<MealPlan />} />
             {/* Add more protected routes here */}
           </Route>
         </Route>
