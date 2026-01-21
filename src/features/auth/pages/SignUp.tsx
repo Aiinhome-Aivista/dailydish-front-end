@@ -98,7 +98,7 @@ function SignUp() {
 
           {/* Password */}
           <div className='relative group'>
-            {/* <Lock className='absolute left-4 top-1/2 -translate-y-1/2 text-white/60 group-focus-within:text-white transition-colors' size={20} /> */}
+            <Lock className='absolute left-4 top-1/2 -translate-y-1/2 text-white/60 group-focus-within:text-white transition-colors' size={20} />
             <input
               type={showPassword ? 'text' : 'password'}
               name='password'
