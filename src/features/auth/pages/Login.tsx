@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import logo from '../../../assets/icons/Recipe logo.svg';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../../../shared/context/ToastContext';
 
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { showToast } = useToast();
   const { login, isLoading, error } = useAuth();
   const [email, setEmail] = useState('');
@@ -14,12 +15,21 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (location.state?.successMessage) {
+      showToast('success', 'Success', location.state.successMessage);
+      // Clear state to prevent showing again on refresh
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, showToast, navigate]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLocalError(null);
     try {
       await login({ email, password });
    
+      showToast('success', 'Success', 'Login Successful!');
       // navigate('/recipe-configuration');
         navigate('/recipe-details');
     } catch (err) {

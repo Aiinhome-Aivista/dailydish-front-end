@@ -41,7 +41,14 @@
   width: 0;
   height: 0;
 }
+.p-toast-icon-close {
+  display: none !important;
+}
 
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
 /* Hide Scrollbar - Firefox/IE/Edge */
 * {
   -ms-overflow-style: none; /* IE and Edge */

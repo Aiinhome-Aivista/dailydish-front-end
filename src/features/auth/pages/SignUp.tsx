@@ -37,15 +37,7 @@ function SignUp() {
     try {
       const response = await authService.register(formData);
       if (response && response.status === 'success') {
-
-          showToast(
-            "success",
-            "Success",
-            response.message || "Registration Successful!"
-          );
-          setTimeout(() => {
-            navigate("/login");
-          }, 1500);
+        navigate("/login", { state: { successMessage: response.message || "Registration Successful!" } });
       } else {
         setError(response?.message || 'Registration failed');
       }
@@ -106,7 +98,7 @@ function SignUp() {
 
           {/* Password */}
           <div className='relative group'>
-            <Lock className='absolute left-4 top-1/2 -translate-y-1/2 text-white/60 group-focus-within:text-white transition-colors' size={20} />
+            {/* <Lock className='absolute left-4 top-1/2 -translate-y-1/2 text-white/60 group-focus-within:text-white transition-colors' size={20} /> */}
             <input
               type={showPassword ? 'text' : 'password'}
               name='password'
