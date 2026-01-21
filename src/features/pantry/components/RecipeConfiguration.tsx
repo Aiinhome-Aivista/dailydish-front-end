@@ -77,15 +77,14 @@ export default function RecipeConfiguration() {
       if (response && response.status === "success") {
         showToast("success", "Success", response.message || "Recipes generated successfully!");
         navigate('/ai-menu', { state: { recipes: response.data.recipes } });
-      }         setSavedRecipeIds(prev => new Set(prev).add(recipe.id));
       } else {
-        console.error("Failed to save recipe", error);
-        const errorMessage = (error as any).response?.data?.message || (error as any).message || "An error occurred while saving the recipe.";
-        showToast("error", "Error", errorMessage);
+        showToast("error", "Error", response?.message || "An error occurred.");
       }
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || error.message || "Something went wrong!";
+      showToast("error", "Error", errorMessage);
     } finally {
-      setSavingId(null);
-
+      setLoading(false);
     }
   };
 
