@@ -9,7 +9,6 @@ import { pantryService } from '../api/saveMenuService';
 import { useToast } from '../../../shared/context/ToastContext';
 import { AxiosError } from 'axios';
 import type { RecipeDetailsResponse, RecipeDetailData, } from '../types/recipeDetails';
-import type { SaveRecipeRequest } from '../types/saveMenu';
 import CuisineLoader from '../../../components/feedback/DailyDishLoader';
 
 
@@ -23,7 +22,7 @@ export default function RecipeDetails() {
   const [isSaved, setIsSaved] = useState(false);
   const [recipeData, setRecipeData] = useState<RecipeDetailData | null>(null);
 
-  const { menu_name, cooking_time, description, image_url } = location.state || {};
+  const { menu_name, cooking_time, image_url } = location.state || {};
 
   useEffect(() => {
     const fetchRecipeDetails = async () => {
@@ -58,28 +57,26 @@ export default function RecipeDetails() {
 
     try {
       setSaving(true);
-      const payload: SaveRecipeRequest = {
-        menu_name,
-        cooking_time: cooking_time || "10 minutes",
-        description: description || recipeData.menu_name, // Fallback
-        image_url: image_url || ""
+
+      const payload = {
+        details: recipeData
       };
 
-      const response = await pantryService.saveMenu(payload);
+      const response = await pantryService.saveMeal(payload);
 
       if (response && response.status === 'success') {
-        showToast("success", "Success", "Recipe saved successfully!");
+        showToast("success", "Success", "Added to Meal Planner successfully!");
         setIsSaved(true);
       } else {
-        showToast("error", "Error", "Failed to save recipe.");
+        showToast("error", "Error", "Failed to add to Meal Planner.");
       }
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 409) {
-        showToast("info", "Info", "Recipe is already saved.");
+        showToast("info", "Info", "Recipe is already in Meal Planner.");
         setIsSaved(true);
       } else {
-        console.error("Failed to save recipe", error);
-        showToast("error", "Error", "An error occurred while saving the recipe.");
+        console.error("Failed to save meal", error);
+        showToast("error", "Error", "An error occurred while adding to Meal Planner.");
       }
     } finally {
       setSaving(false);
@@ -189,7 +186,7 @@ export default function RecipeDetails() {
             <button
               onClick={handleSaveRecipe}
               disabled={saving || isSaved}
-              className={`w-full py-2 rounded-xl font-bold text-lg shadow-md transition-colors mt-6 flex items-center justify-center gap-2 ${isSaved
+              className={`w-full py-2 rounded-xl font-bold text-lg shadow-md transition-colors mt-6 flex items-center justify-center gap-2 cursor-pointer  ${isSaved
                 ? 'bg-[#E8F5E9] text-[#2E7D32] border border-[#2E7D32]'
                 : 'bg-brand-accent hover:bg-[#7A8F63] text-brand-beige'
                 }`}
@@ -203,7 +200,6 @@ export default function RecipeDetails() {
                 </>
               ) : (
                 <>
-                  <Heart size={20} />
                   Add to Meal Planner
                 </>
               )}

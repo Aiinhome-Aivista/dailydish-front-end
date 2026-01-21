@@ -8,6 +8,7 @@ import { generateRecipes } from "../api/recipeConfigurationService";
 import { useNavigate } from "react-router-dom";
 import type { RecipeGenerationRequest, Ingredient} from "../types/recipeConfiguration";
 import CuisineLoader from '../../../components/feedback/DailyDishLoader';
+import type { RowProps, OptionProps } from "../types/recipeConfiguration";
 
 
 
@@ -95,28 +96,28 @@ export default function RecipeConfiguration() {
           <h1 className="text-2xl font-bold text-brand-dark">
             Recipe Configuration
           </h1>
-          <p className="text-sm text-[#95B974]">
+          <p className="text-sm text-brand-accent">
             Input your ingredients and preferences to let our AI craft your
             perfect meal.
           </p>
         </div>
         <div className="mb-6">
           <h2 className="text-sm font-bold text-brand-dark mb-3 flex items-center gap-3">
-            <span className="rounded-full bg-brand-dark w-7 h-7 flex  items-center justify-center text-[#FAF1E4]">
+            <span className="rounded-full bg-brand-dark w-7 h-7 flex  items-center justify-center text-brand-beige">
               1
             </span>
 
             Add Ingredients
           </h2>
 
-          <div className="bg-[#CEDEBD36] border border-[#CEDEBD] rounded-xl p-4 space-y-4">
-            <h2 className="text-sm  text-[#95B974] font-bold mb-2">
+          <div className="bg-[#CEDEBD36] border border-brand-light rounded-xl p-4 space-y-4">
+            <h2 className="text-sm  text-brand-accent font-bold mb-2">
               Ingredient Name
             </h2>
             <div className="grid grid-cols-12 gap-3 items-start">
               <div className="col-span-6 flex flex-col gap-1">
                 <input
-                  className={`w-full rounded-lg px-4 py-2 text-sm bg-[#FAF1E4] outline-none text-brand-accent ${
+                  className={`w-full rounded-lg px-4 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${
                     errors.name ? "border border-red-500" : ""
                   }`}
                   placeholder="e.g. Fresh Atlantic Salmon"
@@ -131,7 +132,7 @@ export default function RecipeConfiguration() {
 
               <div className="col-span-2 flex flex-col gap-1">
                 <input
-                  className={`w-full rounded-lg px-4 py-2 text-sm bg-[#FAF1E4] outline-none text-brand-accent ${
+                  className={`w-full rounded-lg px-4 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${
                     errors.qty ? "border border-red-500" : ""
                   }`}
                   placeholder="0"
@@ -146,7 +147,7 @@ export default function RecipeConfiguration() {
 
               <div className="col-span-3 flex flex-col gap-1">
                 <select
-                  className={`w-full rounded-lg px-3 py-2 text-sm bg-[#FAF1E4] outline-none text-brand-accent ${
+                  className={`w-full rounded-lg px-3 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${
                     errors.unit ? "border border-red-500" : ""
                   }`}
                   value={unit}
@@ -175,7 +176,7 @@ export default function RecipeConfiguration() {
           </div>
           {ingredients.length > 0 && (
             <div className="mt-4">
-              <div className="bg-[#CEDEBD36] border border-[#CEDEBD] rounded-2xl">
+              <div className="bg-[#CEDEBD36] border border-brand-light rounded-2xl">
                 <div className="grid grid-cols-12 text-xs text-brand-accent font-bold bg-[#CEDEBD36] px-4 py-2">
                   <div className="col-span-5">INGREDIENT NAME</div>
                   <div className="col-span-3">QUANTITY</div>
@@ -198,7 +199,7 @@ export default function RecipeConfiguration() {
         </div>
         <div className="mb-6">
           <h2 className="text-sm font-bold text-[#4A5D3B] mb-3 flex items-center gap-3">
-            <span className="rounded-full bg-brand-dark w-7 h-7 flex  items-center justify-center text-[#FAF1E4]">
+            <span className="rounded-full bg-brand-dark w-7 h-7 flex  items-center justify-center text-brand-beige">
               2
             </span> Cuisine Preferences
           </h2>
@@ -237,7 +238,7 @@ export default function RecipeConfiguration() {
         </div>
         <div className="mb-6">
           <h2 className="text-sm font-bold text-[#4A5D3B] mb-3 flex items-center gap-3">
-            <span className="rounded-full bg-brand-dark w-7 h-7 flex  items-center justify-center text-[#FAF1E4]">
+            <span className="rounded-full bg-brand-dark w-7 h-7 flex  items-center justify-center text-brand-beige">
               3
             </span> Time and Servings
           </h2>
@@ -262,7 +263,7 @@ export default function RecipeConfiguration() {
                 >
                   +
                 </button>
-                <span className="text-xs text-[#7A8F63] ml-auto">People</span>
+                <span className="text-xs text-brand-accent ml-auto font-bold">People</span>
               </div>
             </div>
 
@@ -339,12 +340,7 @@ export default function RecipeConfiguration() {
 
 /* ---------- Small Components ---------- */
 
-interface RowProps {
-  name: string;
-  qty: string;
-  unit: string;
-  onDelete: () => void;
-}
+
 
 function Row({ name, qty, unit, onDelete }: RowProps) {
   return (
@@ -361,12 +357,7 @@ function Row({ name, qty, unit, onDelete }: RowProps) {
   );
 }
 
-interface OptionProps {
-  label: string;
-  active?: boolean;
-  icon?: string;
-  onClick?: () => void;
-}
+
 
 function Cuisine({ label, active, icon, onClick }: OptionProps) {
   return (

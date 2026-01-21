@@ -33,5 +33,17 @@ export interface RecipeGenerationResponse {
     user_id: string;
 }
 
+interface RowProps {
+  name: string;
+  qty: string;
+  unit: string;
+  onDelete: () => void;
+}
+interface OptionProps {
+  label: string;
+  active?: boolean;
+  icon?: string;
+  onClick?: () => void;
+}
 // Recipe Details Types
 
