@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useAuth } from '../../features/auth/hooks/useAuth';
-import Logo from '../../assets/cooker.svg';
 import LogOutModal from '../modal/LogOutModal';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,7 +8,7 @@ interface HeaderProps {
 }
 
 const Header = ({ onMenuClick }: HeaderProps) => {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
@@ -41,8 +40,13 @@ const Header = ({ onMenuClick }: HeaderProps) => {
         </div>
 
         <div className="flex items-center gap-4">
-          <button className="w-12 h-12 rounded-full bg-brand-accent flex items-center justify-center hover:bg-brand-dark hover:text-white transition-colors group cursor-pointer">
-            <span className="material-symbols-outlined text-[20px] text-brand-dark group-hover:text-white transition-colors">face_4</span>
+          <button className="group flex items-center h-12 bg-brand-accent hover:bg-brand-dark rounded-full transition-all duration-500 ease-in-out max-w-[48px] hover:max-w-[200px] cursor-pointer overflow-hidden shadow-sm hover:shadow-md">
+            <div className="w-12 h-12 flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[24px] text-brand-dark group-hover:text-white transition-colors duration-300">face_4</span>
+            </div>
+            <span className="text-white font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pr-4">
+              {user?.username || "User"}
+            </span>
           </button>
           <button
             onClick={handleLogoutClick}

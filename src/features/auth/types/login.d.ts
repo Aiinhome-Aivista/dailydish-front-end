@@ -8,4 +8,5 @@ export interface LoginResponse {
     status: string;
     token: string;
     user_id: string;
+    username: string;
 }
