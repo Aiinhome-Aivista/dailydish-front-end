@@ -92,7 +92,7 @@ export default function RecipeDetails() {
       <div className="h-full flex flex-col items-center justify-center">
         <p className="text-xl text-[#7A8F63] font-bold mb-4">Recipe details not found.</p>
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/ai-menu")}
           className="bg-brand-accent text-white px-6 py-2 rounded-xl font-bold"
         >
           Go Back
@@ -117,7 +117,7 @@ export default function RecipeDetails() {
       <div className="mb-6">
         <button
           onClick={() => navigate(-1)}
-          className="mb-4 flex items-center gap-2 text-brand-accent font-bold hover:text-brand-dark transition-colors"
+          className="mb-4 flex items-center gap-2 text-brand-accent font-bold hover:text-brand-dark transition-colors cursor-pointer"
         >
           <ArrowLeft size={20} />
           Back to Menu

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ArrowLeft } from "lucide-react";
 import { pantryService } from "../api/saveMenuService";
 import type { SavedMenuItem } from "../types/saveMenu";
 import broccoliImage from "../../../assets/Broccolli_image.svg";
@@ -34,6 +34,7 @@ const SavedRecipes = () => {
             const response = await pantryService.deleteMenu({ menu_name: selectedRecipe });
             if (response && response.status === 'success') {
                 showToast("success", "Deleted", response.message || "Recipe deleted successfully");
+                navigate("/saved-recipes");
                 setRecipes(prev => prev.filter(r => r.menu_name !== selectedRecipe));
                 setIsDeleteModalOpen(false);
             } else {
@@ -44,7 +45,7 @@ const SavedRecipes = () => {
             showToast("error", "Error", "An error occurred while deleting the recipe");
         } finally {
             setIsDeleting(false);
-            // Don't clear selectedRecipe immediately to prevent UI jump during modal close animation
+
         }
     };
 
@@ -73,13 +74,22 @@ const SavedRecipes = () => {
     return (
         <div className="h-full">
             {/* Header Section */}
-            <div className="max-w-full mb-8">
-                <h1 className="text-3xl font-bold text-brand-dark">
-                    Saved Recipes
-                </h1>
-                <p className="text-sm text-brand-accent font-medium">
-                    Your favorite dishes
-                </p>
+            <div className="max-w-full flex items-start gap-2 mb-4">
+                <button
+                    onClick={() => navigate('/ai-menu')}
+                    className="mt-1 -ml-1 hover:bg-black/5 rounded-full text-brand-dark transition-colors cursor-pointer"
+                   
+                >
+                    <ArrowLeft size={24} />
+                </button>
+                <div>
+                    <h1 className="text-2xl font-bold text-brand-dark leading-tight">
+                        Saved Recipes
+                    </h1>
+                    <p className="text-sm text-brand-accent font-medium mt-1">
+                        Your favorite dishes
+                    </p>
+                </div>
             </div>
 
             {/* Grid Section */}
