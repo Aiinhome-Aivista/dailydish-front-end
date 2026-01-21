@@ -8,7 +8,15 @@ import FirstSection from '../components/FirstSection';
 
 function LandingPage() {
   return (
-    <div className="h-full w-full">
+    // Added 'animate-fade-in' to the main wrapper
+    <div className="h-full w-full animate-[fadeIn_0.5s_ease-out]">
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+      `}</style>
+      
       <NavBar />
       <main>
         <FirstSection/>
