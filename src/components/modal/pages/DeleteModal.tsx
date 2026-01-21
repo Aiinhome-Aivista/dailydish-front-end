@@ -52,8 +52,8 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-[#4A5D3B]/10">
           <div className="flex items-center gap-3 text-[#4A5D3B]">
-            <div className="p-2 bg-red-100 rounded-full">
-              <AlertTriangle className="w-5 h-5 text-red-500" />
+            <div className="p-2 bg-brand-beige rounded-full">
+              <AlertTriangle className="w-5 h-5 text-brand-accent" />
             </div>
             <h3 className="text-xl font-bold">{title}</h3>
           </div>
@@ -83,14 +83,14 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
           <button
             onClick={onClose}
             disabled={isLoading}
-            className="flex-1 px-4 py-3 rounded-xl font-bold text-[#4A5D3B] bg-[#4A5D3B]/5 hover:bg-[#4A5D3B]/10 transition-colors disabled:opacity-50"
+            className="flex-1 px-4 py-3 rounded-xl font-bold text-[#4A5D3B] bg-[#4A5D3B]/5 hover:bg-[#4A5D3B]/10 transition-colors disabled:opacity-50 cursor-pointer"
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
             disabled={isLoading}
-            className="flex-1 px-4 py-3 rounded-xl font-bold text-[#FBF6E9] bg-red-500 hover:bg-red-600 shadow-lg shadow-red-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="flex-1 px-4 py-3 rounded-xl font-bold text-brand-beige bg-brand-dark hover:bg-brand-accent shadow-lg shadow-red-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
           >
             {isLoading ? (
               <>

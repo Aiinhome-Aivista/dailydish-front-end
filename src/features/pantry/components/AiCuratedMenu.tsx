@@ -80,7 +80,7 @@ const AiMenuDashboard: React.FC = () => {
       <div className="max-w-full mb-8">
         <div className="flex items-center gap-2">
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/recipe-configuration")}
             className=" rounded-xl font-bold cursor-pointer"
           >
             <span className="material-symbols-outlined text-brand-dark">
