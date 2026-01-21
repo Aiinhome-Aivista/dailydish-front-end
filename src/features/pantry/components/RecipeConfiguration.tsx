@@ -67,7 +67,7 @@ export default function RecipeConfiguration() {
     setLoading(true);
     try {
       const payload: RecipeGenerationRequest = {
-        ingredients: ingredients.map(i => ({ name: i.name, qty: `${i.qty}${i.unit}` })), // Naive qty formatting, can be improved
+        ingredients: ingredients.map(i => ({ name: i.name, qty: `${i.qty}${i.unit}` })),
         cuisine_preference: cuisine,
         number_of_people: servings,
         cooking_time: time,
@@ -162,6 +162,7 @@ export default function RecipeConfiguration() {
                 >
                   <option value="Unit">Unit</option>
                   <option value="Grams">Grams</option>
+                    <option value="Kg">Kg</option>
                   <option value="Cloves">Cloves</option>
                   <option value="Pieces">Pieces</option>
                   <option value="Cups">Cups</option>
@@ -186,7 +187,7 @@ export default function RecipeConfiguration() {
                   <div className="col-span-3">UNIT</div>
                   <div className="col-span-1 text-right">ACTION</div>
                 </div>
-                <div className="">
+                <div className="left">
                   {ingredients.map((ing) => (
                     <Row
                       key={ing.id}
@@ -283,6 +284,11 @@ export default function RecipeConfiguration() {
                   active={time === "30m"}
                   label="30m"
                   onClick={() => setTime("30m")}
+                />
+                <Time
+                  active={time === "45m"}
+                  label="45m"
+                  onClick={() => setTime("45m")}
                 />
                 <Time
                   active={time === "1h+"}

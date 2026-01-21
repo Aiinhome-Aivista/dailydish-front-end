@@ -86,9 +86,19 @@ const AiMenuDashboard: React.FC = () => {
     <div className="h-full">
       {/* Header Section */}
       <div className="max-w-full mb-8">
-        <h1 className="text-3xl font-bold text-brand-dark">
-          Your AI-Curated Menu
-        </h1>
+        <div className="flex items-center gap-2 mb-4">
+          <button
+            onClick={() => navigate(-1)}
+            className=" rounded-xl font-bold"
+          >
+        <span className="material-symbols-outlined">
+arrow_back
+</span>
+          </button>
+          <h1 className="text-3xl font-bold text-brand-dark">
+            Your AI-Curated Menu
+          </h1>
+        </div>
         <p className="text-sm text-brand-accent font-medium">
           Based on:{" "}
           <span className="">Chicken , Broccoli, Garlic, Oriental Cuisine</span>
