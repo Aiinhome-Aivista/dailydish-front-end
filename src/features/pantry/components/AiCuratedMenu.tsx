@@ -67,7 +67,8 @@ const AiMenuDashboard: React.FC = () => {
         setSavedRecipeIds(prev => new Set(prev).add(recipe.id));
       } else {
         console.error("Failed to save recipe", error);
-        showToast("error", "Error", "An error occurred while saving the recipe.");
+        const errorMessage = (error as any).response?.data?.message || (error as any).message || "An error occurred while saving the recipe.";
+        showToast("error", "Error", errorMessage);
       }
     } finally {
       setSavingId(null);
