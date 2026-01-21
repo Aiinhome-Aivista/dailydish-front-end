@@ -167,7 +167,7 @@ export default function RecipeConfiguration() {
 
               <button
                 onClick={addIngredient}
-                className="col-span-1 bg-brand-accent text-brand-dark rounded-lg text-sm font-medium py-2"
+                className="col-span-1 bg-brand-accent text-brand-dark rounded-lg text-sm font-medium py-2 cursor-pointer"
               >
                 + Add
               </button>
@@ -327,7 +327,7 @@ export default function RecipeConfiguration() {
           <button
             onClick={handleGenerate}
             disabled={loading}
-            className={`bg-brand-accent text-brand-dark px-6 py-2 rounded-lg text-sm font-bold ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`bg-brand-accent text-brand-dark px-6 py-2 rounded-lg text-sm font-bold cursor-pointer ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             {loading ? "Generating..." : "Generate Now"}
           </button>

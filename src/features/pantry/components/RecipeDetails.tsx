@@ -96,7 +96,7 @@ export default function RecipeDetails() {
         <p className="text-xl text-[#7A8F63] font-bold mb-4">Recipe details not found.</p>
         <button
           onClick={() => navigate(-1)}
-          className="bg-[#95B974] text-white px-6 py-2 rounded-xl font-bold"
+          className="bg-brand-accent text-white px-6 py-2 rounded-xl font-bold"
         >
           Go Back
         </button>
@@ -110,11 +110,9 @@ export default function RecipeDetails() {
     ...recipeData.ingredients_analysis.missing.map(i => ({ ...i, available: false }))
   ];
 
-  // Combine steps for display
-  const allSteps = [
-    ...recipeData.steps.preparation.map((desc) => ({ title: "Preparation", desc })),
-    ...recipeData.steps.cooking.map((desc) => ({ title: "Cooking", desc }))
-  ];
+  // Separate steps for display
+  const cookingSteps = recipeData.steps.cooking || [];
+  const prepSteps = recipeData.steps.preparation || [];
 
   return (
     <div className="h-full text-brand-dark">
@@ -145,8 +143,8 @@ export default function RecipeDetails() {
               />
             </div>
 
-            <div className="absolute bottom-0 left-0 p-8 w-full bg-gradient-to-t from-black/80 to-transparent text-white">
-              <h2 className="text-3xl font-bold mb-2 text-[#FAF1E4]">{recipeData.menu_name}</h2>
+            <div className="absolute bottom-0 left-0 p-8 w-full bg-linear-to-t from-black/80 to-transparent text-white">
+              <h2 className="text-3xl font-bold mb-2 text-brand-beige">{recipeData.menu_name}</h2>
               <div className="flex gap-4 text-sm font-medium">
                 <span className="flex items-center gap-1">{recipeData.time_breakdown.prep_time}m prep</span>
                 <span className="flex items-center gap-1">{recipeData.time_breakdown.cook_time}m cook</span>
@@ -159,11 +157,11 @@ export default function RecipeDetails() {
             <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit">
               <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#43533414]">
                 <h3 className="text-xl font-bold">Ingredients</h3>
-                <div className="flex items-center bg-[#CEDEBD] rounded-lg p-1">
+                <div className="flex items-center bg-brand-light rounded-lg p-1">
                   <span className="text-xs font-bold px-2">Servings:</span>
                   <button
                     onClick={() => setServings(Math.max(1, servings - 1))}
-                    className="w-6 h-6 flex items-center justify-center bg-[#FAF1E4] rounded text-sm hover:bg-white"
+                    className="w-6 h-6 flex items-center justify-center bg-brand-beige rounded text-sm hover:bg-white"
                   >-</button>
                   <span className="w-8 text-center font-bold">{servings}</span>
                   <button
@@ -193,7 +191,7 @@ export default function RecipeDetails() {
               disabled={saving || isSaved}
               className={`w-full py-2 rounded-xl font-bold text-lg shadow-md transition-colors mt-6 flex items-center justify-center gap-2 ${isSaved
                 ? 'bg-[#E8F5E9] text-[#2E7D32] border border-[#2E7D32]'
-                : 'bg-[#95B974] hover:bg-[#7A8F63] text-[#FAF1E4]'
+                : 'bg-brand-accent hover:bg-[#7A8F63] text-brand-beige'
                 }`}
             >
               {saving ? (
@@ -239,7 +237,7 @@ export default function RecipeDetails() {
                   <span>{recipeData.nutrition.protein}</span>
                 </div>
                 <div className="h-3 bg-[#CEDEBD36] rounded-full overflow-hidden">
-                  <div className="h-full bg-[#95B974] w-[30%]"></div>
+                  <div className="h-full bg-brand-accent w-[30%]"></div>
                 </div>
               </div>
               <div>
@@ -248,7 +246,7 @@ export default function RecipeDetails() {
                   <span>{recipeData.nutrition.carbohydrates}</span>
                 </div>
                 <div className="h-3 bg-[#CEDEBD36] rounded-full overflow-hidden">
-                  <div className="h-full bg-[#95B974] w-[65%]"></div>
+                  <div className="h-full bg-brand-accent w-[65%]"></div>
                 </div>
               </div>
               <div>
@@ -257,30 +255,61 @@ export default function RecipeDetails() {
                   <span>{recipeData.nutrition.fat}</span>
                 </div>
                 <div className="h-3 bg-[#CEDEBD36] rounded-full overflow-hidden">
-                  <div className="h-full bg-[#95B974] w-[20%]"></div>
+                  <div className="h-full bg-brand-accent w-[20%]"></div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Preparation Steps */}
-          <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit">
-            <h3 className="text-xl font-bold pb-4">Preparation Steps</h3>
+          {/* Suitability */}
+          {recipeData.suitability && recipeData.suitability.length > 0 && (
+            <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-6">
+              <h3 className="text-lg font-bold mb-3">Suitability</h3>
+              <div className="flex flex-wrap gap-2">
+                {recipeData.suitability.map((item, idx) => (
+                  <span key={idx} className="bg-brand-accent text-brand-beige px-3 py-1 rounded-full text-sm font-bold shadow-sm">
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
 
+          {/* Cooking Steps */}
+          <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit">
+            <h3 className="text-xl font-bold pb-4">Cooking Steps</h3>
             <div className="space-y-4">
-              {allSteps.map((step, idx) => (
+              {cookingSteps.map((step, idx) => (
                 <div key={idx} className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#4A5D3B] text-[#FAF1E4] flex items-center justify-center font-bold text-sm">
+                  <div className="shrink-0 w-8 h-8 rounded-full bg-[#4A5D3B] text-brand-beige flex items-center justify-center font-bold text-sm">
                     {idx + 1}
                   </div>
                   <div>
-                    <h4 className="font-bold text-lg">{step.title}</h4>
-                    <p className="text-sm leading-relaxed">{step.desc}</p>
+                    <p className="text-sm leading-relaxed">{step}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
+
+          {/* Preparation Steps */}
+          {prepSteps.length > 0 && (
+            <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit">
+              <h3 className="text-xl font-bold pb-4">Preparation Steps</h3>
+              <div className="space-y-4">
+                {prepSteps.map((step, idx) => (
+                  <div key={idx} className="flex gap-4">
+                    <div className="shrink-0 w-8 h-8 rounded-full bg-brand-accent text-brand-beige flex items-center justify-center font-bold text-sm">
+                      {idx + 1}
+                    </div>
+                    <div>
+                      <p className="text-sm leading-relaxed">{step}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
