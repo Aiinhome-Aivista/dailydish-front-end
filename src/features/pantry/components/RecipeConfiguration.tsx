@@ -78,11 +78,11 @@ export default function RecipeConfiguration() {
         showToast("success", "Success", response.message || "Recipes generated successfully!");
         navigate('/ai-menu', { state: { recipes: response.data.recipes } });
       } else {
-        console.error("Failed to generate recipes");
-        showToast("error", "Error", "Failed to generate recipes");
+        showToast("error", "Error", response?.message || "An error occurred.");
       }
-    } catch (error) {
-      console.error("Error generating recipes:", error);
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || error.message || "Something went wrong!";
+      showToast("error", "Error", errorMessage);
     } finally {
       setLoading(false);
     }
