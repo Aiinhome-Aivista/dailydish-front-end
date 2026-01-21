@@ -50,4 +50,28 @@ export const pantryService = {
             throw error;
         }
     },
+    deleteMenu: async (data: { menu_name: string }) => {
+        try {
+            const response = await axiosApi<{ status: string; message: string }>(API_ENDPOINTS.DELETESAVEDRECIPE, {
+                method: 'POST',
+                data
+            });
+            return response;
+        } catch (error) {
+            console.error('Error deleting menu:', error);
+            throw error;
+        }
+    },
+    deleteMeal: async (data: { menu_name: string }) => {
+        try {
+            const response = await axiosApi<{ status: string; message: string }>(API_ENDPOINTS.DELETESAVEDMEAL, {
+                method: 'POST',
+                data
+            });
+            return response;
+        } catch (error) {
+            console.error('Error deleting meal:', error);
+            throw error;
+        }
+    },
 };

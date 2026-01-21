@@ -41,6 +41,10 @@ export interface SaveMealRequest {
     details: MealDetails;
 }
 
+export interface DeleteMealRequest {
+    menu_name: string;
+}
+
 export interface SaveMealResponse {
     status: string;
     message: string;

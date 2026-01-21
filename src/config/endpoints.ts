@@ -11,4 +11,7 @@ export const API_ENDPOINTS = {
   GETSAVEDMENU: `${BASE_URL}/get-save-menu`,
   SAVEMEAL: `${BASE_URL}/save-meal`,
   GETSAVEDMEAL: `${BASE_URL}/get-save-meal`,
+  DELETESAVEDRECIPE: `${BASE_URL}/delete-saved-recipe`,
+  DELETESAVEDMEAL: `${BASE_URL}/delete-saved-meal`,
+
 } as const;

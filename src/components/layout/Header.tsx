@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../features/auth/hooks/useAuth';
-import LogOutModal from '../modal/LogOutModal';
+import LogOutModal from '../modal/pages/LogOutModal';
 import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {

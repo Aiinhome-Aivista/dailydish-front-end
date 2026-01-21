@@ -3,11 +3,46 @@ import { pantryService } from '../api/saveMenuService';
 import type { SavedMealItem } from '../types/saveMeal';
 import CuisineLoader from '../../../components/feedback/DailyDishLoader';
 import { Check } from 'lucide-react';
-import broccoliImage from '../../../assets/Broccolli_image.svg';
+import defaultRecipeImage from "../../../assets/Recipe_default_image.jpeg";
+
+import { useToast } from '../../../shared/context/ToastContext';
+import DeleteModal from '../../../components/modal/pages/DeleteModal';
 
 const MealPlan = () => {
+    const { showToast } = useToast();
     const [meals, setMeals] = useState<SavedMealItem[]>([]);
     const [loading, setLoading] = useState(true);
+
+    // Modal State
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [selectedMeal, setSelectedMeal] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    const confirmDelete = (menu_name: string) => {
+        setSelectedMeal(menu_name);
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleDelete = async () => {
+        if (!selectedMeal) return;
+
+        try {
+            setIsDeleting(true);
+            const response = await pantryService.deleteMeal({ menu_name: selectedMeal });
+            if (response && response.status === 'success') {
+                showToast("success", "Deleted", response.message || "Meal deleted successfully");
+                setMeals(prev => prev.filter(m => m.details.menu_name !== selectedMeal));
+                setIsDeleteModalOpen(false);
+            } else {
+                showToast("error", "Error", "Failed to delete meal");
+            }
+        } catch (error) {
+            console.error("Failed to delete meal", error);
+            showToast("error", "Error", "An error occurred while deleting the meal");
+        } finally {
+            setIsDeleting(false);
+        }
+    };
 
     useEffect(() => {
         const fetchSavedMeal = async () => {
@@ -34,7 +69,7 @@ const MealPlan = () => {
 
     if (!meals || meals.length === 0) {
         return (
-            <div className="h-full flex flex-col items-center justify-center">
+            <div className="h-full flex flex-col items-center justify-center text-center">
                 <p className="text-xl text-[#7A8F63] font-bold mb-4">No meal plan found.</p>
                 <p className="text-brand-accent">Add recipes to your meal planner to see them here.</p>
             </div>
@@ -66,9 +101,20 @@ const MealPlan = () => {
 
                 return (
                     <div key={mealItem.id} className="border-b border-[#43533414] pb-12 last:border-0 last:pb-0">
-                        <div className="mb-6">
-                            <h2 className="text-2xl font-bold">{meal.menu_name}</h2>
-                            <p className="text-sm text-brand-accent">Saved at: {mealItem.saved_at}</p>
+                        <div className="mb-6 flex justify-between items-start">
+                            <div>
+                                <h2 className="text-2xl font-bold">{meal.menu_name}</h2>
+                                <p className="text-sm text-brand-accent">Saved at: {mealItem.saved_at}</p>
+                            </div>
+                            <button
+                                onClick={() => confirmDelete(meal.menu_name)}
+                                className="p-2 hover:bg-red-100 rounded-full transition-colors group/delete cursor-pointer"
+                                title="Delete Meal"
+                            >
+                                <span className="material-symbols-outlined text-red-400 group-hover/delete:text-red-600">
+                                    delete
+                                </span>
+                            </button>
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -78,7 +124,7 @@ const MealPlan = () => {
                                 <div className="relative h-60 md:h-90 rounded-3xl overflow-hidden group shadow-lg">
                                     <div className="absolute inset-0 bg-slate-800 ">
                                         <img
-                                            src={broccoliImage}
+                                            src={defaultRecipeImage}
                                             alt={meal.menu_name}
                                             className="w-full h-full object-cover opacity-60"
                                         />
@@ -225,6 +271,16 @@ const MealPlan = () => {
                     </div>
                 );
             })}
+
+            <DeleteModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleDelete}
+                title="Delete Meal"
+                message={`Are you sure you want to delete "${selectedMeal}"?`}
+                description="This action cannot be undone. The meal will be permanently removed from your meal plan."
+                isLoading={isDeleting}
+            />
         </div>
     );
 };

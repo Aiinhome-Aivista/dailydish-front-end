@@ -3,20 +3,13 @@ import { Heart, ChevronRight, Loader2 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { GeneratedRecipe, } from "../types/recipeConfiguration";
 import type { SaveRecipeRequest } from "../types/saveMenu";
-import brocooli from "../../../assets/Broccolli_image.svg";
+import defaultRecipeImage from "../../../assets/Recipe_default_image.jpeg";
 import { pantryService } from "../api/saveMenuService";
 import { useToast } from "../../../shared/context/ToastContext";
+import type { Recipe } from "../types/aiCuratedMenu";
 import { AxiosError } from "axios";
 
-// Define the shape of a recipe item
-interface Recipe {
-  id: number;
-  title: string;
-  description: string;
-  time: string;
-  image: string;
-  tags?: string[];
-}
+
 
 const AiMenuDashboard: React.FC = () => {
   const location = useLocation();
@@ -30,22 +23,14 @@ const AiMenuDashboard: React.FC = () => {
   useEffect(() => {
     if (location.state && location.state.recipes) {
       const generatedRecipes: GeneratedRecipe[] = location.state.recipes;
-      // const mappedRecipes: Recipe[] = generatedRecipes.map((rec, index) => ({
-      //   id: index + 1,
-      //   title: rec.menu_name,
-      //   description: rec.description,
-      //   time: rec.cooking_time,
-      //   image: `${rec.image_url}&cache=${index}`,
-      // }));
 
       const mappedRecipes: Recipe[] = generatedRecipes.map((rec, index) => {
-        const seed = Date.now() + index; // 🔑 unique seed per recip
         return {
           id: index + 1,
           title: rec.menu_name,
           description: rec.description,
           time: rec.cooking_time,
-          image: `${rec.image_url.replace(/seed=\d+/, `seed=${seed}`)}`,
+          image: defaultRecipeImage,
         };
       });
       setRecipes(mappedRecipes);
@@ -79,7 +64,7 @@ const AiMenuDashboard: React.FC = () => {
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 409) {
         showToast("info", "Info", "This recipe is already in your saved list.");
-        setSavedRecipeIds(prev => new Set(prev).add(recipe.id)); // Mark as saved anyway
+        setSavedRecipeIds(prev => new Set(prev).add(recipe.id));
       } else {
         console.error("Failed to save recipe", error);
         showToast("error", "Error", "An error occurred while saving the recipe.");
@@ -93,7 +78,7 @@ const AiMenuDashboard: React.FC = () => {
     <div className="h-full">
       {/* Header Section */}
       <div className="max-w-full mb-8">
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => navigate(-1)}
             className=" rounded-xl font-bold cursor-pointer"
@@ -122,7 +107,7 @@ const AiMenuDashboard: React.FC = () => {
               className={`
                 group relative flex flex-col p-4 rounded-4xl cursor-pointer transition-all duration-300
                 ${selectedId === recipe.id
-                  ? "bg-[#d2e4c4] ring-[3px] ring-[#95B974] shadow-lg scale-[1.02]"
+                  ? "bg-[#d2e4c4] ring-[3px] ring-brand-accent shadow-lg scale-[1.02]"
                   : "bg-[#d2e4c4] hover:shadow-md hover:scale-[1.01]"
                 }
 
@@ -135,7 +120,7 @@ const AiMenuDashboard: React.FC = () => {
                   loading="lazy"
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    e.currentTarget.src = brocooli;
+                    e.currentTarget.src = defaultRecipeImage;
                   }}
                 />
               </div>

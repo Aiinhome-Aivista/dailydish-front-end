@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Check, ArrowLeft, Loader2, Heart } from 'lucide-react';
-import broccoliImage from '../../../assets/Broccolli_image.svg';
+import defaultRecipeImage from '../../../assets/Recipe_default_image.jpeg';
 import axiosApi from '../../../lib/axiosApi';
 import { API_ENDPOINTS } from '../../../config/endpoints';
 import { pantryService } from '../api/saveMenuService';
@@ -133,10 +133,9 @@ export default function RecipeDetails() {
           <div className="relative h-60 md:h-90 rounded-3xl overflow-hidden group shadow-lg">
             <div className="absolute inset-0 bg-slate-800 ">
               <img
-                src={image_url || broccoliImage} // Use passed image or fallback
+                src={defaultRecipeImage} // Always use default image
                 alt={recipeData.menu_name}
                 className="w-full h-full object-cover opacity-60"
-                onError={(e) => { e.currentTarget.src = broccoliImage; }}
               />
             </div>
 

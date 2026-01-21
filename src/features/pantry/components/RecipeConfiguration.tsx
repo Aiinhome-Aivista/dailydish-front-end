@@ -6,15 +6,17 @@ import dinner_dining from "../../../assets/dinner_dining.svg";
 import yoshoku from "../../../assets/yoshoku.svg";
 import { generateRecipes } from "../api/recipeConfigurationService";
 import { useNavigate } from "react-router-dom";
-import type { RecipeGenerationRequest, Ingredient} from "../types/recipeConfiguration";
+import type { RecipeGenerationRequest, Ingredient } from "../types/recipeConfiguration";
 import CuisineLoader from '../../../components/feedback/DailyDishLoader';
 import type { RowProps, OptionProps } from "../types/recipeConfiguration";
+import { useToast } from "../../../shared/context/ToastContext";
 
 
 
 
 export default function RecipeConfiguration() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [servings, setServings] = useState(4);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [name, setName] = useState("");
@@ -73,10 +75,11 @@ export default function RecipeConfiguration() {
       const response = await generateRecipes(payload);
 
       if (response && response.status === "success") {
+        showToast("success", "Success", response.message || "Recipes generated successfully!");
         navigate('/ai-menu', { state: { recipes: response.data.recipes } });
       } else {
         console.error("Failed to generate recipes");
-        // Optionally handle error UI
+        showToast("error", "Error", "Failed to generate recipes");
       }
     } catch (error) {
       console.error("Error generating recipes:", error);
@@ -117,9 +120,8 @@ export default function RecipeConfiguration() {
             <div className="grid grid-cols-12 gap-3 items-start">
               <div className="col-span-6 flex flex-col gap-1">
                 <input
-                  className={`w-full rounded-lg px-4 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${
-                    errors.name ? "border border-red-500" : ""
-                  }`}
+                  className={`w-full rounded-lg px-4 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${errors.name ? "border border-red-500" : ""
+                    }`}
                   placeholder="e.g. Fresh Atlantic Salmon"
                   value={name}
                   onChange={(e) => {
@@ -132,9 +134,8 @@ export default function RecipeConfiguration() {
 
               <div className="col-span-2 flex flex-col gap-1">
                 <input
-                  className={`w-full rounded-lg px-4 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${
-                    errors.qty ? "border border-red-500" : ""
-                  }`}
+                  className={`w-full rounded-lg px-4 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${errors.qty ? "border border-red-500" : ""
+                    }`}
                   placeholder="0"
                   value={qty}
                   onChange={(e) => {
@@ -147,9 +148,8 @@ export default function RecipeConfiguration() {
 
               <div className="col-span-3 flex flex-col gap-1">
                 <select
-                  className={`w-full rounded-lg px-3 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${
-                    errors.unit ? "border border-red-500" : ""
-                  }`}
+                  className={`w-full rounded-lg px-3 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${errors.unit ? "border border-red-500" : ""
+                    }`}
                   value={unit}
                   onChange={(e) => {
                     setUnit(e.target.value);
@@ -158,7 +158,7 @@ export default function RecipeConfiguration() {
                 >
                   <option value="Unit">Unit</option>
                   <option value="Grams">Grams</option>
-                    <option value="Kg">Kg</option>
+                  <option value="Kg">Kg</option>
                   <option value="Cloves">Cloves</option>
                   <option value="Pieces">Pieces</option>
                   <option value="Cups">Cups</option>

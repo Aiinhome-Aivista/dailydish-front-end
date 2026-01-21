@@ -5,6 +5,10 @@ export interface SaveRecipeRequest {
     image_url: string;
 }
 
+export interface DeleteRecipeRequest {
+    menu_name: string;
+}
+
 export interface SaveRecipeResponse {
     message: string;
     status: string;

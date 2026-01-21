@@ -28,23 +28,21 @@ function Login() {
     setLocalError(null);
     try {
       await login({ email, password });
-   
       showToast('success', 'Success', 'Login Successful!');
-      // navigate('/recipe-configuration');
-        navigate('/recipe-details');
+      navigate('/recipe-configuration');
     } catch (err) {
 
     }
   };
 
   return (
-    <div className='bg-[#435334] h-screen w-full flex justify-center items-center p-4'>
+    <div className='bg-brand-dark h-screen w-full flex justify-center items-center p-4'>
       <div className='w-full max-w-md rounded-3xl border-3 border-[#FFFFFF40] bg-white/10 p-8 shadow-2xl backdrop-blur-lg flex flex-col items-center gap-6'>
 
         {/* Header */}
         <div className='text-center'>
           <img src={logo} alt="Logo" className="w-18 h-18 mx-auto mb-4" />
-          <h1 className='text-[#FAF1E4] text-3xl font-bold mb-2'>DailyDish</h1>
+          <h1 className='text-brand-beige text-3xl font-bold mb-2'>DailyDish</h1>
           <p className='text-white/80 text-sm'>Everyday ingredients. Everyday magic</p>
         </div>
 
