@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, Lock } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import logo from '../../../assets/icons/Recipe logo.svg';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
@@ -11,6 +11,7 @@ function Login() {
   const { login, isLoading, error } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -60,13 +61,20 @@ function Login() {
           <div className='relative group'>
             <Lock className='absolute left-4 top-1/2 -translate-y-1/2 text-white/60 group-focus-within:text-white transition-colors' size={20} />
             <input
-              type='password'
+              type={showPassword ? 'text' : 'password'}
               placeholder='Password'
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className='w-full bg-white/5 border border-white/30 rounded-xl py-3.5 pl-12 pr-4 text-white placeholder-white/50 focus:outline-none focus:border-white/80 focus:bg-white/10 transition-all'
+              className='w-full bg-white/5 border border-white/30 rounded-xl py-3.5 pl-12 pr-12 text-white placeholder-white/50 focus:outline-none focus:border-white/80 focus:bg-white/10 transition-all'
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors cursor-pointer"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
           </div>
 
           {/* Actions */}
