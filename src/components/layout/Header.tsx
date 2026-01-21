@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../../features/auth/hooks/useAuth';
 import Logo from '../../assets/cooker.svg';
 import LogOutModal from '../modal/LogOutModal';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -9,6 +10,7 @@ interface HeaderProps {
 
 const Header = ({ onMenuClick }: HeaderProps) => {
   const { logout } = useAuth();
+  const navigate = useNavigate();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const handleLogoutClick = () => {
@@ -18,6 +20,7 @@ const Header = ({ onMenuClick }: HeaderProps) => {
   const handleConfirmLogout = () => {
     setIsLogoutModalOpen(false);
     logout();
+    navigate("/");
   };
 
   const handleCloseModal = () => {

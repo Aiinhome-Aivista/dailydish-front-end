@@ -35,7 +35,7 @@ const FirstSection = () => {
 
         <button
           onClick={() => navigate("/login")}
-          className="absolute right-2 top-2 bottom-2 bg-brand-dark text-[#FAF1E4] px-6 rounded-md font-bold flex items-center gap-2 hover:bg-opacity-90 transition-all"
+          className="absolute right-2 top-2 bottom-2 bg-brand-dark text-[#FAF1E4] px-6 rounded-md font-bold flex items-center gap-2 hover:bg-opacity-90 transition-all cursor-pointer"
         >
           Generate <Sparkles size={16} />
         </button>

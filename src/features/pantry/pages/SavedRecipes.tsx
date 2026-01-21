@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { pantryService } from "../api/saveMenuService";
-import type { SavedMenuItem } from "../types/recipeTypes";
+import type { SavedMenuItem } from "../types/saveMenu";
 import broccoliImage from "../../../assets/Broccolli_image.svg";
 import CuisineLoader from "../../../components/feedback/DailyDishLoader";
 
@@ -17,7 +17,7 @@ const SavedRecipes = () => {
                 setLoading(true);
                 const response = await pantryService.getSavedMenus();
                 if (response && response.status === 'success') {
-                    setRecipes(response.saved_menus);
+                    setRecipes(response.data || []);
                 }
             } catch (error) {
                 console.error("Failed to fetch saved recipes", error);
@@ -50,7 +50,7 @@ const SavedRecipes = () => {
                 {recipes.length > 0 ? (
                     recipes.map((recipe) => (
                         <div
-                            key={recipe._id}
+                            key={recipe.id}
                             onClick={() => navigate('/recipe-details', {
                                 state: {
                                     menu_name: recipe.menu_name,

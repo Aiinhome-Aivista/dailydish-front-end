@@ -1,21 +1,26 @@
 
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Check, ArrowLeft, Loader2 } from 'lucide-react';
+import { Check, ArrowLeft, Loader2, Heart } from 'lucide-react';
 import broccoliImage from '../../../assets/Broccolli_image.svg';
 import axiosApi from '../../../lib/axiosApi';
 import { API_ENDPOINTS } from '../../../config/endpoints';
-import type { RecipeDetailsResponse, RecipeDetailData,  } from '../types/recipeDetails';
-import type { SaveRecipeRequest, SaveRecipeResponse } from '../types/saveMenu';
+import { pantryService } from '../api/saveMenuService';
+import { useToast } from '../../../shared/context/ToastContext';
+import { AxiosError } from 'axios';
+import type { RecipeDetailsResponse, RecipeDetailData, } from '../types/recipeDetails';
+import type { SaveRecipeRequest } from '../types/saveMenu';
 import CuisineLoader from '../../../components/feedback/DailyDishLoader';
 
 
 export default function RecipeDetails() {
+  const { showToast } = useToast();
   const [servings, setServings] = useState(4);
   const location = useLocation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const [recipeData, setRecipeData] = useState<RecipeDetailData | null>(null);
 
   const { menu_name, cooking_time, description, image_url } = location.state || {};
@@ -60,20 +65,22 @@ export default function RecipeDetails() {
         image_url: image_url || ""
       };
 
-      const response = await axiosApi<SaveRecipeResponse>(API_ENDPOINTS.SAVEMENU, {
-        method: 'POST',
-        data: payload
-      });
+      const response = await pantryService.saveMenu(payload);
 
       if (response && response.status === 'success') {
-        alert("Recipe saved successfully!"); // Simple feedback
+        showToast("success", "Success", "Recipe saved successfully!");
+        setIsSaved(true);
       } else {
-        alert("Failed to save recipe.");
+        showToast("error", "Error", "Failed to save recipe.");
       }
-
     } catch (error) {
-      console.error("Failed to save recipe", error);
-      alert("An error occurred while saving the recipe.");
+      if (error instanceof AxiosError && error.response?.status === 409) {
+        showToast("info", "Info", "Recipe is already saved.");
+        setIsSaved(true);
+      } else {
+        console.error("Failed to save recipe", error);
+        showToast("error", "Error", "An error occurred while saving the recipe.");
+      }
     } finally {
       setSaving(false);
     }
@@ -183,11 +190,25 @@ export default function RecipeDetails() {
 
             <button
               onClick={handleSaveRecipe}
-              disabled={saving}
-              className="w-full bg-[#95B974] hover:bg-[#7A8F63] text-[#FAF1E4] py-2 rounded-xl font-bold text-lg shadow-md transition-colors mt-6 flex items-center justify-center gap-2"
+              disabled={saving || isSaved}
+              className={`w-full py-2 rounded-xl font-bold text-lg shadow-md transition-colors mt-6 flex items-center justify-center gap-2 ${isSaved
+                ? 'bg-[#E8F5E9] text-[#2E7D32] border border-[#2E7D32]'
+                : 'bg-[#95B974] hover:bg-[#7A8F63] text-[#FAF1E4]'
+                }`}
             >
-              {saving && <Loader2 className="animate-spin" size={20} />}
-              {saving ? 'Saving...' : 'Add to Meal Planner'}
+              {saving ? (
+                <Loader2 className="animate-spin" size={20} />
+              ) : isSaved ? (
+                <>
+                  <Heart size={20} fill="currentColor" />
+                  Saved
+                </>
+              ) : (
+                <>
+                  <Heart size={20} />
+                  Add to Meal Planner
+                </>
+              )}
             </button>
           </div>
         </div>

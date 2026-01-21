@@ -16,7 +16,7 @@ const ReadyToCook= () => {
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
                     <button
                         onClick={() => navigate("/signup")}
-                        className="px-8 py-3 bg-brand-accent text-white font-bold rounded-lg hover:bg-opacity-90 transition-opacity"
+                        className="px-8 py-3 bg-brand-accent text-white font-bold rounded-lg hover:bg-opacity-90 transition-opacity cursor-pointer"
                     >
                         Get Started - It's Free
                     </button>

@@ -11,16 +11,18 @@ export interface SaveRecipeResponse {
 }
 
 export interface SavedMenuItem {
-    _id: string;
+    id: number;
     menu_name: string;
     cooking_time: string;
     description: string;
     image_url: string;
-    user_id: string;
-    created_at?: string;
+    ingredients?: { name: string; qty: string }[];
+    number_of_people?: number;
+    saved_at?: string;
+    cuisine_preference?: string;
 }
 
 export interface SavedMenuResponse {
     status: string;
-    saved_menus: SavedMenuItem[];
+    data: SavedMenuItem[];
 }

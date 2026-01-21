@@ -2,10 +2,11 @@ import React, { useState, useEffect, } from "react";
 import { Heart, ChevronRight, Loader2 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { GeneratedRecipe, } from "../types/recipeConfiguration";
-import type { SaveRecipeRequest, SaveRecipeResponse } from "../types/saveMenu";
+import type { SaveRecipeRequest } from "../types/saveMenu";
 import brocooli from "../../../assets/Broccolli_image.svg";
-import axiosApi from "../../../lib/axiosApi";
-import { API_ENDPOINTS } from "../../../config/endpoints";
+import { pantryService } from "../api/saveMenuService";
+import { useToast } from "../../../shared/context/ToastContext";
+import { AxiosError } from "axios";
 
 // Define the shape of a recipe item
 interface Recipe {
@@ -20,8 +21,10 @@ interface Recipe {
 const AiMenuDashboard: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [selectedId, setSelectedId] = useState<number>(0);
   const [savingId, setSavingId] = useState<number | null>(null);
+  const [savedRecipeIds, setSavedRecipeIds] = useState<Set<number>>(new Set());
   const [recipes, setRecipes] = useState<Recipe[]>([]);
 
   useEffect(() => {
@@ -65,19 +68,22 @@ const AiMenuDashboard: React.FC = () => {
         image_url: recipe.image
       };
 
-      const response = await axiosApi<SaveRecipeResponse>(API_ENDPOINTS.SAVEMENU, {
-        method: 'POST',
-        data: payload
-      });
+      const response = await pantryService.saveMenu(payload);
 
       if (response && response.status === 'success') {
-        alert("Recipe saved successfully!");
+        showToast("success", "Success", "Recipe saved successfully!");
+        setSavedRecipeIds(prev => new Set(prev).add(recipe.id));
       } else {
-        alert("Failed to save recipe.");
+        showToast("error", "Error", "Failed to save recipe.");
       }
     } catch (error) {
-      console.error("Failed to save recipe", error);
-      alert("An error occurred while saving the recipe.");
+      if (error instanceof AxiosError && error.response?.status === 409) {
+        showToast("info", "Info", "This recipe is already in your saved list.");
+        setSavedRecipeIds(prev => new Set(prev).add(recipe.id)); // Mark as saved anyway
+      } else {
+        console.error("Failed to save recipe", error);
+        showToast("error", "Error", "An error occurred while saving the recipe.");
+      }
     } finally {
       setSavingId(null);
     }
@@ -143,15 +149,20 @@ const AiMenuDashboard: React.FC = () => {
                     {/* Heart Icon */}
                     <button
                       onClick={(e) => handleSaveRecipe(e, recipe)}
-                      disabled={savingId === recipe.id}
+                      disabled={savingId === recipe.id || savedRecipeIds.has(recipe.id)}
                       className="text-[#8ba37a] hover:text-[#3e5035] transition-colors disabled:opacity-50"
                     >
                       {savingId === recipe.id ? (
                         <Loader2 size={18} className="animate-spin" />
+                      ) : savedRecipeIds.has(recipe.id) ? (
+                        <Heart
+                          size={18}
+                          fill="#3e5035"
+                          className="text-[#3e5035]"
+                        />
                       ) : (
                         <Heart
                           size={18}
-                          fill="currentColor"
                           className="opacity-60 hover:opacity-100"
                         />
                       )}

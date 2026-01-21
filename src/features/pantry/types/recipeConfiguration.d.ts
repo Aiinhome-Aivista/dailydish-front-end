@@ -11,7 +11,7 @@ interface Ingredient {
 }
 
 export interface RecipeGenerationRequest {
-    ingredients: Ingredient[];
+    ingredients:  Ingredient[];
     cuisine_preference: string;
     number_of_people: number;
     cooking_time: string;

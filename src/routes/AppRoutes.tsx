@@ -39,7 +39,7 @@ const PrivateRoute = () => {
     return <PageLoader />;
   }
 
-  return isLoggedIn ? <Outlet /> : <Navigate to="/login" replace />;
+  return isLoggedIn ? <Outlet /> : <Navigate to="/" replace />;
 };
 
 const PublicRoute = () => {
