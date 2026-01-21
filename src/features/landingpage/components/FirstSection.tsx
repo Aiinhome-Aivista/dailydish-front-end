@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import cookerIcon from "../../../assets/cooker.svg";
@@ -10,14 +10,14 @@ const FirstSection = () => {
       <div className="mb-6 animate-bounce-slow">
         <img src={cookerIcon} alt="Bowl" className="w-24 h-24" />
       </div>
-      <h1 className="text-5xl md:text-7xl font-bold text-center mb-10 leading-none text-[#435334]">
+      <h1 className="text-5xl md:text-7xl font-bold text-center mb-10 leading-none text-brand-dark">
         Turn Your Fridge
         <br />
-        <span className="bg-linear-to-r from-[#435334] to-[#95B974] bg-clip-text text-transparent leading-none">
+        <span className="bg-linear-to-r from-brand-dark to-brand-accent bg-clip-text text-transparent leading-none">
           Into a Feast.
         </span>
       </h1>
-      <p className="text-[#95B974] text-center text-base md:text-xl max-w-2xl mb-12 font-medium">
+      <p className="text-brand-accent text-center text-base md:text-xl max-w-2xl mb-12 font-medium">
         Enter your ingredients and let our AI craft the perfect recipe tailored
         to your cuisine preference and nutritional needs.
       </p>
@@ -35,7 +35,7 @@ const FirstSection = () => {
 
         <button
           onClick={() => navigate("/login")}
-          className="absolute right-2 top-2 bottom-2 bg-brand-dark text-[#FAF1E4] px-6 rounded-md font-bold flex items-center gap-2 hover:bg-opacity-90 transition-all cursor-pointer"
+          className="absolute right-2 top-2 bottom-2 bg-brand-dark text-brand-beige px-6 rounded-md font-bold flex items-center gap-2 hover:bg-opacity-90 transition-all cursor-pointer"
         >
           Generate <Sparkles size={16} />
         </button>

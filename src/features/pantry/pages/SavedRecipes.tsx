@@ -75,7 +75,7 @@ const SavedRecipes = () => {
                             </div>
 
                             {/* Content */}
-                            <div className="flex flex-col flex-grow">
+                            <div className="flex flex-col grow">
                                 <h3 className="text-xl font-bold mb-2 text-[#3e5035]">
                                     {recipe.menu_name}
                                 </h3>

@@ -96,11 +96,11 @@ const AiMenuDashboard: React.FC = () => {
         <div className="flex items-center gap-2 mb-4">
           <button
             onClick={() => navigate(-1)}
-            className=" rounded-xl font-bold"
+            className=" rounded-xl font-bold cursor-pointer"
           >
-        <span className="material-symbols-outlined">
-arrow_back
-</span>
+            <span className="material-symbols-outlined text-brand-dark">
+              arrow_back
+            </span>
           </button>
           <h1 className="text-3xl font-bold text-brand-dark">
             Your AI-Curated Menu
@@ -141,7 +141,7 @@ arrow_back
               </div>
 
               {/* Content */}
-              <div className="flex flex-col flex-grow">
+              <div className="flex flex-col grow">
                 <h3 className="text-xl font-bold mb-2 text-[#3e5035]">
                   {recipe.title}
                 </h3>
