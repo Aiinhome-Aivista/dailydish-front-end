@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
-import { pantryService } from "../api/pantryService";
+import { pantryService } from "../api/saveMenuService";
 import type { SavedMenuItem } from "../types/recipeTypes";
 import broccoliImage from "../../../assets/Broccolli_image.svg";
 import CuisineLoader from "../../../components/feedback/DailyDishLoader";

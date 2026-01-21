@@ -1,6 +1,6 @@
 import axiosApi from '../../../lib/axiosApi';
 import { API_ENDPOINTS } from '../../../config/endpoints';
-import type { SavedMenuResponse } from '../types/recipeTypes';
+import type { SavedMenuResponse } from '../types/saveMenu';
 
 export const pantryService = {
     getSavedMenus: async () => {

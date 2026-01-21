@@ -5,7 +5,8 @@ import { Check, ArrowLeft, Loader2 } from 'lucide-react';
 import broccoliImage from '../../../assets/Broccolli_image.svg';
 import axiosApi from '../../../lib/axiosApi';
 import { API_ENDPOINTS } from '../../../config/endpoints';
-import type { RecipeDetailsResponse, RecipeDetailData, SaveRecipeRequest, SaveRecipeResponse } from '../types/recipeTypes';
+import type { RecipeDetailsResponse, RecipeDetailData,  } from '../types/recipeDetails';
+import type { SaveRecipeRequest, SaveRecipeResponse } from '../types/saveMenu';
 import CuisineLoader from '../../../components/feedback/DailyDishLoader';
 
 

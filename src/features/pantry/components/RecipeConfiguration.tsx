@@ -4,18 +4,13 @@ import japanese_curry from "../../../assets/japanese_curry.svg";
 import kebab_dining from "../../../assets/kebab_dining.svg";
 import dinner_dining from "../../../assets/dinner_dining.svg";
 import yoshoku from "../../../assets/yoshoku.svg";
-import { generateRecipes } from "../api/recipeService";
+import { generateRecipes } from "../api/recipeConfigurationService";
 import { useNavigate } from "react-router-dom";
-import type { RecipeGenerationRequest } from "../types/recipeTypes";
+import type { RecipeGenerationRequest, Ingredient} from "../types/recipeConfiguration";
 import CuisineLoader from '../../../components/feedback/DailyDishLoader';
 
 
-interface Ingredient {
-  id: string;
-  name: string;
-  qty: string;
-  unit: string;
-}
+
 
 export default function RecipeConfiguration() {
   const navigate = useNavigate();

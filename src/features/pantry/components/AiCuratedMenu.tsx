@@ -1,7 +1,8 @@
 import React, { useState, useEffect, } from "react";
 import { Heart, ChevronRight, Loader2 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import type { GeneratedRecipe, SaveRecipeRequest, SaveRecipeResponse } from "../types/recipeTypes";
+import type { GeneratedRecipe, } from "../types/recipeConfiguration";
+import type { SaveRecipeRequest, SaveRecipeResponse } from "../types/saveMenu";
 import brocooli from "../../../assets/Broccolli_image.svg";
 import axiosApi from "../../../lib/axiosApi";
 import { API_ENDPOINTS } from "../../../config/endpoints";
