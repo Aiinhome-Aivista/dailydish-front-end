@@ -5,10 +5,10 @@ import AppLayout from "../components/layout/Applayout";
 import DailyDishLoader from "../components/feedback/DailyDishLoader";
 
 
-
 // Lazy Load Pages
 const LandingPage = lazy(() => import('../features/landingpage/pages/LandingPage'));
 const RecipesPage = lazy(() => import('../features/landingpage/components/RecipesPage'));
+const HowItWorks = lazy(() => import('../features/landingpage/components/HowItWorks'));
 const Login = lazy(() => import('../features/auth/pages/Login'));
 const SignUp = lazy(() => import("../features/auth/pages/SignUp"));
 const SplashScreen = lazy(() => import('../features/splashscreen/pages/SplashScreen'));
@@ -80,6 +80,7 @@ function AppRoutes() {
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<SignUp />} />
           <Route path="explore-recipes" element={<RecipesPage />} />
+           <Route path="How-it-Works" element={<HowItWorks />} />
         </Route>
 
         {/* --- PROTECTED ROUTES --- */}

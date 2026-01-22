@@ -18,7 +18,7 @@ const NavBar = () => {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex gap-8 text-[#435334] font-bold text-sm">
-                <a href="#" className="hover:text-brand-accent transition-colors">How it Works</a>
+                 <button onClick={() => navigate("/How-it-Works")} className={`hover:text-brand-accent transition-colors cursor-pointer ${location.pathname === '/How-it-Works' ? 'text-brand-accent font-bold' : ''}`}>How it Works</button>
                 <a href="#" className="hover:text-brand-accent transition-colors">Pricing</a>
                 <button onClick={() => navigate("/explore-recipes")} className={`hover:text-brand-accent transition-colors cursor-pointer ${location.pathname === '/explore-recipes' ? 'text-brand-accent font-bold' : ''}`}>Explore Recipes</button>
                 <a href="#" className="hover:text-brand-accent transition-colors">Community</a>
@@ -45,7 +45,7 @@ const NavBar = () => {
             {/* Mobile Menu Overlay */}
             {isOpen && (
                 <div className="absolute top-16 left-0 w-full bg-brand-light shadow-lg flex flex-col items-center py-6 gap-6 md:hidden">
-                    <a href="#" className="text-brand-dark font-medium cursor-pointer" onClick={() => setIsOpen(false)}>How it Works</a>
+                    <button className={`text-brand-dark font-medium cursor-pointer ${location.pathname === '/How-it-Works' ? 'text-brand-accent font-bold' : ''}`} onClick={() => { setIsOpen(false); navigate("/How-it-Works"); }}>How it Works</button>
                     <a href="#" className="text-brand-dark font-medium cursor-pointer" onClick={() => setIsOpen(false)}>Pricing</a>
                     <button className={`text-brand-dark font-medium cursor-pointer ${location.pathname === '/explore-recipes' ? 'text-brand-accent font-bold' : ''}`} onClick={() => { setIsOpen(false); navigate("/explore-recipes"); }}>Explore Recipes</button>
                     <a href="#" className="text-brand-dark font-medium cursor-pointer" onClick={() => setIsOpen(false)}>Community</a>

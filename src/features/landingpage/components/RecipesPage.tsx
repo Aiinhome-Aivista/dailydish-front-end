@@ -1,6 +1,7 @@
 import React from 'react'
 import NavBar from '../../../components/layout/NavBar'
 import { useNavigate } from 'react-router-dom'
+import Footer from '../components/Footer';
 
 function RecipesPage() {
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ function RecipesPage() {
           </button>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }
