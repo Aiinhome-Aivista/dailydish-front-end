@@ -3,7 +3,7 @@ import { Heart, ChevronRight, Loader2 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { GeneratedRecipe, } from "../types/recipeConfiguration";
 import type { SaveRecipeRequest } from "../types/saveMenu";
-import defaultRecipeImage from "../../../assets/Recipe_default_image.jpeg";
+import defaultRecipeImage from "../../../assets/Recipe_default_image.webp";
 import { pantryService } from "../api/saveMenuService";
 import { useToast } from "../../../shared/context/ToastContext";
 import type { Recipe } from "../types/aiCuratedMenu";
@@ -30,7 +30,7 @@ const AiMenuDashboard: React.FC = () => {
           title: rec.menu_name,
           description: rec.description,
           time: rec.cooking_time,
-          image: rec.image_url,
+          image: defaultRecipeImage,
         };
       });
       setRecipes(mappedRecipes);

@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Check, ArrowLeft, Loader2, Heart } from 'lucide-react';
-import defaultRecipeImage from '../../../assets/Recipe_default_image.jpeg';
+import defaultRecipeImage from '../../../assets/Recipe_default_image.webp';
 import axiosApi from '../../../lib/axiosApi';
 import { API_ENDPOINTS } from '../../../config/endpoints';
 import { pantryService } from '../api/saveMenuService';
@@ -35,7 +35,7 @@ export default function RecipeDetails() {
           data: {
             menu_name,
             cooking_time: cooking_time || "10 minutes",
-            image_url: image_url || defaultRecipeImage
+            image_url:  defaultRecipeImage
           }
         });
 
@@ -51,7 +51,7 @@ export default function RecipeDetails() {
     };
 
     fetchRecipeDetails();
-  }, [menu_name, cooking_time, image_url]);
+  }, [menu_name, cooking_time]);
 
   const handleSaveRecipe = async () => {
     if (!recipeData || !menu_name) return;
@@ -83,6 +83,18 @@ export default function RecipeDetails() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const getSuitabilityColor = (item: string) => {
+    const match = item.match(/(\d+)%/);
+    if (match) {
+      const value = parseInt(match[1]);
+      if (value <= 35) return "bg-red-400";
+      if (value <= 65) return "bg-orange-400";
+      if (value <= 100) return "bg-brand-accent";
+      return "bg-[#95B974]";
+    }
+    return "bg-brand-accent";
   };
 
   if (loading) {
@@ -135,7 +147,7 @@ export default function RecipeDetails() {
           <div className="relative h-60 md:h-90 rounded-3xl overflow-hidden group shadow-lg">
             <div className="absolute inset-0 bg-slate-800 ">
               <img
-                src={recipeData.image_url}
+                src={defaultRecipeImage}
                 alt={recipeData.menu_name}
                 className="w-full h-full object-cover opacity-60"
                 onError={(e) => {
@@ -147,8 +159,8 @@ export default function RecipeDetails() {
             <div className="absolute bottom-0 left-0 p-8 w-full bg-linear-to-t from-black/80 to-transparent text-white">
               <h2 className="text-3xl font-bold mb-2 text-brand-beige">{recipeData.menu_name}</h2>
               <div className="flex gap-4 text-sm font-medium">
-                <span className="flex items-center gap-1">{recipeData.time_breakdown.prep_time}m prep</span>
-                <span className="flex items-center gap-1">{recipeData.time_breakdown.cook_time}m cook</span>
+                <span className="flex items-center gap-1">{recipeData.time_breakdown.prep_time} prep</span>
+                <span className="flex items-center gap-1">{recipeData.time_breakdown.cook_time} cook</span>
               </div>
             </div>
           </div>
@@ -267,9 +279,30 @@ export default function RecipeDetails() {
               <h3 className="text-lg font-bold mb-3">Suitability</h3>
               <div className="flex flex-wrap gap-2">
                 {recipeData.suitability.map((item, idx) => (
-                  <span key={idx} className="bg-brand-accent text-brand-beige px-3 py-1 rounded-full text-sm font-bold shadow-sm">
+                  <span key={idx} className={`${getSuitabilityColor(item)} text-brand-beige px-3 py-1 rounded-full text-sm font-bold shadow-sm`}>
                     {item}
                   </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+
+
+          {/* Preparation Steps */}
+          {prepSteps.length > 0 && (
+            <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit">
+              <h3 className="text-xl font-bold pb-4">Preparation Steps</h3>
+              <div className="space-y-4">
+                {prepSteps.map((step, idx) => (
+                  <div key={idx} className="flex gap-4">
+                    <div className="shrink-0 w-8 h-8 rounded-full bg-brand-accent text-brand-beige flex items-center justify-center font-bold text-sm">
+                      {idx + 1}
+                    </div>
+                    <div>
+                      <p className="text-sm leading-relaxed">{step}</p>
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -292,24 +325,6 @@ export default function RecipeDetails() {
             </div>
           </div>
 
-          {/* Preparation Steps */}
-          {prepSteps.length > 0 && (
-            <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit">
-              <h3 className="text-xl font-bold pb-4">Preparation Steps</h3>
-              <div className="space-y-4">
-                {prepSteps.map((step, idx) => (
-                  <div key={idx} className="flex gap-4">
-                    <div className="shrink-0 w-8 h-8 rounded-full bg-brand-accent text-brand-beige flex items-center justify-center font-bold text-sm">
-                      {idx + 1}
-                    </div>
-                    <div>
-                      <p className="text-sm leading-relaxed">{step}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>

@@ -31,7 +31,7 @@ export interface RecipeNutrition {
 export interface MealDetails {
     menu_name: string;
     description: string;
-    image_url: string;
+ 
     cooking_time: string;
     servings: number;
     time_breakdown: TimeBreakdown;

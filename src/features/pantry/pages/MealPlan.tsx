@@ -4,7 +4,7 @@ import { pantryService } from '../api/saveMenuService';
 import type { SavedMealItem } from '../types/saveMeal';
 import CuisineLoader from '../../../components/feedback/DailyDishLoader';
 import { Check, ArrowLeft } from 'lucide-react';
-import defaultRecipeImage from "../../../assets/Recipe_default_image.jpeg";
+import defaultRecipeImage from "../../../assets/Recipe_default_image.webp";
 
 import { useToast } from '../../../shared/context/ToastContext';
 import DeleteModal from '../../../components/modal/pages/DeleteModal';
@@ -64,6 +64,18 @@ const MealPlan = () => {
 
         fetchSavedMeal();
     }, []);
+
+    const getSuitabilityColor = (item: string) => {
+        const match = item.match(/(\d+)%/);
+        if (match) {
+            const value = parseInt(match[1]);
+            if (value <= 35) return "bg-red-400";
+            if (value <= 65) return "bg-orange-400";
+            if (value <= 100) return "bg-brand-accent";
+            return "bg-[#95B974]";
+        }
+        return "bg-brand-accent";
+    };
 
     if (loading) {
         return <CuisineLoader />;
@@ -126,7 +138,7 @@ const MealPlan = () => {
                                     <div className="relative h-60 md:h-90 rounded-3xl overflow-hidden group shadow-lg">
                                         <div className="absolute inset-0 bg-slate-800 ">
                                             <img
-                                                src={meal.image_url || defaultRecipeImage}
+                                                src={defaultRecipeImage}
                                                 alt={meal.menu_name}
                                                 className="w-full h-full object-cover opacity-60"
                                                 onError={(e) => {
@@ -229,7 +241,7 @@ const MealPlan = () => {
                                             <h3 className="text-lg font-bold mb-3">Suitability</h3>
                                             <div className="flex flex-wrap gap-2">
                                                 {meal.suitability.map((item: string, idx: number) => (
-                                                    <span key={idx} className="bg-brand-accent text-brand-beige px-3 py-1 rounded-full text-sm font-bold shadow-sm">
+                                                    <span key={idx} className={`${getSuitabilityColor(item)} text-brand-beige px-3 py-1 rounded-full text-sm font-bold shadow-sm`}>
                                                         {item}
                                                     </span>
                                                 ))}
