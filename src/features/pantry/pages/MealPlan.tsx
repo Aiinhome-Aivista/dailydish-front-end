@@ -248,24 +248,7 @@ const MealPlan = () => {
                                             </div>
                                         </div>
                                     )}
-
-                                    {/* Cooking Steps */}
-                                    <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit">
-                                        <h3 className="text-xl font-bold pb-4">Cooking Steps</h3>
-                                        <div className="space-y-4">
-                                            {cookingSteps.map((step: string, idx: number) => (
-                                                <div key={idx} className="flex gap-4">
-                                                    <div className="shrink-0 w-8 h-8 rounded-full bg-[#4A5D3B] text-brand-beige flex items-center justify-center font-bold text-sm">
-                                                        {idx + 1}
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-sm leading-relaxed">{step}</p>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                    {/* Preparation Steps */}
+                                                                        {/* Preparation Steps */}
                                     {prepSteps.length > 0 && (
                                         <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit">
                                             <h3 className="text-xl font-bold pb-4">Preparation Steps</h3>
@@ -283,6 +266,24 @@ const MealPlan = () => {
                                             </div>
                                         </div>
                                     )}
+
+                                    {/* Cooking Steps */}
+                                    <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit">
+                                        <h3 className="text-xl font-bold pb-4">Cooking Steps</h3>
+                                        <div className="space-y-4">
+                                            {cookingSteps.map((step: string, idx: number) => (
+                                                <div key={idx} className="flex gap-4">
+                                                    <div className="shrink-0 w-8 h-8 rounded-full bg-[#4A5D3B] text-brand-beige flex items-center justify-center font-bold text-sm">
+                                                        {idx + 1}
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm leading-relaxed">{step}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
