@@ -5,9 +5,10 @@ import AppLayout from "../components/layout/Applayout";
 import DailyDishLoader from "../components/feedback/DailyDishLoader";
 
 
-
 // Lazy Load Pages
 const LandingPage = lazy(() => import('../features/landingpage/pages/LandingPage'));
+const RecipesPage = lazy(() => import('../features/landingpage/components/RecipesPage'));
+const HowItWorks = lazy(() => import('../features/landingpage/components/HowItWorks'));
 const Login = lazy(() => import('../features/auth/pages/Login'));
 const SignUp = lazy(() => import("../features/auth/pages/SignUp"));
 const SplashScreen = lazy(() => import('../features/splashscreen/pages/SplashScreen'));
@@ -16,6 +17,7 @@ const RecipeDetails = lazy(() => import("../features/pantry/components/RecipeDet
 const AiCuratedMenu = lazy(() => import("../features/pantry/components/AiCuratedMenu"));
 const SavedRecipes = lazy(() => import("../features/pantry/pages/SavedRecipes"));
 const MealPlan = lazy(() => import("../features/pantry/pages/MealPlan"));
+
 
 const SplashToLanding = () => {
   const [showSplash, setShowSplash] = useState(true);
@@ -77,6 +79,8 @@ function AppRoutes() {
           <Route path="/" element={<SplashToLanding />} />
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<SignUp />} />
+          <Route path="explore-recipes" element={<RecipesPage />} />
+           <Route path="How-it-Works" element={<HowItWorks />} />
         </Route>
 
         {/* --- PROTECTED ROUTES --- */}
