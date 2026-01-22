@@ -10,7 +10,7 @@ import type {
   RecipeGenerationRequest,
   Ingredient,
 } from "../types/recipeConfiguration";
-import CuisineLoader from "../../../components/feedback/DailyDishLoader";
+import DailyDishLoader from "../../../components/feedback/DailyDishLoader";
 import type { RowProps, OptionProps } from "../types/recipeConfiguration";
 import { useToast } from "../../../shared/context/ToastContext";
 
@@ -115,7 +115,7 @@ export default function RecipeConfiguration() {
   };
 
   if (loading) {
-    return <CuisineLoader />;
+    return <DailyDishLoader />;
   }
   return (
     <div className="h-full flex items-center justify-center">

@@ -2,8 +2,7 @@ import { useState, useEffect, Suspense, lazy } from "react";
 import { Route, Routes, Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../features/auth/hooks/useAuth";
 import AppLayout from "../components/layout/Applayout";
-import PageLoader from "../components/feedback/PageLoader";
-import CuisineLoader from "../components/feedback/DailyDishLoader";
+import DailyDishLoader from "../components/feedback/DailyDishLoader";
 
 
 
@@ -20,16 +19,29 @@ const MealPlan = lazy(() => import("../features/pantry/pages/MealPlan"));
 
 const SplashToLanding = () => {
   const [showSplash, setShowSplash] = useState(true);
+  const [showLoader, setShowLoader] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowSplash(false);
+      setShowLoader(true);
     }, 4000);
 
     return () => clearTimeout(timer);
   }, []);
 
-  return showSplash ? <SplashScreen /> : <LandingPage />;
+  useEffect(() => {
+    if (showLoader) {
+      const timer = setTimeout(() => {
+        setShowLoader(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showLoader]);
+
+  if (showSplash) return <SplashScreen />;
+  if (showLoader) return <DailyDishLoader />;
+  return <LandingPage />;
 };
 
 // Route Guards
@@ -37,7 +49,7 @@ const PrivateRoute = () => {
   const { isLoggedIn, isLoading } = useAuth();
 
   if (isLoading) {
-    return <CuisineLoader />;
+    return <DailyDishLoader />;
   }
 
   return isLoggedIn ? <Outlet /> : <Navigate to="/" replace />;
@@ -47,7 +59,7 @@ const PublicRoute = () => {
   const { isLoggedIn, isLoading } = useAuth();
 
   if (isLoading) {
-    return <CuisineLoader />;
+    return <DailyDishLoader />;
   }
 
   // Redirect to dashboard/configured page if already logged in
@@ -58,7 +70,7 @@ const PublicRoute = () => {
 
 function AppRoutes() {
   return (
-    <Suspense fallback={<CuisineLoader />}>
+    <Suspense fallback={<DailyDishLoader />}>
       <Routes>
         {/* --- PUBLIC ROUTES --- */}
         <Route element={<PublicRoute />}>
