@@ -63,6 +63,16 @@ export default function RecipeConfiguration() {
     setIngredients(ingredients.filter((item) => item.id !== id));
   };
 
+  const handleEdit = (id: string) => {
+    const ingredient = ingredients.find((item) => item.id === id);
+    if (ingredient) {
+      setName(ingredient.name);
+      setQty(ingredient.qty);
+      setUnit(ingredient.unit);
+      removeIngredient(id);
+    }
+  };
+
   const handleGenerate = async () => {
     if (ingredients.length === 0) {
       setGenerateError(
@@ -218,6 +228,7 @@ export default function RecipeConfiguration() {
                       key={ing.id}
                       {...ing}
                       onDelete={() => removeIngredient(ing.id)}
+                      onEdit={() => handleEdit(ing.id)}
                     />
                   ))}
                 </div>
@@ -382,14 +393,19 @@ export default function RecipeConfiguration() {
 
 /* ---------- Small Components ---------- */
 
-function Row({ name, qty, unit, onDelete }: RowProps) {
+function Row({ name, qty, unit, onDelete, onEdit }: RowProps & { onEdit: () => void }) {
   return (
-    <div className="grid grid-cols-12 px-4 py-3 text-sm text-[#4A5D3B]">
+    <div className="grid grid-cols-12 px-4 py-3 text-sm text-[#4A5D3B] items-center">
       <div className="col-span-5">{name}</div>
       <div className="col-span-3">{qty}</div>
       <div className="col-span-3">{unit}</div>
-      <div className="col-span-1 text-right cursor-pointer" onClick={onDelete}>
-        <span className="material-symbols-outlined">delete</span>
+      <div className="col-span-1 flex justify-end gap-1">
+        <button className="cursor-pointer hover:text-brand-dark transition-colors" onClick={onEdit} title="Edit">
+          <span className="material-symbols-outlined text-[20px]">edit</span>
+        </button>
+        <button className="cursor-pointer hover:text-red-600 transition-colors" onClick={onDelete} title="Delete">
+          <span className="material-symbols-outlined text-[20px]">delete</span>
+        </button>
       </div>
     </div>
   );
