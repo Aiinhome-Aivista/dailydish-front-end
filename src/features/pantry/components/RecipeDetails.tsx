@@ -9,7 +9,7 @@ import { pantryService } from '../api/saveMenuService';
 import { useToast } from '../../../shared/context/ToastContext';
 import { AxiosError } from 'axios';
 import type { RecipeDetailsResponse, RecipeDetailData, } from '../types/recipeDetails';
-import CuisineLoader from '../../../components/feedback/DailyDishLoader';
+import DailyDishLoader from '../../../components/feedback/DailyDishLoader';
 
 
 export default function RecipeDetails() {
@@ -98,7 +98,7 @@ export default function RecipeDetails() {
   };
 
   if (loading) {
-    return <CuisineLoader />;
+    return <DailyDishLoader />;
   }
 
   if (!recipeData) {

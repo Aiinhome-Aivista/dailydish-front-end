@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { pantryService } from '../api/saveMenuService';
 import type { SavedMealItem } from '../types/saveMeal';
-import CuisineLoader from '../../../components/feedback/DailyDishLoader';
+import DailyDishLoader from '../../../components/feedback/DailyDishLoader';
 import { Check, ArrowLeft } from 'lucide-react';
 import defaultRecipeImage from "../../../assets/Recipe_default_image.webp";
 
@@ -78,7 +78,7 @@ const MealPlan = () => {
     };
 
     if (loading) {
-        return <CuisineLoader />;
+        return <DailyDishLoader />;
     }
 
     return (

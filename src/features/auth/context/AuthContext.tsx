@@ -5,8 +5,6 @@ import type { LoginPayload } from "../types/login";
 import type { AuthContextType, User } from "../types/authTypes";
 
 
-
-
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {

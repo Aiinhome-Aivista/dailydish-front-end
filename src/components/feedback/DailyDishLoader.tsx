@@ -14,7 +14,7 @@ const icons = [
   { icon: "local_cafe", color: "#D9D9D9" },
 ];
 
-const CuisineLoader: React.FC = () => {
+const DailyDishLoader: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
@@ -79,4 +79,4 @@ const CuisineLoader: React.FC = () => {
   );
 };
 
-export default CuisineLoader;
+export default DailyDishLoader;

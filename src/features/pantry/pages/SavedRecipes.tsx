@@ -6,7 +6,7 @@ import type { SavedMenuItem } from "../types/saveMenu";
 import defaultRecipeImage from '../../../assets/Recipe_default_image.webp';
 import { useToast } from "../../../shared/context/ToastContext";
 import DeleteModal from "../../../components/modal/pages/DeleteModal";
-import CuisineLoader from "../../../components/feedback/DailyDishLoader";
+import DailyDishLoader from "../../../components/feedback/DailyDishLoader";
 
 
 const SavedRecipes = () => {
@@ -68,7 +68,7 @@ const SavedRecipes = () => {
     }, []);
 
     if (loading) {
-        return <CuisineLoader />;
+        return <DailyDishLoader />;
     }
 
     return (
