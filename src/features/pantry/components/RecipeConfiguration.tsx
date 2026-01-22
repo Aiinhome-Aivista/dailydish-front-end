@@ -6,13 +6,13 @@ import dinner_dining from "../../../assets/dinner_dining.svg";
 import yoshoku from "../../../assets/yoshoku.svg";
 import { generateRecipes } from "../api/recipeConfigurationService";
 import { useNavigate } from "react-router-dom";
-import type { RecipeGenerationRequest, Ingredient } from "../types/recipeConfiguration";
-import CuisineLoader from '../../../components/feedback/DailyDishLoader';
+import type {
+  RecipeGenerationRequest,
+  Ingredient,
+} from "../types/recipeConfiguration";
+import CuisineLoader from "../../../components/feedback/DailyDishLoader";
 import type { RowProps, OptionProps } from "../types/recipeConfiguration";
 import { useToast } from "../../../shared/context/ToastContext";
-
-
-
 
 export default function RecipeConfiguration() {
   const navigate = useNavigate();
@@ -25,7 +25,11 @@ export default function RecipeConfiguration() {
   const [cuisine, setCuisine] = useState("ORIENTAL");
   const [time, setTime] = useState("15m");
   const [mealType, setMealType] = useState("Daily");
-  const [errors, setErrors] = useState<{ name?: string; qty?: string; unit?: string }>({});
+  const [errors, setErrors] = useState<{
+    name?: string;
+    qty?: string;
+    unit?: string;
+  }>({});
   const [generateError, setGenerateError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -44,7 +48,10 @@ export default function RecipeConfiguration() {
       return;
     }
 
-    setIngredients([...ingredients, { id: Date.now().toString(), name, qty, unit }]);
+    setIngredients([
+      ...ingredients,
+      { id: Date.now().toString(), name, qty, unit },
+    ]);
     setName("");
     setQty("");
     setUnit("Unit");
@@ -58,14 +65,19 @@ export default function RecipeConfiguration() {
 
   const handleGenerate = async () => {
     if (ingredients.length === 0) {
-      setGenerateError("Please add at least one ingredient to generate recipes.");
+      setGenerateError(
+        "Please add at least one ingredient to generate recipes.",
+      );
       return;
     }
 
     setLoading(true);
     try {
       const payload: RecipeGenerationRequest = {
-        ingredients: ingredients.map(i => ({ name: i.name, qty: `${i.qty}${i.unit}` })),
+        ingredients: ingredients.map((i) => ({
+          name: i.name,
+          qty: `${i.qty}${i.unit}`,
+        })),
         cuisine_preference: cuisine,
         number_of_people: servings,
         cooking_time: time,
@@ -75,8 +87,12 @@ export default function RecipeConfiguration() {
       const response = await generateRecipes(payload);
 
       if (response && response.status === "success") {
-        showToast("success", "Success", response.message || "Recipes generated successfully!");
-        navigate('/ai-menu', { state: { recipes: response.data.recipes } });
+        showToast(
+          "success",
+          "Success",
+          response.message || "Recipes generated successfully!",
+        );
+        navigate("/ai-menu", { state: { recipes: response.data.recipes } });
       } else {
         console.error("Failed to generate recipes");
         showToast("error", "Error", "Failed to generate recipes");
@@ -87,7 +103,6 @@ export default function RecipeConfiguration() {
       setLoading(false);
     }
   };
-
 
   if (loading) {
     return <CuisineLoader />;
@@ -109,7 +124,6 @@ export default function RecipeConfiguration() {
             <span className="rounded-full bg-brand-dark w-7 h-7 flex  items-center justify-center text-brand-beige">
               1
             </span>
-
             Add Ingredients
           </h2>
 
@@ -120,8 +134,9 @@ export default function RecipeConfiguration() {
             <div className="grid grid-cols-12 gap-3 items-start">
               <div className="col-span-6 flex flex-col gap-1">
                 <input
-                  className={`w-full rounded-lg px-4 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${errors.name ? "border border-red-500" : ""
-                    }`}
+                  className={`w-full rounded-lg px-4 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${
+                    errors.name ? "border border-red-500" : ""
+                  }`}
                   placeholder="e.g. Fresh Atlantic Salmon"
                   value={name}
                   onChange={(e) => {
@@ -129,13 +144,18 @@ export default function RecipeConfiguration() {
                     if (errors.name) setErrors({ ...errors, name: undefined });
                   }}
                 />
-                {errors.name && <span className="text-[10px] text-red-500 pl-1">{errors.name}</span>}
+                {errors.name && (
+                  <span className="text-[10px] text-red-500 pl-1">
+                    {errors.name}
+                  </span>
+                )}
               </div>
 
               <div className="col-span-2 flex flex-col gap-1">
                 <input
-                  className={`w-full rounded-lg px-4 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${errors.qty ? "border border-red-500" : ""
-                    }`}
+                  className={`w-full rounded-lg px-4 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${
+                    errors.qty ? "border border-red-500" : ""
+                  }`}
                   placeholder="0"
                   value={qty}
                   onChange={(e) => {
@@ -143,13 +163,18 @@ export default function RecipeConfiguration() {
                     if (errors.qty) setErrors({ ...errors, qty: undefined });
                   }}
                 />
-                {errors.qty && <span className="text-[10px] text-red-500 pl-1">{errors.qty}</span>}
+                {errors.qty && (
+                  <span className="text-[10px] text-red-500 pl-1">
+                    {errors.qty}
+                  </span>
+                )}
               </div>
 
               <div className="col-span-3 flex flex-col gap-1">
                 <select
-                  className={`w-full rounded-lg px-3 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${errors.unit ? "border border-red-500" : ""
-                    }`}
+                  className={`w-full rounded-lg px-3 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${
+                    errors.unit ? "border border-red-500" : ""
+                  }`}
                   value={unit}
                   onChange={(e) => {
                     setUnit(e.target.value);
@@ -163,7 +188,11 @@ export default function RecipeConfiguration() {
                   <option value="Pieces">Pieces</option>
                   <option value="Cups">Cups</option>
                 </select>
-                {errors.unit && <span className="text-[10px] text-red-500 pl-1">{errors.unit}</span>}
+                {errors.unit && (
+                  <span className="text-[10px] text-red-500 pl-1">
+                    {errors.unit}
+                  </span>
+                )}
               </div>
 
               <button
@@ -195,13 +224,13 @@ export default function RecipeConfiguration() {
               </div>
             </div>
           )}
-
         </div>
         <div className="mb-6">
           <h2 className="text-sm font-bold text-[#4A5D3B] mb-3 flex items-center gap-3">
             <span className="rounded-full bg-brand-dark w-7 h-7 flex  items-center justify-center text-brand-beige">
               2
-            </span> Cuisine Preferences
+            </span>{" "}
+            Cuisine Preferences
           </h2>
           <div className="grid grid-cols-5 gap-3">
             <Cuisine
@@ -240,13 +269,16 @@ export default function RecipeConfiguration() {
           <h2 className="text-sm font-bold text-[#4A5D3B] mb-3 flex items-center gap-3">
             <span className="rounded-full bg-brand-dark w-7 h-7 flex  items-center justify-center text-brand-beige">
               3
-            </span> Time and Servings
+            </span>{" "}
+            Time and Servings
           </h2>
 
           <div className="grid grid-cols-3 gap-4">
             {/* Servings */}
             <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-xl p-4">
-              <p className="text-sm text-brand-dark font-bold mb-2">Number of Servings</p>
+              <p className="text-sm text-brand-dark font-bold mb-2">
+                Number of Servings
+              </p>
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setServings(Math.max(1, servings - 1))}
@@ -263,13 +295,17 @@ export default function RecipeConfiguration() {
                 >
                   +
                 </button>
-                <span className="text-xs text-brand-accent ml-auto font-bold">People</span>
+                <span className="text-xs text-brand-accent ml-auto font-bold">
+                  People
+                </span>
               </div>
             </div>
 
             {/* Cooking Time */}
             <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-xl p-4">
-              <p className="text-sm text-brand-dark font-bold mb-2">Cooking Time</p>
+              <p className="text-sm text-brand-dark font-bold mb-2">
+                Cooking Time
+              </p>
               <div className="flex gap-3">
                 <Time
                   active={time === "15m"}
@@ -296,7 +332,9 @@ export default function RecipeConfiguration() {
 
             {/* Meal Type */}
             <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-xl p-4">
-              <p className="text-sm text-brand-dark font-bold mb-2">Meal Type</p>
+              <p className="text-sm text-brand-dark font-bold mb-2">
+                Meal Type
+              </p>
               <div className="flex gap-3">
                 <Time
                   active={mealType === "Daily"}
@@ -323,12 +361,16 @@ export default function RecipeConfiguration() {
               We have enough information to craft a unique 5-star recipe for
               you.
             </p>
-            {generateError && <p className="text-xs text-red-500 font-bold mt-1">{generateError}</p>}
+            {generateError && (
+              <p className="text-xs text-red-500 font-bold mt-1">
+                {generateError}
+              </p>
+            )}
           </div>
           <button
             onClick={handleGenerate}
             disabled={loading}
-            className={`bg-brand-accent text-brand-dark px-6 py-2 rounded-lg text-sm font-bold cursor-pointer ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`bg-brand-accent text-brand-dark px-6 py-2 rounded-lg text-sm font-bold cursor-pointer ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             {loading ? "Generating..." : "Generate Now"}
           </button>
@@ -340,8 +382,6 @@ export default function RecipeConfiguration() {
 
 /* ---------- Small Components ---------- */
 
-
-
 function Row({ name, qty, unit, onDelete }: RowProps) {
   return (
     <div className="grid grid-cols-12 px-4 py-3 text-sm text-[#4A5D3B]">
@@ -349,22 +389,21 @@ function Row({ name, qty, unit, onDelete }: RowProps) {
       <div className="col-span-3">{qty}</div>
       <div className="col-span-3">{unit}</div>
       <div className="col-span-1 text-right cursor-pointer" onClick={onDelete}>
-        <span className="material-symbols-outlined">
-          delete
-        </span>
+        <span className="material-symbols-outlined">delete</span>
       </div>
     </div>
   );
 }
-
-
 
 function Cuisine({ label, active, icon, onClick }: OptionProps) {
   return (
     <div
       onClick={onClick}
       className={`rounded-xl p-4 text-center text-xs font-semibold border border-[#43533414]
-        cursor-pointer ${active ? "bg-[#D6E3C1] text-[#4A5D3B]" : " text-[#7A8F63] bg-[#CEDEBD36] "
+        cursor-pointer ${
+          active
+            ? "bg-[#D6E3C1] text-[#4A5D3B]"
+            : " text-[#7A8F63] bg-[#CEDEBD36] "
         }`}
     >
       {icon && <img src={icon} alt={label} className="w-8 h-8 mx-auto mb-2" />}
@@ -378,7 +417,8 @@ function Time({ label, active, onClick }: OptionProps) {
     <button
       onClick={onClick}
       className={`px-4 py-2 rounded-lg text-sm
-        ${active ? "bg-[#B9D3A4] text-[#4A5D3B]" : "bg-[#E6E1CA] text-[#7A8F63]"
+        ${
+          active ? "bg-[#B9D3A4] text-[#4A5D3B]" : "bg-[#E6E1CA] text-[#7A8F63]"
         }`}
     >
       {label}
