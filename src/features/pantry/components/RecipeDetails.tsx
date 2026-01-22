@@ -76,7 +76,8 @@ export default function RecipeDetails() {
         setIsSaved(true);
       } else {
         console.error("Failed to save meal", error);
-        showToast("error", "Error", "An error occurred while adding to Meal Planner.");
+        const errorMessage = (error as any).response?.data?.message || (error as any).message || "An error occurred while adding to Meal Planner.";
+        showToast("error", "Error", errorMessage);
       }
     } finally {
       setSaving(false);

@@ -13,7 +13,7 @@ const MealPlan = () => {
     const navigate = useNavigate();
     const { showToast } = useToast();
     const [meals, setMeals] = useState<SavedMealItem[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     // Modal State
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -74,7 +74,7 @@ const MealPlan = () => {
             {/* Header Section */}
             <div className="max-w-full flex items-start gap-2">
                 <button
-                    onClick={() => navigate("/recipe-details")}
+                    onClick={() => navigate("/ai-menu")}
                     className="mt-1 hover:bg-black/5 rounded-full text-brand-dark transition-colors cursor-pointer"
                 >
                     <ArrowLeft size={24} />
