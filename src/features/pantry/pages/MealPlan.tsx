@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { pantryService } from '../api/saveMenuService';
 import type { SavedMealItem } from '../types/saveMeal';
 import DailyDishLoader from '../../../components/feedback/DailyDishLoader';
-import { Check, ArrowLeft } from 'lucide-react';
+import { Check, ArrowLeft, ChevronRight } from 'lucide-react';
 import defaultRecipeImage from "../../../assets/Recipe_default_image.webp";
 
 import { useToast } from '../../../shared/context/ToastContext';
@@ -19,6 +19,7 @@ const MealPlan = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedMeal, setSelectedMeal] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [activeMeal, setActiveMeal] = useState<SavedMealItem | null>(null);
 
     const confirmDelete = (menu_name: string) => {
         setSelectedMeal(menu_name);
@@ -35,6 +36,9 @@ const MealPlan = () => {
                 showToast("success", "Deleted", response.message || "Meal deleted successfully");
                 setMeals(prev => prev.filter(m => m.details.menu_name !== selectedMeal));
                 setIsDeleteModalOpen(false);
+                if (activeMeal?.details.menu_name === selectedMeal) {
+                    setActiveMeal(null);
+                }
             } else {
                 showToast("error", "Error", "Failed to delete meal");
             }
@@ -82,27 +86,36 @@ const MealPlan = () => {
     }
 
     return (
-        <div className="h-full text-brand-dark overflow-y-auto pb-10 space-y-12">
+        <div className="h-full text-brand-dark overflow-y-auto pb-10 space-y-4">
             {/* Header Section */}
             <div className="max-w-full flex items-start gap-2">
                 <button
-                    onClick={() => navigate("/ai-menu")}
+                    onClick={() => {
+                        if (activeMeal) {
+                            setActiveMeal(null);
+                        } else {
+                            navigate("/ai-menu");
+                        }
+                    }}
                     className="mt-1 hover:bg-black/5 rounded-full text-brand-dark transition-colors cursor-pointer"
                 >
                     <ArrowLeft size={24} />
                 </button>
                 <div>
                     <h1 className="text-2xl font-bold text-brand-dark leading-tight">
-                        Your Meal Plan
+                        {activeMeal ? 'Meal Details' : 'Your Meal Plan'}
                     </h1>
-                    <p className="text-sm text-brand-accent font-medium mt-1">
-                        {meals.length} Planned Meals
-                    </p>
+                    {!activeMeal && (
+                        <p className="text-sm text-brand-accent font-medium mt-1">
+                            {meals.length} Planned Meals
+                        </p>
+                    )}
                 </div>
             </div>
 
-            {meals.length > 0 ? (
-                meals.map((mealItem) => {
+            {activeMeal ? (
+                (() => {
+                    const mealItem = activeMeal;
                     const meal = mealItem.details;
                     // Combine ingredients for display
                     const allIngredients = [
@@ -114,13 +127,13 @@ const MealPlan = () => {
                     const prepSteps = meal.steps?.preparation || [];
 
                     return (
-                        <div key={mealItem.id} className="border-b border-[#43533414] pb-12 last:border-0 last:pb-0">
+                        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12">
                             <div className="mb-6 flex justify-between items-start">
                                 <div>
                                     <h2 className="text-2xl font-bold">{meal.menu_name}</h2>
                                     <p className="text-sm text-brand-accent">Saved at: {mealItem.saved_at}</p>
                                 </div>
-                                <button
+                                {/* <button
                                     onClick={() => confirmDelete(meal.menu_name)}
                                     className="p-2 hover:bg-red-100 rounded-full transition-colors group/delete cursor-pointer"
                                     title="Delete Meal"
@@ -128,7 +141,7 @@ const MealPlan = () => {
                                     <span className="material-symbols-outlined text-red-400 group-hover/delete:text-red-600">
                                         delete
                                     </span>
-                                </button>
+                                </button> */}
                             </div>
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -288,7 +301,94 @@ const MealPlan = () => {
                             </div>
                         </div>
                     );
-                })
+                })()
+            ) : meals.length > 0 ? (
+                <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {meals.map((mealItem) => {
+                        const meal = mealItem.details;
+                        return (
+                            <div
+                                key={mealItem.id}
+                                onClick={() => setActiveMeal(mealItem)}
+                                className="group relative flex flex-col p-4 rounded-4xl cursor-pointer transition-all duration-300 bg-[#d2e4c4] hover:shadow-md hover:scale-[1.01]"
+                            >
+                                {/* Image Container */}
+                                <div className="h-40 w-full mb-5 overflow-hidden rounded-2xl">
+                                    <img
+                                        src={defaultRecipeImage}
+                                        loading="lazy"
+                                        alt={meal.menu_name}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.currentTarget.src = defaultRecipeImage;
+                                        }}
+                                    />
+                                </div>
+
+                                {/* Content */}
+                                <div className="flex flex-col grow">
+                                    <h3 className="text-xl font-bold mb-2 text-[#3e5035]">
+                                        {meal.menu_name}
+                                    </h3>
+
+                                    <div className="text-sm leading-relaxed text-[#5e7054] mb-6 line-clamp-3">
+                                        <p className="text-xs font-medium mb-2">
+                                            Saved: {mealItem.saved_at}
+                                        </p>
+                                        {meal.suitability && meal.suitability.length > 0 && (
+                                            <div className="flex flex-wrap gap-1">
+                                                {meal.suitability.slice(0, 3).map((tag: string, idx: number) => (
+                                                    <span key={idx} className="text-[10px] px-2 py-1 bg-white/50 rounded-full text-[#3e5035] font-bold">
+                                                        {tag}
+                                                    </span>
+                                                ))}
+                                                {meal.suitability.length > 3 && (
+                                                    <span className="text-[10px] px-2 py-1 bg-white/50 rounded-full text-[#3e5035] font-bold">
+                                                        +{meal.suitability.length - 3}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Footer: Meta & Action */}
+                                    <div className="mt-auto flex items-center justify-between">
+                                        <div className="flex flex-row gap-2">
+                                            {meal.time_breakdown?.prep_time && (
+                                                <>
+                                                    <span className="text-xs font-bold text-[#3e5035]">
+                                                        {meal.time_breakdown.prep_time} prep
+                                                    </span>
+                                                    <span className="text-xs font-bold text-[#3e5035]">
+                                                        {meal.time_breakdown.cook_time} cook
+                                                    </span>
+                                                </>
+                                            )}
+                                        </div>
+                                        <div className="flex flex-col items-end">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    confirmDelete(meal.menu_name);
+                                                }}
+                                                className=" rounded-full pr-8 cursor-pointer "
+                                                title="Delete Meal"
+                                            >
+                                                <span className="material-symbols-outlined text-sm text-brand-accent">
+                                                    delete
+                                                </span>
+                                            </button>
+                                            <div className="flex flex-row items-center gap-1 text-xs font-bold text-[#9dbd87] group-hover:text-[#7a9d63] transition-colors">
+                                                <span>View Plan</span>
+                                                <ChevronRight size={16} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
             ) : (
                 <div className="flex justify-center items-center py-20">
                     <p className="text-xl text-[#7A8F63] font-bold">No saved meals found</p>
