@@ -7,7 +7,7 @@ function HowItWorks() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F2F0E4] via-[#CEDEBD] to-[#95B974]">
+    <div className="min-h-screen">
       <NavBar />
       
       {/* Hero Section */}

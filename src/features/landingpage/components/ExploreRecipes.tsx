@@ -1,12 +1,12 @@
 import React from 'react'
 import NavBar from '../../../components/layout/NavBar'
 import { useNavigate } from 'react-router-dom'
-import Footer from '../components/Footer';
+import Footer from './Footer';
 
-function RecipesPage() {
+function ExploreRecipes() {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F2F0E4] via-[#CEDEBD] to-[#95B974]">
+    <div className="min-h-screen">
       <NavBar />
       <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4">
         <div className="text-center max-w-4xl mx-auto">
@@ -51,4 +51,4 @@ function RecipesPage() {
   )
 }
 
-export default RecipesPage
+export default ExploreRecipes
