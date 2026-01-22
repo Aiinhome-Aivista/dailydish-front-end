@@ -15,7 +15,7 @@ function RecipesPage() {
               🍳
             </h1>
             <h2 className="text-4xl md:text-5xl font-bold text-[#435334] mb-6">
-              Mindblowing Recipes Await
+              Mind Blowing Recipes Await
             </h2>
             <p className="text-xl md:text-2xl text-[#5e7054] mb-8 leading-relaxed">
               Discover culinary masterpieces crafted with everyday ingredients. 
