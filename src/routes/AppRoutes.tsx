@@ -3,6 +3,7 @@ import { Route, Routes, Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../features/auth/hooks/useAuth";
 import AppLayout from "../components/layout/Applayout";
 import PageLoader from "../components/feedback/PageLoader";
+import CuisineLoader from "../components/feedback/DailyDishLoader";
 
 
 
@@ -23,7 +24,7 @@ const SplashToLanding = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowSplash(false);
-    }, 5000);
+    }, 4000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -36,7 +37,7 @@ const PrivateRoute = () => {
   const { isLoggedIn, isLoading } = useAuth();
 
   if (isLoading) {
-    return <PageLoader />;
+    return <CuisineLoader />;
   }
 
   return isLoggedIn ? <Outlet /> : <Navigate to="/" replace />;
@@ -46,7 +47,7 @@ const PublicRoute = () => {
   const { isLoggedIn, isLoading } = useAuth();
 
   if (isLoading) {
-    return <PageLoader />;
+    return <CuisineLoader />;
   }
 
   // Redirect to dashboard/configured page if already logged in
@@ -57,7 +58,7 @@ const PublicRoute = () => {
 
 function AppRoutes() {
   return (
-    <Suspense fallback={<PageLoader />}>
+    <Suspense fallback={<CuisineLoader />}>
       <Routes>
         {/* --- PUBLIC ROUTES --- */}
         <Route element={<PublicRoute />}>

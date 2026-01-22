@@ -33,6 +33,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
     setError(null);
     try {
+      // Add artificial delay to ensure loader is visible
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+
       const response = await authService.login(credentials);
       if (response && response.status === 'success') {
         localStorage.setItem('token', response.token);
@@ -80,4 +83,3 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     </AuthContext.Provider>
   );
 }
-
