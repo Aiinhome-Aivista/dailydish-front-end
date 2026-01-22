@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ChevronRight, ArrowLeft } from "lucide-react";
 import { pantryService } from "../api/saveMenuService";
 import type { SavedMenuItem } from "../types/saveMenu";
-import broccoliImage from "../../../assets/Broccolli_image.svg";
+import defaultRecipeImage from '../../../assets/Recipe_default_image.webp';
 import { useToast } from "../../../shared/context/ToastContext";
 import DeleteModal from "../../../components/modal/pages/DeleteModal";
 import CuisineLoader from "../../../components/feedback/DailyDishLoader";
@@ -103,7 +103,7 @@ const SavedRecipes = () => {
                                     menu_name: recipe.menu_name,
                                     cooking_time: recipe.cooking_time,
                                     description: recipe.description,
-                                    image_url: recipe.image_url
+                                    image_url: defaultRecipeImage
                                 }
                             })}
                             className="group relative flex flex-col p-4 rounded-4xl cursor-pointer transition-all duration-300 bg-[#d2e4c4] hover:shadow-md hover:scale-[1.01]"
@@ -111,12 +111,12 @@ const SavedRecipes = () => {
                             {/* Image Container */}
                             <div className="h-40 w-full mb-5 overflow-hidden rounded-2xl">
                                 <img
-                                    src={recipe.image_url || broccoliImage}
+                                    src={ defaultRecipeImage}
                                     loading="lazy"
                                     alt={recipe.menu_name}
                                     className="w-full h-full object-cover"
                                     onError={(e) => {
-                                        e.currentTarget.src = broccoliImage;
+                                        e.currentTarget.src = defaultRecipeImage;
                                     }}
                                 />
                             </div>
