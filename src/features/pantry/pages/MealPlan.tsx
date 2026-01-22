@@ -13,7 +13,7 @@ const MealPlan = () => {
     const navigate = useNavigate();
     const { showToast } = useToast();
     const [meals, setMeals] = useState<SavedMealItem[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     // Modal State
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);

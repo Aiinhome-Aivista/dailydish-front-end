@@ -91,7 +91,7 @@ const SplashScreen = () => {
 
         {/* Footer */}
         <p className="absolute bottom-6 text-xs text-[#E6E6D8] opacity-30 animate-pulse">
-          ©2020 AiInhome Technologies Pvt. Ltd. All rights reserved
+          ©2026 AiInhome Technologies Pvt. Ltd. All rights reserved
         </p>
       </div>
 
