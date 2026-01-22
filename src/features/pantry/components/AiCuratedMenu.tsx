@@ -30,7 +30,7 @@ const AiMenuDashboard: React.FC = () => {
           title: rec.menu_name,
           description: rec.description,
           time: rec.cooking_time,
-          image: defaultRecipeImage,
+          image: rec.image_url,
         };
       });
       setRecipes(mappedRecipes);
@@ -106,7 +106,7 @@ const AiMenuDashboard: React.FC = () => {
               key={recipe.id}
               onClick={() => setSelectedId(recipe.id)}
               className={`
-                group relative flex flex-col p-4 rounded-4xl cursor-pointer transition-all duration-300
+                group relative flex flex-col p-4 rounded-2xl cursor-pointer transition-all duration-300
                 ${selectedId === recipe.id
                   ? "bg-[#d2e4c4] ring-[3px] ring-brand-accent shadow-lg scale-[1.02]"
                   : "bg-[#d2e4c4] hover:shadow-md hover:scale-[1.01]"

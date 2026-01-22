@@ -23,6 +23,9 @@ export interface IngredientsAnalysis {
 
 export interface RecipeDetailData {
     menu_name: string;
+    image_url: string;
+    description: string;
+    cooking_time: string;
     servings: number;
     nutrition: RecipeNutrition;
     steps: RecipeSteps;

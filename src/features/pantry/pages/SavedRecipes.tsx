@@ -139,17 +139,17 @@ const SavedRecipes = () => {
                                         </span>
                                     </div>
 
-                                    <div className="flex items-center gap-3">
+                                    <div className="flex flex-row items-center gap-3">
                                         <button
                                             onClick={(e) => confirmDelete(e, recipe.menu_name)}
-                                            className=" hover:bg-brand-beige"
+                                            className=" hover:bg-brand-beige rounded-full p-1"
                                             title="Delete Recipe"
                                         >
-                                            <span className="material-symbols-outlined text-brand-accent text-[18px]">
+                                            <span className="material-symbols-outlined text-brand-accent">
                                                 delete
                                             </span>
                                         </button>
-                                        <div className="flex items-center gap-1 text-xs font-bold text-[#9dbd87] group-hover:text-[#7a9d63] transition-colors">
+                                        <div className="flex flex-row items-center gap-1 text-xs font-bold text-[#9dbd87] group-hover:text-[#7a9d63] transition-colors">
                                             <span>View Recipe</span>
                                             <ChevronRight size={16} />
                                         </div>

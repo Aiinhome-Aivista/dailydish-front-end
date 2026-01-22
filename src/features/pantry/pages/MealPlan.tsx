@@ -126,9 +126,12 @@ const MealPlan = () => {
                                     <div className="relative h-60 md:h-90 rounded-3xl overflow-hidden group shadow-lg">
                                         <div className="absolute inset-0 bg-slate-800 ">
                                             <img
-                                                src={defaultRecipeImage}
+                                                src={meal.image_url || defaultRecipeImage}
                                                 alt={meal.menu_name}
                                                 className="w-full h-full object-cover opacity-60"
+                                                onError={(e) => {
+                                                    e.currentTarget.src = defaultRecipeImage;
+                                                }}
                                             />
                                         </div>
 
