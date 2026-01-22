@@ -19,6 +19,7 @@ export default function RecipeDetails() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [updatingServings, setUpdatingServings] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [recipeData, setRecipeData] = useState<RecipeDetailData | null>(null);
 
@@ -35,7 +36,7 @@ export default function RecipeDetails() {
           data: {
             menu_name,
             cooking_time: cooking_time || "10 minutes",
-            image_url:  defaultRecipeImage
+            image_url: defaultRecipeImage
           }
         });
 
@@ -82,6 +83,42 @@ export default function RecipeDetails() {
       }
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleUpdateServings = async (newServings: number) => {
+    if (newServings < 1 || !recipeData || !menu_name) return;
+
+    try {
+      setUpdatingServings(true);
+      const response = await pantryService.updateServings({
+        new_servings: newServings,
+        recipe_details: {
+          menu_name: recipeData.menu_name,
+          servings: recipeData.servings,
+          time_breakdown: recipeData.time_breakdown,
+          ingredients_analysis: recipeData.ingredients_analysis,
+          nutrition: recipeData.nutrition
+        }
+      });
+
+      if (response && response.status === 'success') {
+        const { details } = response;
+        setServings(details.servings);
+        setRecipeData(prev => prev ? ({
+          ...prev,
+          servings: details.servings,
+          nutrition: details.nutrition,
+          ingredients_analysis: details.ingredients_analysis,
+          time_breakdown: details.time_breakdown
+        }) : null);
+        showToast("success", "Success", response.message || "Recipe servings updated successfully.");
+      }
+    } catch (error) {
+      console.error("Failed to update servings", error);
+      showToast("error", "Error", "Failed to update servings.");
+    } finally {
+      setUpdatingServings(false);
     }
   };
 
@@ -173,13 +210,17 @@ export default function RecipeDetails() {
                 <div className="flex items-center bg-brand-light rounded-lg p-1">
                   <span className="text-xs font-bold px-2">Servings:</span>
                   <button
-                    onClick={() => setServings(Math.max(1, servings - 1))}
-                    className="w-6 h-6 flex items-center justify-center bg-brand-beige rounded text-sm hover:bg-white"
+                    onClick={() => handleUpdateServings(servings - 1)}
+                    disabled={updatingServings || servings <= 1}
+                    className={`w-6 h-6 flex items-center justify-center bg-brand-beige rounded text-sm hover:bg-white ${updatingServings || servings <= 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >-</button>
-                  <span className="w-8 text-center font-bold">{servings}</span>
+                  <span className="w-8 text-center font-bold flex justify-center items-center">
+                    {updatingServings ? <Loader2 size={12} className="animate-spin" /> : servings}
+                  </span>
                   <button
-                    onClick={() => setServings(servings + 1)}
-                    className="w-6 h-6 flex items-center justify-center bg-[#7A8F63] text-white rounded text-sm hover:bg-[#687a54]"
+                    onClick={() => handleUpdateServings(servings + 1)}
+                    disabled={updatingServings}
+                    className={`w-6 h-6 flex items-center justify-center bg-[#7A8F63] text-white rounded text-sm hover:bg-[#687a54] ${updatingServings ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >+</button>
                 </div>
               </div>

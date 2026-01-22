@@ -8,7 +8,7 @@ const NavBar = () => {
     const navigate = useNavigate();
 
     return (
-        <nav className="w-full py-3 px-5 md:px-12 flex justify-between items-center bg-[#CEDEBD] relative z-50">
+        <nav className="w-full py-3 px-5 md:px-12 flex justify-between items-center bg-[#CEDEBD] relative z-50 sticky top-0">
             {/* Logo */}
             <div className="flex items-center gap-2">
                 <img src={cookerIcon} alt="DailyDish Logo" className="w-8 h-8" />

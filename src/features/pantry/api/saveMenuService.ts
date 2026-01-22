@@ -2,6 +2,7 @@ import axiosApi from '../../../lib/axiosApi';
 import { API_ENDPOINTS } from '../../../config/endpoints';
 import type { SavedMenuResponse, SaveRecipeRequest, SaveRecipeResponse } from '../types/saveMenu';
 import type { SaveMealRequest, SaveMealResponse, GetSavedMealResponse } from '../types/saveMeal';
+import type { RecipeUpdateServingsRequest, RecipeUpdateServingsResponse } from '../types/recipeDetails';
 
 export const pantryService = {
     saveMenu: async (data: SaveRecipeRequest) => {
@@ -71,6 +72,18 @@ export const pantryService = {
             return response;
         } catch (error) {
             console.error('Error deleting meal:', error);
+            throw error;
+        }
+    },
+    updateServings: async (data: RecipeUpdateServingsRequest) => {
+        try {
+            const response = await axiosApi<RecipeUpdateServingsResponse>(API_ENDPOINTS.RECIPEUPDATESERVINGS, {
+                method: 'POST',
+                data
+            });
+            return response;
+        } catch (error) {
+            console.error('Error updating servings:', error);
             throw error;
         }
     },
