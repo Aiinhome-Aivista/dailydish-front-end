@@ -48,11 +48,16 @@ const Header = ({ onMenuClick }: HeaderProps) => {
               {user?.username || "User"}
             </span>
           </button>
-          <button
+            <button
             onClick={handleLogoutClick}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-accent text-brand-dark hover:bg-[#435334] hover:text-white transition-colors font-medium cursor-pointer"
+            className="group flex items-center h-12 bg-brand-accent hover:bg-brand-dark rounded-full transition-all duration-500 ease-in-out max-w-[48px] hover:max-w-[120px] cursor-pointer overflow-hidden shadow-sm hover:shadow-md"
           >
-            <span className="material-symbols-outlined text-[20px]">logout</span>
+            <div className="w-12 h-12 flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[20px] text-brand-dark group-hover:text-white transition-colors">logout</span>
+            </div>
+            <span className="text-white font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pr-4">
+              Logout
+            </span>
           </button>
         </div>
       </header>
