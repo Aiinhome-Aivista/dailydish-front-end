@@ -34,7 +34,8 @@ export default function RecipeDetails() {
           method: 'POST',
           data: {
             menu_name,
-            cooking_time: cooking_time || "10 minutes"
+            cooking_time: cooking_time || "10 minutes",
+            image_url: image_url || defaultRecipeImage
           }
         });
 
@@ -50,7 +51,7 @@ export default function RecipeDetails() {
     };
 
     fetchRecipeDetails();
-  }, [menu_name, cooking_time]);
+  }, [menu_name, cooking_time, image_url]);
 
   const handleSaveRecipe = async () => {
     if (!recipeData || !menu_name) return;
@@ -134,9 +135,12 @@ export default function RecipeDetails() {
           <div className="relative h-60 md:h-90 rounded-3xl overflow-hidden group shadow-lg">
             <div className="absolute inset-0 bg-slate-800 ">
               <img
-                src={defaultRecipeImage} // Always use default image
+                src={recipeData.image_url}
                 alt={recipeData.menu_name}
                 className="w-full h-full object-cover opacity-60"
+                onError={(e) => {
+                  e.currentTarget.src = defaultRecipeImage;
+                }}
               />
             </div>
 
