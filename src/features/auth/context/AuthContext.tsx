@@ -14,7 +14,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [userToken, setUserToken] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -27,6 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUserId(storedUserId);
       setUser({ username: storedUsername });
     }
+    setIsLoading(false);
   }, []);
 
   const login = async (credentials: LoginPayload) => {
