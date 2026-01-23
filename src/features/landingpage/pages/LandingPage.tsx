@@ -3,7 +3,7 @@ import NavBar from '../../../components/layout/NavBar';
 import LandingFeatures from '../components/Features';
 import LandingLeftovers from '../components/Leftovers';
 import ReadyToCook from '../components/ReadyToCook';
-import LandingFooter from '../components/Footer';
+import LandingFooter from '../components/LandingFooter';
 import FirstSection from '../components/FirstSection';
 
 function LandingPage() {

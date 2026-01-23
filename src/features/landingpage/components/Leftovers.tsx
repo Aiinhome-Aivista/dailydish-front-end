@@ -1,6 +1,8 @@
 import React from 'react';
-import daalIcon from '../../../assets/Daal.svg';
-import cookerIcon from '../../../assets/curry.svg';
+import RiceDaalIcon from "../../../assets/Rice_Daal.svg";
+import DaalIcon from "../../../assets/Daal.jpg";
+
+
 
 const LandingLeftovers = () => {
     return (
@@ -31,9 +33,9 @@ const LandingLeftovers = () => {
 
                 <div className="flex-1 relative flex justify-center">
                     {/* Card 1 */}
-                    <div className="bg-brand-light rounded-2xl p-3 transform -rotate-8 w-60 absolute left-6 top-0 z-10 shadow-2xl shadow-[#0000000D]">
+                    <div className="bg-brand-light rounded-2xl p-3 transform -rotate-8 w-60 absolute left-6 top-0 z-10 shadow-[0_4px_9px_5px_rgba(0,0,0,0.05)]">
                         <div className="bg-gray-800 h-50 rounded-xl mb-3 overflow-hidden">
-                            <img src={cookerIcon} alt="Dal Makhani" className="w-full h-full object-cover" />
+                            <img src={DaalIcon} alt="Dal Makhani" className="w-full h-full object-cover" />
                         </div>
                         <div className="flex justify-between items-end">
                             <div>
@@ -47,9 +49,9 @@ const LandingLeftovers = () => {
                     </div>
 
                     {/* Card 2 */}
-                    <div className="bg-brand-light rounded-2xl p-3  transform rotate-6 w-60 mt-20 ml-80">
+                    <div className="bg-brand-light rounded-2xl p-3  transform rotate-6 w-60 mt-20 ml-80 shadow-[0_4px_9px_5px_rgba(0,0,0,0.05)]">
                         <div className="bg-gray-800 h-50 rounded-lg mb-3 overflow-hidden">
-                           <img src={daalIcon} alt="Dal Makhani" className="w-full h-full object-cover" />
+                           <img src={RiceDaalIcon} alt="Dal Makhani" className="w-full h-full object-cover" />
                         </div>
                         <div className="flex justify-between items-end">
                             <div>

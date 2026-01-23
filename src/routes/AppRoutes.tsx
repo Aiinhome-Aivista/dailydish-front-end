@@ -27,7 +27,7 @@ const SplashToLanding = () => {
     const timer = setTimeout(() => {
       setShowSplash(false);
       setShowLoader(true);
-    }, 4000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -36,7 +36,7 @@ const SplashToLanding = () => {
     if (showLoader) {
       const timer = setTimeout(() => {
         setShowLoader(false);
-      }, 5000);
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [showLoader]);
