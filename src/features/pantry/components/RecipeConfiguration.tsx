@@ -181,23 +181,28 @@ export default function RecipeConfiguration() {
               </div>
 
               <div className="col-span-3 flex flex-col gap-1">
-                <select
-                  className={`w-full rounded-lg px-3 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${
-                    errors.unit ? "border border-red-500" : ""
-                  }`}
-                  value={unit}
-                  onChange={(e) => {
-                    setUnit(e.target.value);
-                    if (errors.unit) setErrors({ ...errors, unit: undefined });
-                  }}
-                >
-                  <option value="Unit">Unit</option>
-                  <option value="Grams">Grams</option>
-                  <option value="Kg">Kg</option>
-                  <option value="Cloves">Cloves</option>
-                  <option value="Pieces">Pieces</option>
-                  <option value="Cups">Cups</option>
-                </select>
+                <div className="relative">
+                  <select
+                    className={`w-full rounded-lg pl-3 pr-8 py-2 text-sm bg-brand-beige outline-none text-brand-accent appearance-none  cursor-pointer ${
+                      errors.unit ? "border border-red-500" : ""
+                    }`}
+                    value={unit}
+                    onChange={(e) => {
+                      setUnit(e.target.value);
+                      if (errors.unit) setErrors({ ...errors, unit: undefined });
+                    }}
+                  >
+                    <option value="Unit">Unit</option>
+                    <option value="Grams">Grams</option>
+                    <option value="Kg">Kg</option>
+                    <option value="Cloves">Cloves</option>
+                    <option value="Pieces">Pieces</option>
+                    <option value="Cups">Cups</option>
+                  </select>
+                  <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-brand-accent pointer-events-none  cursor-pointer">
+                    expand_more
+                  </span>
+                </div>
                 {errors.unit && (
                   <span className="text-[10px] text-red-500 pl-1">
                     {errors.unit}
@@ -207,9 +212,10 @@ export default function RecipeConfiguration() {
 
               <button
                 onClick={addIngredient}
-                className="col-span-1 bg-brand-accent text-brand-dark rounded-lg text-sm font-medium py-2 cursor-pointer"
+                className="col-span-1 bg-brand-accent text-brand-dark rounded-lg text-sm font-medium py-2 cursor-pointer flex items-center justify-center gap-1"
               >
-                + Add
+                <span className="material-symbols-outlined">add</span>
+                Add
               </button>
             </div>
           </div>

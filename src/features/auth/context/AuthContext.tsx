@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setError(null);
     try {
       // Add artificial delay to ensure loader is visible
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 4000));
 
       const response = await authService.login(credentials);
       if (response && response.status === 'success') {
