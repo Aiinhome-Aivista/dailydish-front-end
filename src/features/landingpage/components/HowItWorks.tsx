@@ -88,7 +88,7 @@ function HowItWorks() {
               <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-2xl">
                 <div className="text-center">
                   <div className="text-4xl mb-4">⏲️</div>
-                  <h3 className="text-xl font-bold text-[#435334] mb-2">Guided Cooking</h3>
+                  <h3 className="text-xl font-bold text-[#435334] mb-2">Cooking Guide</h3>
                   <p className="text-[#5e7054]">Interactive cooking assistant with real-time guidance</p>
                 </div>
               </div>
