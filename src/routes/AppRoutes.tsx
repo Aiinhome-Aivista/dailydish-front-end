@@ -9,6 +9,9 @@ import DailyDishLoader from "../components/feedback/DailyDishLoader";
 const LandingPage = lazy(() => import('../features/landingpage/pages/LandingPage'));
 const RecipesPage = lazy(() => import('../features/landingpage/components/ExploreRecipes'));
 const HowItWorks = lazy(() => import('../features/landingpage/components/HowItWorks'));
+const NutritionalScoring = lazy(() => import('../features/landingpage/pages/NutritionalScoring'));
+const AiPersonalization = lazy(() => import('../features/landingpage/pages/AiPersonalization'));
+const SpeedEfficiency = lazy(() => import('../features/landingpage/pages/SpeedEfficiency'));
 const Login = lazy(() => import('../features/auth/pages/Login'));
 const SignUp = lazy(() => import("../features/auth/pages/SignUp"));
 const SplashScreen = lazy(() => import('../features/splashscreen/pages/SplashScreen'));
@@ -81,6 +84,9 @@ function AppRoutes() {
           <Route path="signup" element={<SignUp />} />
           <Route path="explore-recipes" element={<RecipesPage />} />
            <Route path="How-it-Works" element={<HowItWorks />} />
+           <Route path="nutritional-scoring" element={<NutritionalScoring />} />
+           <Route path="ai-personalization" element={<AiPersonalization />} />
+           <Route path="speed-efficiency" element={<SpeedEfficiency />} />
         </Route>
 
         {/* --- PROTECTED ROUTES --- */}
