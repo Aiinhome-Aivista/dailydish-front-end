@@ -372,7 +372,7 @@ export default function RecipeConfiguration() {
         <div className="bg-brand-light rounded-xl p-4 flex items-center justify-between border border-[#43533414] py-6">
           <div>
             <p className="text-lg font-bold text-brand-dark">
-              Ready for your AI Creation?
+              Are you ready for Recipe?
             </p>
             <p className="text-xs text-brand-accent font-medium">
               We have enough information to craft a unique 5-star recipe for
