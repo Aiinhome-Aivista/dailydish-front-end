@@ -212,7 +212,7 @@ export default function RecipeConfiguration() {
 
               <button
                 onClick={addIngredient}
-                className="col-span-1 bg-brand-accent text-brand-dark rounded-lg text-sm font-medium py-2 cursor-pointer flex items-center justify-center gap-1"
+                className="col-span-1 bg-brand-accent text-brand-dark rounded-lg text-sm font-medium py-1.5 cursor-pointer flex items-center justify-center gap-1"
               >
                 <span className="material-symbols-outlined">add</span>
                 Add
