@@ -190,7 +190,7 @@ const NutritionalScoring = () => {
               Join DailyDish and discover how easy it is to eat healthier with our comprehensive
               nutritional scoring system guiding your every meal decision.
             </p>
-            <button className="bg-white text-brand-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+            <button className="bg-white text-brand-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors" onClick={() => navigate('/login')}>
               Get Started
             </button>
           </div>

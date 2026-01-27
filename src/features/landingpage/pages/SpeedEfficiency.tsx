@@ -309,7 +309,7 @@ const SpeedEfficiency = () => {
               Stop wasting hours on meal planning and cooking. With DailyDish, you can have
               delicious, healthy meals ready faster than ever before.
             </p>
-            <button className="bg-white text-brand-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+            <button className="bg-white text-brand-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors" onClick={() => navigate('/login')}>
               Start Cooking Efficiently
             </button>
           </div>
