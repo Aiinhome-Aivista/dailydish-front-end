@@ -1,5 +1,5 @@
 import { useState, useEffect, Suspense, lazy } from "react";
-import { Route, Routes, Navigate, Outlet } from "react-router-dom";
+import { Route, Routes, Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../features/auth/hooks/useAuth";
 import AppLayout from "../components/layout/Applayout";
 import DailyDishLoader from "../components/feedback/DailyDishLoader";
@@ -23,27 +23,31 @@ const MealPlan = lazy(() => import("../features/pantry/pages/MealPlan"));
 
 
 const SplashToLanding = () => {
+  const location = useLocation();
   const [showSplash, setShowSplash] = useState(true);
   const [showLoader, setShowLoader] = useState(false);
 
   useEffect(() => {
+    if (location.state?.skipSplash) {
+      return; // Skip splash and loader
+    }
     const timer = setTimeout(() => {
       setShowSplash(false);
       setShowLoader(true);
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [location.state]);
 
   useEffect(() => {
-    if (showLoader) {
-      const timer = setTimeout(() => {
-        setShowLoader(false);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [showLoader]);
+    if (location.state?.skipSplash || !showLoader) return;
+    const timer = setTimeout(() => {
+      setShowLoader(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [showLoader, location.state]);
 
+  if (location.state?.skipSplash) return <LandingPage />;
   if (showSplash) return <SplashScreen />;
   if (showLoader) return <DailyDishLoader />;
   return <LandingPage />;
