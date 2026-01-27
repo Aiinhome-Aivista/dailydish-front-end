@@ -10,10 +10,10 @@ const SpeedEfficiency = () => {
     <div className="h-full w-full relative">
       <NavBar />
       <button
-        onClick={() => navigate('/', { state: { skipSplash: true } })}
-        className="absolute top-18 right-12 bg-brand-primary text-brand-dark px-4 py-2 rounded-lg font-semibold hover:bg-[#CEDEBD] transition-colors z-50"
+        onClick={() => navigate('/landing')}
+        className="absolute top-18 right-12 bg-brand-primary text-brand-dark px-4 py-2 rounded-lg font-semibold hover:bg-[#CEDEBD] transition-colors cursor-pointer flex items-center gap-2"
       >
-        ← Back
+        <span className="material-symbols-outlined">arrow_back</span>Back
       </button>
       <main className="pt-20 pb-20 px-6 md:px-12 max-w-6xl mx-auto min-h-[60vh]">
         {/* Hero Section */}
@@ -193,8 +193,8 @@ const SpeedEfficiency = () => {
                 Never buy too much or too little again.
               </p>
               <div className="text-sm text-brand-dark/60">
-                • Categorized by store sections<br/>
-                • Quantity calculations<br/>
+                • Categorized by store sections<br />
+                • Quantity calculations<br />
                 • Cross-recipe ingredient consolidation
               </div>
             </div>
@@ -205,8 +205,8 @@ const SpeedEfficiency = () => {
                 Never overcook or burn your food.
               </p>
               <div className="text-sm text-brand-dark/60">
-                • Automatic step progression<br/>
-                • Pause and resume functionality<br/>
+                • Automatic step progression<br />
+                • Pause and resume functionality<br />
                 • Multiple timer management
               </div>
             </div>
@@ -217,8 +217,8 @@ const SpeedEfficiency = () => {
                 Maximize your current stock.
               </p>
               <div className="text-sm text-brand-dark/60">
-                • Expiration date tracking<br/>
-                • Low-stock alerts<br/>
+                • Expiration date tracking<br />
+                • Low-stock alerts<br />
                 • Recipe suggestions from inventory
               </div>
             </div>
@@ -229,8 +229,8 @@ const SpeedEfficiency = () => {
                 Prepare efficiently for the entire week.
               </p>
               <div className="text-sm text-brand-dark/60">
-                • Weekly overview<br/>
-                • Prep day scheduling<br/>
+                • Weekly overview<br />
+                • Prep day scheduling<br />
                 • Grocery list generation
               </div>
             </div>

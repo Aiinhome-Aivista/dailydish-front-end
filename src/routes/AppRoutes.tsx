@@ -3,6 +3,7 @@ import { Route, Routes, Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../features/auth/hooks/useAuth";
 import AppLayout from "../components/layout/Applayout";
 import DailyDishLoader from "../components/feedback/DailyDishLoader";
+import LandingPage from "../features/landingpage/pages/LandingPage";
 
 
 // Lazy Load Pages
@@ -87,6 +88,7 @@ function AppRoutes() {
         {/* --- PUBLIC ROUTES --- */}
         <Route element={<PublicRoute />}>
           <Route path="/" element={<SplashToLanding />} />
+          <Route path="landing" element={<LandingPage />} />
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<SignUp />} />
           <Route path="explore-recipes" element={<RecipesPage />} />
