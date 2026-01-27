@@ -1,11 +1,20 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import NavBar from '../../../components/layout/NavBar';
 import LandingFooter from '../components/LandingFooter';
 
 const NutritionalScoring = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full relative">
       <NavBar />
+      <button
+        onClick={() => navigate('/', { state: { skipSplash: true } })}
+        className="absolute top-18 right-12 bg-brand-primary text-brand-dark px-4 py-2 rounded-lg font-semibold hover:bg-[#CEDEBD] transition-colors z-50"
+      >
+        ← Back
+      </button>
       <main className="pt-20 pb-20 px-6 md:px-12 max-w-6xl mx-auto min-h-[60vh]">
         {/* Hero Section */}
         <div className="text-center mb-16">
