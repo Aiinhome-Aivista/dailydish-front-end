@@ -6,7 +6,7 @@ import DailyDishLoader from "../components/feedback/DailyDishLoader";
 
 
 // Lazy Load Pages
-const LandingPage = lazy(() => import('../features/landingpage/pages/LandingPage'));
+// LandingPage loaded manually in SplashToLanding
 const RecipesPage = lazy(() => import('../features/landingpage/components/ExploreRecipes'));
 const HowItWorks = lazy(() => import('../features/landingpage/components/HowItWorks'));
 const NutritionalScoring = lazy(() => import('../features/landingpage/pages/NutritionalScoring'));
@@ -23,30 +23,37 @@ const MealPlan = lazy(() => import("../features/pantry/pages/MealPlan"));
 
 
 const SplashToLanding = () => {
-  const [showSplash, setShowSplash] = useState(true);
-  const [showLoader, setShowLoader] = useState(false);
+  const [phase, setPhase] = useState<'splash' | 'loader' | 'landing'>('splash');
+  const [LandingComponent, setLandingComponent] = useState<any>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-      setShowLoader(true);
+    // 1. Splash Timer (3s)
+    const splashTimer = setTimeout(() => {
+      setPhase('loader');
     }, 3000);
 
-    return () => clearTimeout(timer);
+    // 2. Preload LandingPage + Minimum Wait (7s total = 3s Splash + 4s Loader)
+    Promise.all([
+      new Promise(resolve => setTimeout(resolve, 7000)),
+      import('../features/landingpage/pages/LandingPage')
+    ])
+      .then(([_, module]) => {
+        setLandingComponent(() => module.default);
+        setPhase('landing');
+      })
+      .catch(err => {
+        console.error("Failed to load LandingPage", err);
+        // Fallback or error handling if needed, though rare
+      });
+
+    return () => clearTimeout(splashTimer);
   }, []);
 
-  useEffect(() => {
-    if (showLoader) {
-      const timer = setTimeout(() => {
-        setShowLoader(false);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [showLoader]);
+  if (phase === 'splash') return <SplashScreen />;
+  if (phase === 'loader') return <DailyDishLoader />;
+  if (phase === 'landing' && LandingComponent) return <LandingComponent />;
 
-  if (showSplash) return <SplashScreen />;
-  if (showLoader) return <DailyDishLoader />;
-  return <LandingPage />;
+  return <DailyDishLoader />;
 };
 
 // Route Guards
@@ -83,10 +90,10 @@ function AppRoutes() {
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<SignUp />} />
           <Route path="explore-recipes" element={<RecipesPage />} />
-           <Route path="How-it-Works" element={<HowItWorks />} />
-           <Route path="nutritional-scoring" element={<NutritionalScoring />} />
-           <Route path="ai-personalization" element={<AiPersonalization />} />
-           <Route path="speed-efficiency" element={<SpeedEfficiency />} />
+          <Route path="How-it-Works" element={<HowItWorks />} />
+          <Route path="nutritional-scoring" element={<NutritionalScoring />} />
+          <Route path="ai-personalization" element={<AiPersonalization />} />
+          <Route path="speed-efficiency" element={<SpeedEfficiency />} />
         </Route>
 
         {/* --- PROTECTED ROUTES --- */}
