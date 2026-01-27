@@ -5,9 +5,11 @@ import AppLayout from "../components/layout/Applayout";
 import DailyDishLoader from "../components/feedback/DailyDishLoader";
 
 
+
 // Lazy Load Pages
-const LandingPage = lazy(() => import('../features/landingpage/pages/LandingPage'));
+// LandingPage loaded manually in SplashToLanding
 const RecipesPage = lazy(() => import('../features/landingpage/components/ExploreRecipes'));
+const LandingPage = lazy(() => import('../features/landingpage/pages/LandingPage'));
 const HowItWorks = lazy(() => import('../features/landingpage/components/HowItWorks'));
 const NutritionalScoring = lazy(() => import('../features/landingpage/pages/NutritionalScoring'));
 const AiPersonalization = lazy(() => import('../features/landingpage/pages/AiPersonalization'));
@@ -24,33 +26,41 @@ const MealPlan = lazy(() => import("../features/pantry/pages/MealPlan"));
 
 const SplashToLanding = () => {
   const location = useLocation();
-  const [showSplash, setShowSplash] = useState(true);
-  const [showLoader, setShowLoader] = useState(false);
+  const shouldSkipSplash = location.state?.skipSplash;
+  const [phase, setPhase] = useState<'splash' | 'loader' | 'landing'>(shouldSkipSplash ? 'landing' : 'splash');
+  const [LandingComponent, setLandingComponent] = useState<any>(null);
 
   useEffect(() => {
-    if (location.state?.skipSplash) {
-      return; // Skip splash and loader
-    }
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-      setShowLoader(true);
+    if (shouldSkipSplash) return;
+
+    // 1. Splash Timer (3s)
+    const splashTimer = setTimeout(() => {
+      setPhase('loader');
     }, 3000);
 
-    return () => clearTimeout(timer);
-  }, [location.state]);
+    // 2. Preload LandingPage + Minimum Wait (7s total = 3s Splash + 4s Loader)
+    Promise.all([
+      new Promise(resolve => setTimeout(resolve, 7000)),
+      import('../features/landingpage/pages/LandingPage')
+    ])
+      .then(([_, module]) => {
+        setLandingComponent(() => module.default);
+        setPhase('landing');
+      })
+      .catch(err => {
+        console.error("Failed to load LandingPage", err);
+        // Fallback or error handling if needed, though rare
+      });
 
-  useEffect(() => {
-    if (location.state?.skipSplash || !showLoader) return;
-    const timer = setTimeout(() => {
-      setShowLoader(false);
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, [showLoader, location.state]);
+    return () => clearTimeout(splashTimer);
+  }, [shouldSkipSplash]);
 
-  if (location.state?.skipSplash) return <LandingPage />;
-  if (showSplash) return <SplashScreen />;
-  if (showLoader) return <DailyDishLoader />;
-  return <LandingPage />;
+  if (shouldSkipSplash) return <LandingPage />;
+  if (phase === 'splash') return <SplashScreen />;
+  if (phase === 'loader') return <DailyDishLoader />;
+  if (phase === 'landing' && LandingComponent) return <LandingComponent />;
+
+  return <DailyDishLoader />;
 };
 
 // Route Guards
@@ -84,13 +94,14 @@ function AppRoutes() {
         {/* --- PUBLIC ROUTES --- */}
         <Route element={<PublicRoute />}>
           <Route path="/" element={<SplashToLanding />} />
+         
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<SignUp />} />
           <Route path="explore-recipes" element={<RecipesPage />} />
-           <Route path="How-it-Works" element={<HowItWorks />} />
-           <Route path="nutritional-scoring" element={<NutritionalScoring />} />
-           <Route path="ai-personalization" element={<AiPersonalization />} />
-           <Route path="speed-efficiency" element={<SpeedEfficiency />} />
+          <Route path="How-it-Works" element={<HowItWorks />} />
+          <Route path="nutritional-scoring" element={<NutritionalScoring />} />
+          <Route path="ai-personalization" element={<AiPersonalization />} />
+          <Route path="speed-efficiency" element={<SpeedEfficiency />} />
         </Route>
 
         {/* --- PROTECTED ROUTES --- */}

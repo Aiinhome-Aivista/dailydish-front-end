@@ -8,6 +8,13 @@ function ExploreRecipes() {
   return (
     <div className="min-h-screen">
       <NavBar />
+       <button
+        onClick={() => navigate('/', { state: { skipSplash: true } })}
+        className="absolute top-18 right-12 bg-brand-primary text-brand-dark px-4 py-2 rounded-lg font-semibold hover:bg-[#CEDEBD] transition-colors cursor-pointer flex items-center gap-2"
+      >
+        <span className="material-symbols-outlined">arrow_back</span>
+        Back
+      </button>
       <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4">
         <div className="text-center max-w-4xl mx-auto">
           <div className="mb-8">

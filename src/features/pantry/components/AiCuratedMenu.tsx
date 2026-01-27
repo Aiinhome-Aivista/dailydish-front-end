@@ -89,7 +89,7 @@ const AiMenuDashboard: React.FC = () => {
             </span>
           </button>
           <h1 className="text-3xl font-bold text-brand-dark">
-            Your AI-Curated Menu
+       Welcome to Your kitchen
           </h1>
         </div>
         <p className="text-sm text-brand-accent font-medium">
