@@ -3,12 +3,13 @@ import { Route, Routes, Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../features/auth/hooks/useAuth";
 import AppLayout from "../components/layout/Applayout";
 import DailyDishLoader from "../components/feedback/DailyDishLoader";
-import LandingPage from "../features/landingpage/pages/LandingPage";
+
 
 
 // Lazy Load Pages
 // LandingPage loaded manually in SplashToLanding
 const RecipesPage = lazy(() => import('../features/landingpage/components/ExploreRecipes'));
+const LandingPage = lazy(() => import('../features/landingpage/pages/LandingPage'));
 const HowItWorks = lazy(() => import('../features/landingpage/components/HowItWorks'));
 const NutritionalScoring = lazy(() => import('../features/landingpage/pages/NutritionalScoring'));
 const AiPersonalization = lazy(() => import('../features/landingpage/pages/AiPersonalization'));
@@ -24,10 +25,14 @@ const MealPlan = lazy(() => import("../features/pantry/pages/MealPlan"));
 
 
 const SplashToLanding = () => {
-  const [phase, setPhase] = useState<'splash' | 'loader' | 'landing'>('splash');
+  const location = useLocation();
+  const shouldSkipSplash = location.state?.skipSplash;
+  const [phase, setPhase] = useState<'splash' | 'loader' | 'landing'>(shouldSkipSplash ? 'landing' : 'splash');
   const [LandingComponent, setLandingComponent] = useState<any>(null);
 
   useEffect(() => {
+    if (shouldSkipSplash) return;
+
     // 1. Splash Timer (3s)
     const splashTimer = setTimeout(() => {
       setPhase('loader');
@@ -48,8 +53,9 @@ const SplashToLanding = () => {
       });
 
     return () => clearTimeout(splashTimer);
-  }, []);
+  }, [shouldSkipSplash]);
 
+  if (shouldSkipSplash) return <LandingPage />;
   if (phase === 'splash') return <SplashScreen />;
   if (phase === 'loader') return <DailyDishLoader />;
   if (phase === 'landing' && LandingComponent) return <LandingComponent />;
@@ -88,7 +94,7 @@ function AppRoutes() {
         {/* --- PUBLIC ROUTES --- */}
         <Route element={<PublicRoute />}>
           <Route path="/" element={<SplashToLanding />} />
-          <Route path="landing" element={<LandingPage />} />
+         
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<SignUp />} />
           <Route path="explore-recipes" element={<RecipesPage />} />

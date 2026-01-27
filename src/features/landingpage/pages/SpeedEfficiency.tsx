@@ -10,7 +10,7 @@ const SpeedEfficiency = () => {
     <div className="h-full w-full relative">
       <NavBar />
       <button
-        onClick={() => navigate('/landing')}
+        onClick={() => navigate('/', { state: { skipSplash: true } })}
         className="absolute top-18 right-12 bg-brand-primary text-brand-dark px-4 py-2 rounded-lg font-semibold hover:bg-[#CEDEBD] transition-colors cursor-pointer flex items-center gap-2"
       >
         <span className="material-symbols-outlined">arrow_back</span>Back

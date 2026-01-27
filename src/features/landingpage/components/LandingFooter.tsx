@@ -1,7 +1,9 @@
 import { Send } from 'lucide-react';
 import cookerIcon from '../../../assets/cooker.svg';
+import { useNavigate } from 'react-router-dom';
 
 const LandingFooter = () => {
+  const navigate = useNavigate();
   return (
     <footer className="pt-15">
       <div className="w-full">
@@ -20,8 +22,8 @@ const LandingFooter = () => {
           {/* Product */}
           <div>
             <h4 className="font-bold text-brand-dark mb-4">Product</h4>
-            <ul className="space-y-2 text-sm text-brand-dark">
-              <li><a href="#" className="hover:text-brand-dark transition-colors">How it works</a></li>
+            <ul className="space-y-2 text-sm text-brand-dark cursor-pointer">
+              <li><a onClick={()=> navigate("/How-it-Works")} className="hover:text-brand-dark transition-colors">How it works</a></li>
               <li><a href="#" className="hover:text-brand-dark transition-colors">Pricing</a></li>
               <li><a href="#" className="hover:text-brand-dark transition-colors">Integrations</a></li>
             </ul>
