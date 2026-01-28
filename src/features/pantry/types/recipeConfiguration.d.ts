@@ -1,9 +1,11 @@
+// Payload Ingredient
 export interface Ingredient {
   name: string;
   qty: string;
 }
 
-interface Ingredient {
+// UI Ingredient
+export interface UiIngredient {
   id: string;
   name: string;
   qty: string;
@@ -48,3 +50,22 @@ interface OptionProps {
 }
 // Recipe Details Types
 
+
+// Cuisine Essentials Types
+
+export interface CuisineEssentialsRequest {
+  cuisine: string;
+}
+
+export interface CuisineEssentialsData {
+  common_spices: string[];
+  cuisine: string;
+  description: string;
+  essential_cooking_items: string[];
+}
+
+export interface CuisineEssentialsResponse {
+  data: CuisineEssentialsData;
+  status: string;
+  user_id: string;
+}

@@ -4,11 +4,13 @@ import japanese_curry from "../../../assets/japanese_curry.svg";
 import kebab_dining from "../../../assets/kebab_dining.svg";
 import dinner_dining from "../../../assets/dinner_dining.svg";
 import yoshoku from "../../../assets/yoshoku.svg";
-import { generateRecipes } from "../api/recipeConfigurationService";
+import { generateRecipes, getCuisineEssentials } from "../api/recipeConfigurationService";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import type {
   RecipeGenerationRequest,
   Ingredient,
+  UiIngredient,
 } from "../types/recipeConfiguration";
 import DailyDishLoader from "../../../components/feedback/DailyDishLoader";
 import type { RowProps, OptionProps } from "../types/recipeConfiguration";
@@ -18,13 +20,16 @@ export default function RecipeConfiguration() {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [servings, setServings] = useState(4);
-  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [ingredients, setIngredients] = useState<UiIngredient[]>([]);
   const [name, setName] = useState("");
   const [qty, setQty] = useState("");
   const [unit, setUnit] = useState("Unit");
   const [cuisine, setCuisine] = useState("ORIENTAL");
   const [time, setTime] = useState("15m");
   const [mealType, setMealType] = useState("Daily");
+  const [essentialItems, setEssentialItems] = useState<string[]>([]);
+  const [selectedEssentials, setSelectedEssentials] = useState<string[]>([]);
+  const [essentialsLoading, setEssentialsLoading] = useState(false);
   const [errors, setErrors] = useState<{
     name?: string;
     qty?: string;
@@ -32,6 +37,41 @@ export default function RecipeConfiguration() {
   }>({});
   const [generateError, setGenerateError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchEssentials = async () => {
+      setEssentialsLoading(true);
+      try {
+        const response = await getCuisineEssentials({ cuisine });
+        if (response && response.status === "success") {
+          // Combine common_spices and essential_cooking_items
+          const items = [
+            ...(response.data.common_spices || []),
+            ...(response.data.essential_cooking_items || [])
+          ];
+          setEssentialItems(items);
+          setSelectedEssentials([]); // Reset selection on cuisine change
+        }
+      } catch (error) {
+        console.error("Failed to fetch essentials", error);
+        showToast("error", "Error", "Failed to load cuisine essentials");
+      } finally {
+        setEssentialsLoading(false);
+      }
+    };
+
+    fetchEssentials();
+  }, [cuisine]);
+
+  const toggleEssential = (item: string) => {
+    setSelectedEssentials(prev =>
+      prev.includes(item)
+        ? prev.filter(i => i !== item)
+        : [...prev, item]
+    );
+  };
+
+
 
   const addIngredient = () => {
     const newErrors: { name?: string; qty?: string; unit?: string } = {};
@@ -94,6 +134,16 @@ export default function RecipeConfiguration() {
         cooking_preference: mealType,
       };
 
+      // Add selected essentials to ingredients
+      if (selectedEssentials.length > 0) {
+        selectedEssentials.forEach(item => {
+          payload.ingredients.push({
+            name: item,
+            qty: "1Unit"
+          });
+        });
+      }
+
       const response = await generateRecipes(payload);
 
       if (response && response.status === "success") {
@@ -144,9 +194,8 @@ export default function RecipeConfiguration() {
             <div className="grid grid-cols-12 gap-3 items-start">
               <div className="col-span-6 flex flex-col gap-1">
                 <input
-                  className={`w-full rounded-lg px-4 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${
-                    errors.name ? "border border-red-500" : ""
-                  }`}
+                  className={`w-full rounded-lg px-4 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${errors.name ? "border border-red-500" : ""
+                    }`}
                   placeholder="e.g. Fresh Atlantic Salmon"
                   value={name}
                   onChange={(e) => {
@@ -163,9 +212,8 @@ export default function RecipeConfiguration() {
 
               <div className="col-span-2 flex flex-col gap-1">
                 <input
-                  className={`w-full rounded-lg px-4 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${
-                    errors.qty ? "border border-red-500" : ""
-                  }`}
+                  className={`w-full rounded-lg px-4 py-2 text-sm bg-brand-beige outline-none text-brand-accent ${errors.qty ? "border border-red-500" : ""
+                    }`}
                   placeholder="0"
                   value={qty}
                   onChange={(e) => {
@@ -183,9 +231,8 @@ export default function RecipeConfiguration() {
               <div className="col-span-3 flex flex-col gap-1">
                 <div className="relative">
                   <select
-                    className={`w-full rounded-lg pl-3 pr-8 py-2 text-sm bg-brand-beige outline-none text-brand-accent appearance-none  cursor-pointer ${
-                      errors.unit ? "border border-red-500" : ""
-                    }`}
+                    className={`w-full rounded-lg pl-3 pr-8 py-2 text-sm bg-brand-beige outline-none text-brand-accent appearance-none  cursor-pointer ${errors.unit ? "border border-red-500" : ""
+                      }`}
                     value={unit}
                     onChange={(e) => {
                       setUnit(e.target.value);
@@ -282,6 +329,45 @@ export default function RecipeConfiguration() {
             />
           </div>
         </div>
+
+        {/* Section 2.1: Cuisine Essentials */}
+        {(essentialItems.length > 0 || essentialsLoading) && (
+          <div className="mb-6 animate-fadeIn">
+            <h3 className="text-sm font-bold text-[#4A5D3B] mb-3">
+              Cuisine Essentials
+            </h3>
+            <p className="text-xs text-brand-accent mb-3">
+              Select any essentials you have to include in the recipe.
+            </p>
+
+            {essentialsLoading ? (
+              <div className="flex flex-col items-center justify-center py-6 text-brand-accent gap-2 bg-[#CEDEBD36] border border-brand-light rounded-xl">
+                <div className="w-6 h-6 border-2 border-[#4A5D3B] border-t-transparent rounded-full animate-spin"></div>
+                <span className="text-xs font-medium text-[#4A5D3B]">Curating essentials for {cuisine}...</span>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {essentialItems.map((item, index) => (
+                  <div
+                    key={index}
+                    onClick={() => toggleEssential(item)}
+                    className={`
+                        cursor-pointer rounded-lg px-3 py-2 text-xs font-medium border transition-colors flex items-center justify-between
+                        ${selectedEssentials.includes(item)
+                        ? "bg-[#D6E3C1] text-[#4A5D3B] border-[#4A5D3B]"
+                        : "bg-[#CEDEBD36] text-[#7A8F63] border-transparent hover:border-[#4A5D3B33]"}
+                        `}
+                  >
+                    <span>{item}</span>
+                    {selectedEssentials.includes(item) && (
+                      <span className="material-symbols-outlined text-[16px]">check</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
         <div className="mb-6">
           <h2 className="text-sm font-bold text-[#4A5D3B] mb-3 flex items-center gap-3">
             <span className="rounded-full bg-brand-dark w-7 h-7 flex  items-center justify-center text-brand-beige">
@@ -422,10 +508,9 @@ function Cuisine({ label, active, icon, onClick }: OptionProps) {
     <div
       onClick={onClick}
       className={`rounded-xl p-4 text-center text-xs font-semibold border border-[#43533414]
-        cursor-pointer ${
-          active
-            ? "bg-[#D6E3C1] text-[#4A5D3B]"
-            : " text-[#7A8F63] bg-[#CEDEBD36] "
+        cursor-pointer ${active
+          ? "bg-[#D6E3C1] text-[#4A5D3B]"
+          : " text-[#7A8F63] bg-[#CEDEBD36] "
         }`}
     >
       {icon && <img src={icon} alt={label} className="w-8 h-8 mx-auto mb-2" />}
@@ -439,8 +524,7 @@ function Time({ label, active, onClick }: OptionProps) {
     <button
       onClick={onClick}
       className={`px-4 py-2 rounded-lg text-sm
-        ${
-          active ? "bg-[#B9D3A4] text-[#4A5D3B]" : "bg-[#E6E1CA] text-[#7A8F63]"
+        ${active ? "bg-[#B9D3A4] text-[#4A5D3B]" : "bg-[#E6E1CA] text-[#7A8F63]"
         }`}
     >
       {label}

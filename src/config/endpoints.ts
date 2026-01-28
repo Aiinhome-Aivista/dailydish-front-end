@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://122.163.121.176:3029';
+export const BASE_URL = 'http://122.163.121.176:3021';
 // export const BASE_URL = "http://157.173.221.226:3019/v1";
 
 
@@ -14,6 +14,7 @@ export const API_ENDPOINTS = {
   DELETESAVEDRECIPE: `${BASE_URL}/delete-saved-recipe`,
   DELETESAVEDMEAL: `${BASE_URL}/delete-saved-meal`,
   RECIPEUPDATESERVINGS: `${BASE_URL}/recipe/update-servings`,
+ CUISINEESSENTIALS: `${BASE_URL}/cuisine-essentials`,
 
 
 } as const;
