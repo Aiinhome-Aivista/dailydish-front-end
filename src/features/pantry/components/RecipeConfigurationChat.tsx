@@ -161,63 +161,13 @@ export default function RecipeConfigurationChat() {
 
     if (isCompleted) return null;
 
-    return (
-      <div className="rounded-xl  mt-2 w-full">
-      
-
-        {/* Servings Counter */}
-        <div>
-          <label className="text-xs font-bold text-[#4A5D23] uppercase mb-2 flex items-center gap-1">
-            <Users className="w-3 h-3" /> Servings
-          </label>
-          <div className="flex items-center gap-3 bg-white p-1 rounded-lg border border-[#D1DAC6] w-fit">
-            <button
-              onClick={() => setLocalServings(Math.max(1, localServings - 1))}
-              className="w-8 h-8 flex items-center justify-center bg-[#E8EDDE] rounded text-[#4A5D23] hover:bg-[#D4DFCC]"
-            >-</button>
-            <span className="font-semibold text-[#4A5D23] w-6 text-center">{localServings}</span>
-            <button
-              onClick={() => setLocalServings(localServings + 1)}
-              className="w-8 h-8 flex items-center justify-center bg-[#E8EDDE] rounded text-[#4A5D23] hover:bg-[#D4DFCC]"
-            >+</button>
-          </div>
-        </div>
-
-        {/* Meal Type */}
-        <div>
-          <label className="text-xs font-bold text-[#4A5D23] uppercase mb-2 flex items-center gap-1">
-            <Calendar className="w-3 h-3" /> Meal Type
-          </label>
-          <div className="flex gap-2">
-            {['Daily', 'Special'].map(t => (
-              <button
-                key={t}
-                onClick={() => setLocalType(t)}
-                className={`px-4 py-1 text-sm rounded-lg border transition-colors ${localType === t ? 'bg-[#A2B886] text-white border-[#A2B886]' : 'bg-white border-[#D1DAC6] text-[#6B7F4F]'}`}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Confirm Button */}
-        <button
-          onClick={() => handleDetailsSubmit(localTime, localServings, localType)}
-          className="w-full py-2 bg-[#7D9C5B] text-white rounded-lg font-semibold hover:bg-[#6A8E4C] transition-colors flex justify-center items-center gap-2"
-        >
-          Confirm Details <Check size={16} />
-        </button>
-      </div>
-    );
   };
 
-  // --- Render ---
   return (
-    <div className="flex flex-col h-screen w-full mx-auto text-[#2C3E14]">
+    <div className="flex flex-col w-full mx-auto text-[#2C3E14] h-[calc(98vh-9rem)]">
 
       {/* Header */}
-      <div className="sticky top-0  flex items-center gap-3">
+      <div className="flex items-center gap-3 pb-4 border-b border-[#43533414]">
           
           <img src={CookerIcon} alt="" className='w-9 h-9'/>
        
@@ -248,14 +198,14 @@ export default function RecipeConfigurationChat() {
 
             {/* Bubble */}
             <div className={`max-w-[85%] ${msg.sender === 'user'
-                ? 'bg-[#7D9C5B] text-white rounded-2xl rounded-tr-none shadow-md'
+                ? 'bg-[#7D9C5B] text-white rounded-xl rounded-tr-none shadow-md'
                 : 'bg-white/30 backdrop-blur-xl border border-white/50 text-[#4A5D23] rounded-2xl rounded-tl-none shadow-sm ring-1 ring-white/40'
               } p-4 text-sm leading-relaxed`}
             >
-              {/* Text Content */}
-              {(msg.type === 'text' || msg.type === 'cuisine-selector' || msg.type === 'details-selector' || msg.type === 'final-action') && (
+              {/* Text Content - Always show for user messages, or when type is text */}
+              {msg.sender === 'user' || msg.type === 'text' || msg.type === 'cuisine-selector' || msg.type === 'details-selector' || msg.type === 'final-action' ? (
                 <p>{msg.content}</p>
-              )}
+              ) : null}
 
               {/* Render Widgets inside the bubble flow */}
               {msg.type === 'cuisine-selector' && <CuisineSelector />}
@@ -287,8 +237,8 @@ export default function RecipeConfigurationChat() {
       </div>
 
       {/* Sticky Input Area */}
-      <div className="p-4 bg-white/10 backdrop-blur-md sticky bottom-0 z-20 border-t border-white/30">
-        <div className="flex items-center gap-2 bg-white/20 backdrop-blur-xl p-1.5 rounded-full border border-white/40 shadow-lg ring-1 ring-white/30 focus-within:ring-2 focus-within:ring-[#A2B886] focus-within:border-transparent transition-all">
+      <div className="p-4 bg-white/10 backdrop-blur-md z-20 border-t border-white/30">
+        <div className="flex items-center gap-2 bg-white/20 backdrop-blur-xl p-1.5 rounded-2xl border border-white/40 shadow-lg ring-1 ring-white/30 focus-within:ring-2 focus-within:ring-[#A2B886] focus-within:border-transparent transition-all">
           <input
             type="text"
             value={inputValue}
