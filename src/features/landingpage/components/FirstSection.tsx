@@ -7,7 +7,7 @@ interface FirstSectionProps {
   onGetStarted?: () => void;
 }
 
-import type { CollectedData } from "../../pantry/types/recipeConfiguration";
+
 
 // ... existing imports
 
@@ -22,11 +22,11 @@ const FirstSection = ({ onGetStarted }: FirstSectionProps) => {
     setIsChatOpen(false);
   };
 
-  const handleGenerateRecipe = (data: CollectedData) => {
+  const handleGenerateRecipe = (data: any) => {
     setIsChatOpen(false);
 
     // Save data for post-login generation
-    localStorage.setItem('pending_recipe_data', JSON.stringify(data));
+    localStorage.setItem('pending_chat_context', JSON.stringify(data));
 
     // Open login modal
     if (onGetStarted) {

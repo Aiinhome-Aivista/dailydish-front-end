@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, X } from 'lucide-react';
 import logo from '../../../assets/icons/Recipe logo.svg';
 import { useAuth } from '../hooks/useAuth';
@@ -30,7 +30,33 @@ function LoginModal({ isOpen, onClose, onSwitchToSignUp }: LoginModalProps) {
       await login({ email, password });
       showToast('success', 'Success', 'Login Successful!');
 
-      // Check for pending recipe data
+      // Check for pending chat context (New flow)
+      const pendingChatContext = localStorage.getItem('pending_chat_context');
+      if (pendingChatContext) {
+        try {
+          const parsedContext = JSON.parse(pendingChatContext);
+          localStorage.removeItem('pending_chat_context');
+
+          // We need the user ID. It should be in localStorage after login
+          const storedUserId = localStorage.getItem('user_id') || 'guest_user';
+
+          // Update context with actual user ID
+          parsedContext.user_id = storedUserId;
+
+          onClose();
+          navigate('/ai-curated-menu', {
+            state: {
+              waitingForRecipes: true,
+              chatContext: parsedContext
+            }
+          });
+          return;
+        } catch (e) {
+          console.error("Error parsing pending chat context", e);
+        }
+      }
+
+      // Check for pending recipe data (Old/Fallback flow)
       const pendingData = localStorage.getItem('pending_recipe_data');
       if (pendingData) {
         try {
@@ -50,9 +76,10 @@ function LoginModal({ isOpen, onClose, onSwitchToSignUp }: LoginModalProps) {
           const response = await generateRecipes(payload);
 
           if (response && response.status === 'success') {
-            const recipes = response.data?.recipes || response.data?.data?.recipes || [];
+            const respData = response as any;
+            const recipes = respData.data?.recipes || respData.data?.data?.recipes || [];
             onClose();
-            navigate('/ai-curated-menu', { state: { recipes } });
+            navigate('/ai-menu', { state: { recipes } });
           } else {
             showToast('error', 'Generation Failed', 'Could not generate recipes from saved chat.');
             onClose();
