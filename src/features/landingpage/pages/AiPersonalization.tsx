@@ -278,7 +278,7 @@ const AiPersonalization = () => {
               Join DailyDish and let our AI transform your cooking experience.
               Start with a few recipes and watch as recommendations become perfectly tailored to you.
             </p>
-            <button className="bg-white text-brand-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors" onClick={() => navigate('/login')}>
+            <button className=" text-brand-primary px-8 py-3 rounded-lg font-semibold cursor-pointer transition-colors" onClick={() => navigate('/login')}>
               Start Your Culinary Journey
             </button>
           </div>

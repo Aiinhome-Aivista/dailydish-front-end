@@ -294,7 +294,7 @@ const SpeedEfficiency = () => {
               </div>
             </div>
             <div className="text-center mt-8">
-              <div className="inline-block bg-white text-brand-primary px-6 py-3 rounded-lg font-bold">
+              <div className="inline-block text-brand-primary px-6 py-3 rounded-lg font-bold">
                 Save 2+ Hours Per Meal
               </div>
             </div>
@@ -309,7 +309,7 @@ const SpeedEfficiency = () => {
               Stop wasting hours on meal planning and cooking. With DailyDish, you can have
               delicious, healthy meals ready faster than ever before.
             </p>
-            <button className="bg-white text-brand-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors" onClick={() => navigate('/login')}>
+            <button className=" text-brand-primary px-8 py-3 rounded-lg font-semibold cursor-pointer transition-colors" onClick={() => navigate('/login')}>
               Start Cooking Efficiently
             </button>
           </div>
