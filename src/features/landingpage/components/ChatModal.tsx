@@ -98,8 +98,6 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
 
         if (botResponse.includes("What type of cuisine") || (response.collected_data.ingredients && !response.collected_data.cuisine)) {
           botMsg.type = 'cuisine-selector';
-        } else if (botResponse.includes("cooking time") || (response.collected_data.cuisine && !response.collected_data.cooking_time)) {
-          botMsg.type = 'details-selector';
         } else if (botResponse.includes("create the perfect recipe") || botResponse.includes("craft a unique")) {
           if (response.collected_data.cooking_time) {
             botMsg.type = 'final-action';
@@ -129,11 +127,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
     setRecipeState(prev => ({ ...prev, cuisine }));
   };
 
-  const handleDetailsSubmit = (time: string, servings: number, type: string) => {
-    const responseText = `${time} cooking time, for ${servings} people (${type})`;
-    triggerMessageSend(responseText);
-    setRecipeState(prev => ({ ...prev, cookingTime: time, servings, mealType: type }));
-  };
+
 
   const triggerMessageSend = async (text: string) => {
     if (!text) return;
@@ -152,11 +146,26 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
 
       if (response && response.status === 'success') {
         const botResponse = response.message;
+
+        // Check for direct recipe generation in chat response
+        const recipes = response.data?.recipes || response.data?.data?.recipes;
+        if (recipes && recipes.length > 0) {
+          navigate('/ai-curated-menu', { state: { recipes } });
+          return;
+        }
+
         let msgType: 'text' | 'cuisine-selector' | 'details-selector' | 'final-action' = 'text';
 
-        if (botResponse.toLowerCase().includes("cuisine")) msgType = 'cuisine-selector';
-        else if (botResponse.toLowerCase().includes("time") || botResponse.toLowerCase().includes("people")) msgType = 'details-selector';
-        else if (botResponse.toLowerCase().includes("perfect")) msgType = 'final-action';
+        if (botResponse.toLowerCase().includes("cuisine")) {
+          msgType = 'cuisine-selector';
+        } else if (
+          response.collected_data.ingredients &&
+          response.collected_data.cuisine &&
+          response.collected_data.cooking_time &&
+          response.collected_data.number_of_people
+        ) {
+          msgType = 'final-action';
+        }
 
         const botMsg: Message = {
           id: Date.now().toString() + '_bot',
@@ -205,86 +214,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
     );
   };
 
-  const DetailsWidget = () => {
-    const [step, setStep] = useState<'servings' | 'time'>('servings');
-    const [localServings, setLocalServings] = useState(4);
-    const [localTime, setLocalTime] = useState('30m');
-    const [localType, setLocalType] = useState('Daily');
 
-    // Check if this step is already completed
-    const isCompleted = recipeState.cookingTime !== null;
-    if (isCompleted) return null;
-
-    const handleServingsConfirm = () => {
-      setStep('time');
-    };
-
-    const handleTimeConfirm = (time: string) => {
-      setLocalTime(time);
-      handleDetailsSubmit(time, localServings, localType);
-    };
-
-    if (step === 'servings') {
-      return (
-        <div className="flex flex-col gap-3 mt-2 max-w-[200px] animate-fade-in-up">
-          <div className="bg-white/40 backdrop-blur-sm p-4 rounded-2xl border border-white/50 shadow-sm">
-            <div className="text-center mb-3">
-              <span className="text-[#4A5D23] font-bold text-sm block">How many people are you cooking for?</span>
-              <span className="text-[#7B8C65] text-[10px] uppercase tracking-wider mt-1 block">Servings</span>
-            </div>
-
-            <div className="flex items-center justify-between bg-[#E8EDDE] rounded-xl p-1 mb-4">
-              <button
-                onClick={() => setLocalServings(Math.max(1, localServings - 1))}
-                className="w-10 h-10 flex items-center justify-center bg-white rounded-lg text-[#4A5D23] shadow-sm hover:bg-[#F5F7F2] transition-colors font-bold text-lg"
-              >
-                -
-              </button>
-              <span className="text-[#2C3E14] font-bold text-xl w-8 text-center">{localServings}</span>
-              <button
-                onClick={() => setLocalServings(localServings + 1)}
-                className="w-10 h-10 flex items-center justify-center bg-[#7D9C5B] text-white rounded-lg shadow-sm hover:bg-[#6A8E4C] transition-colors font-bold text-lg"
-              >
-                +
-              </button>
-            </div>
-
-            <button
-              onClick={handleServingsConfirm}
-              className="w-full py-2 bg-[#4A5D23] text-white rounded-xl text-xs font-bold hover:bg-[#3A4A1C] transition-colors uppercase tracking-wide"
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="flex flex-col gap-3 mt-2 max-w-[280px] animate-fade-in-up">
-        <div className="bg-white/40 backdrop-blur-sm p-4 rounded-2xl border border-white/50 shadow-sm">
-          <div className="text-center mb-3">
-            <span className="text-[#4A5D23] font-bold text-sm block">How much time do you have?</span>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2">
-            {['15m', '30m', '45m', '1h+'].map(t => (
-              <button
-                key={t}
-                onClick={() => handleTimeConfirm(t)}
-                className={`py-3 px-2 rounded-xl text-sm font-semibold transition-all ${localTime === t
-                  ? 'bg-[#7D9C5B] text-white shadow-md transform scale-105'
-                  : 'bg-[#E8EDDE] text-[#4A5D23] hover:bg-[#DCE6D3]'
-                  }`}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   if (!isOpen) return null;
 
@@ -348,7 +278,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
 
                 {/* Render Widgets inside the bubble flow */}
                 {msg.type === 'cuisine-selector' && <CuisineSelector />}
-                {msg.type === 'details-selector' && <DetailsWidget />}
+
 
                 {/* Final Action Button */}
                 {msg.type === 'final-action' && (
@@ -385,13 +315,12 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-              placeholder="e.g. Fresh Atlantic Salmon..."
+              placeholder="Type your answer here..."
               className="flex-1 bg-transparent px-4 py-3 outline-none text-[#4A5D23] placeholder-[#6B7F4F] text-sm font-medium"
-              disabled={recipeState.mealType !== null}
             />
             <button
               onClick={handleSendMessage}
-              disabled={!inputValue.trim() || recipeState.mealType !== null}
+              disabled={!inputValue.trim()}
               className={`p-3 rounded-full transition-all transform ${inputValue.trim() ? 'bg-[#7D9C5B] hover:bg-[#6A8E4C]' : 'scale-95'}`}
             >
               <Send size={18} className="text-white" />

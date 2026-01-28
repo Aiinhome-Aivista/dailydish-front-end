@@ -71,6 +71,14 @@ export interface ChatResponse {
   status: string;
   user_id?: string;
   chat_history?: ChatMessage[];
+  data?: {
+    recipes?: GeneratedRecipe[];
+    data?: {
+      recipes: GeneratedRecipe[];
+      total_recipes?: number;
+    };
+    [key: string]: any;
+  };
 }
 // Recipe Details Types
 

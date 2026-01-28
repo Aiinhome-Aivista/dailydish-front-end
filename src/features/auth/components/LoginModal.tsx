@@ -50,8 +50,9 @@ function LoginModal({ isOpen, onClose, onSwitchToSignUp }: LoginModalProps) {
           const response = await generateRecipes(payload);
 
           if (response && response.status === 'success') {
+            const recipes = response.data?.recipes || response.data?.data?.recipes || [];
             onClose();
-            navigate('/ai-curated-menu', { state: { recipes: response.data.recipes } });
+            navigate('/ai-curated-menu', { state: { recipes } });
           } else {
             showToast('error', 'Generation Failed', 'Could not generate recipes from saved chat.');
             onClose();
