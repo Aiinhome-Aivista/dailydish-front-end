@@ -28,17 +28,13 @@ interface ChatModalProps {
   onGenerateRecipe?: (data: CollectedData) => void;
 }
 
-// --- Helper: Simple Text Formatter (Replaces react-markdown) ---
-// This parses **bold** text and newlines without needing an external library
+// --- Helper: Simple Text Formatter ---
 const ParsedText = ({ text }: { text: string }) => {
   if (!text) return null;
-  
-  // 1. Split by newlines to handle paragraphs
   return (
     <div className="space-y-2">
       {text.split('\n').map((line, lineIdx) => (
         <p key={lineIdx} className="leading-relaxed">
-          {/* 2. Split by **bold** markers */}
           {line.split(/(\*\*.*?\*\*)/g).map((part, partIdx) => {
             if (part.startsWith('**') && part.endsWith('**')) {
               return <strong key={partIdx} className="font-bold text-[#2C3E14]">{part.slice(2, -2)}</strong>;
@@ -71,21 +67,20 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
   const navigate = useNavigate();
 
   // Initial Chat State
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      sender: 'bot',
-      content: "Hello! I'm Dr. Foodi, your Chef Assistant. Let's craft your perfect meal. First, what ingredients do we have to work with today?",
-      type: 'text'
-    }
-  ]);
+  const initialBotMessage: Message = {
+    id: '1',
+    sender: 'bot',
+    content: "Hello! I'm Dr. Foodi, your Chef Assistant. Let's craft your perfect meal. First, what ingredients do we have to work with today?",
+    type: 'text'
+  };
 
+  const [messages, setMessages] = useState<Message[]>([initialBotMessage]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [collectedData, setCollectedData] = useState<CollectedData>({});
   
-  // (Optional) If you need local state tracking
+  // Local state tracking
   const [recipeState, setRecipeState] = useState<RecipeState>({
     ingredients: [],
     cuisine: null,
@@ -135,7 +130,33 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
         const botResponse = response.message;
         const recipes = response.data?.recipes || response.data?.data?.recipes;
         
-        // Redirect if recipes are ready
+        // 1. Check for RESET condition
+        // If the bot says "reset" or "start over", clear everything
+        const isReset = botResponse.toLowerCase().includes("reset complete") || 
+                        botResponse.toLowerCase().includes("start over") ||
+                        botResponse.toLowerCase().includes("start fresh");
+
+        if (isReset) {
+            setMessages([{
+                id: Date.now().toString(),
+                sender: 'bot',
+                content: botResponse,
+                type: 'text'
+            }]);
+            setChatHistory([]);
+            setCollectedData({});
+            setRecipeState({
+                ingredients: [],
+                cuisine: null,
+                cookingTime: null,
+                servings: 4,
+                mealType: null
+            });
+            setIsTyping(false);
+            return; // Stop here, don't append to old history
+        }
+
+        // 2. Normal Logic (if not resetting)
         if (recipes && recipes.length > 0) {
           navigate('/ai-curated-menu', { state: { recipes } });
           return;
@@ -164,7 +185,6 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
         setChatHistory(prev => [...prev, { role: 'user', content: text }, { role: 'assistant', content: botResponse }]);
       
       } else {
-        // Handle API failure response
         setMessages(prev => [...prev, { id: Date.now().toString(), sender: 'bot', content: "I'm having trouble understanding. Could you try again?", type: 'text' }]);
       }
 
@@ -208,8 +228,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
       
-      {/* Modal Container */}
-      <div className="relative w-full max-w-2xl h-[85vh] bg-[#F4F7F1] rounded-3xl shadow-2xl flex flex-col border border-white/60 overflow-hidden">
+      <div className="relative w-full max-w-2xl h-[85vh] bg-[#F4F7F1] rounded-3xl shadow-2xl flex flex-col border border-white/60 overflow-hidden font-sans">
         
         {/* Header */}
         <div className="flex items-center justify-between p-4 bg-white/80 backdrop-blur-md border-b border-[#E0E6D8] z-10">
@@ -235,14 +254,12 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
           {messages.map((msg) => (
             <div key={msg.id} className={`flex w-full ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
               
-              {/* Bot Icon */}
               {msg.sender === 'bot' && (
                 <div className="w-8 h-8 rounded-full bg-[#7D9C5B] flex items-center justify-center mr-2 mt-1 shadow-sm text-white shrink-0">
                   <ChefHat size={16} />
                 </div>
               )}
 
-              {/* Message Bubble */}
               <div className={`max-w-[85%] relative group`}>
                 <div className={`
                   p-3.5 text-sm shadow-sm
@@ -261,7 +278,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                   {/* Contextual Widgets */}
                   {msg.type === 'cuisine-selector' && <CuisineSelector />}
                   
-                  {/* Action Buttons inside Bot Bubble */}
+                  {/* Action Buttons */}
                   {msg.type === 'final-action' && (
                      <div className="mt-3 pt-3 border-t border-[#E0E6D8] flex gap-2">
                         <button 
@@ -274,7 +291,6 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                   )}
                 </div>
                 
-                {/* Timestamp */}
                 <div className={`text-[10px] text-gray-400 mt-1 px-1 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
                   {new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                 </div>
