@@ -1,7 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, ChefHat, Clock, Users, Calendar, Utensils, Globe, Leaf, Check, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import CookerIcon from '../../../assets/cooker.svg';
-
+import { useAuth } from '../../auth/context/AuthContext';
+import { chatRecipeConfiguration } from '../../pantry/api/recipeConfigurationService';
+import type { ChatMessage, CollectedData } from '../../pantry/types/recipeConfiguration';
+import { Loader2 } from 'lucide-react';
 // --- Types ---
 type Message = {
   id: string;
@@ -21,10 +25,13 @@ type RecipeState = {
 interface ChatModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onGenerateRecipe?: () => void;
+  onGenerateRecipe?: (data: CollectedData) => void;
 }
 
 export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatModalProps) {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
   // Initial Chat State
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -37,6 +44,10 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
 
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+
+  // API State
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+  const [collectedData, setCollectedData] = useState<CollectedData>({});
 
   // Form State Capture
   const [recipeState, setRecipeState] = useState<RecipeState>({
@@ -56,72 +67,113 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
 
   // --- Logic Handlers ---
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
-    // 1. Add User Message (Ingredients)
-    const userMsg: Message = { id: Date.now().toString(), sender: 'user', content: inputValue };
+    const userText = inputValue;
+    const currentUserId = user?.username || "guest_user";
+
+    // 1. Add User Message (UI)
+    const userMsg: Message = { id: Date.now().toString(), sender: 'user', content: userText };
     setMessages(prev => [...prev, userMsg]);
-    setRecipeState(prev => ({ ...prev, ingredients: [...prev.ingredients, inputValue] }));
     setInputValue('');
     setIsTyping(true);
 
-    // 2. Simulate Bot Delay -> Ask for Cuisine
-    setTimeout(() => {
-      setMessages(prev => [
-        ...prev,
-        {
-          id: Date.now().toString(),
+    try {
+      const response = await chatRecipeConfiguration({
+        user_id: currentUserId,
+        message: userText,
+        chat_history: chatHistory,
+        collected_data: collectedData
+      });
+
+      if (response && response.status === 'success') {
+        const botResponse = response.message;
+        const botMsg: Message = {
+          id: Date.now().toString() + '_bot',
           sender: 'bot',
-          content: "Delicious choice! 🐟 Now, what culinary direction should we take this?",
-          type: 'cuisine-selector'
+          content: botResponse,
+          type: 'text'
+        };
+
+        if (botResponse.includes("What type of cuisine") || (response.collected_data.ingredients && !response.collected_data.cuisine)) {
+          botMsg.type = 'cuisine-selector';
+        } else if (botResponse.includes("cooking time") || (response.collected_data.cuisine && !response.collected_data.cooking_time)) {
+          botMsg.type = 'details-selector';
+        } else if (botResponse.includes("create the perfect recipe") || botResponse.includes("craft a unique")) {
+          if (response.collected_data.cooking_time) {
+            botMsg.type = 'final-action';
+          }
         }
-      ]);
+
+        setMessages(prev => [...prev, botMsg]);
+        setCollectedData(response.collected_data);
+
+        const newHistoryItemUser: ChatMessage = { role: 'user', content: userText };
+        const newHistoryItemBot: ChatMessage = { role: 'assistant', content: botResponse };
+        setChatHistory(prev => [...prev, newHistoryItemUser, newHistoryItemBot]);
+
+      } else {
+        setMessages(prev => [...prev, { id: Date.now().toString(), sender: 'bot', content: "Sorry, I'm having trouble connecting to the kitchen server.", type: 'text' }]);
+      }
+    } catch (error) {
+      console.error("Chat API Error", error);
+      setMessages(prev => [...prev, { id: Date.now().toString(), sender: 'bot', content: "Sorry, something went wrong.", type: 'text' }]);
+    } finally {
       setIsTyping(false);
-    }, 1200);
+    }
   };
 
   const handleCuisineSelect = (cuisine: string) => {
-    // 1. Add User Selection as a message
-    setMessages(prev => [...prev, { id: Date.now().toString(), sender: 'user', content: cuisine }]);
+    triggerMessageSend(cuisine);
     setRecipeState(prev => ({ ...prev, cuisine }));
-    setIsTyping(true);
-
-    // 2. Simulate Bot Delay -> Ask for Details (Time/Servings)
-    setTimeout(() => {
-      setMessages(prev => [
-        ...prev,
-        {
-          id: Date.now().toString(),
-          sender: 'bot',
-          content: "Great choice. How much time do you have, and how many people are eating?",
-          type: 'details-selector'
-        }
-      ]);
-      setIsTyping(false);
-    }, 1000);
   };
 
   const handleDetailsSubmit = (time: string, servings: number, type: string) => {
-    // 1. Add User Selection as a summary message
     const responseText = `${time} cooking time, for ${servings} people (${type})`;
-    setMessages(prev => [...prev, { id: Date.now().toString(), sender: 'user', content: responseText }]);
+    triggerMessageSend(responseText);
     setRecipeState(prev => ({ ...prev, cookingTime: time, servings, mealType: type }));
+  };
+
+  const triggerMessageSend = async (text: string) => {
+    if (!text) return;
+    const currentUserId = user?.username || "guest_user";
+    const userMsg: Message = { id: Date.now().toString(), sender: 'user', content: text };
+    setMessages(prev => [...prev, userMsg]);
     setIsTyping(true);
 
-    // 2. Simulate Bot Delay -> Final Call to Action
-    setTimeout(() => {
-      setMessages(prev => [
-        ...prev,
-        {
-          id: Date.now().toString(),
+    try {
+      const response = await chatRecipeConfiguration({
+        user_id: currentUserId,
+        message: text,
+        chat_history: chatHistory,
+        collected_data: collectedData
+      });
+
+      if (response && response.status === 'success') {
+        const botResponse = response.message;
+        let msgType: 'text' | 'cuisine-selector' | 'details-selector' | 'final-action' = 'text';
+
+        if (botResponse.toLowerCase().includes("cuisine")) msgType = 'cuisine-selector';
+        else if (botResponse.toLowerCase().includes("time") || botResponse.toLowerCase().includes("people")) msgType = 'details-selector';
+        else if (botResponse.toLowerCase().includes("perfect")) msgType = 'final-action';
+
+        const botMsg: Message = {
+          id: Date.now().toString() + '_bot',
           sender: 'bot',
-          content: "Perfect. I have enough information to craft a unique 5-star recipe for you.",
-          type: 'final-action'
-        }
-      ]);
+          content: botResponse,
+          type: msgType
+        };
+
+        setMessages(prev => [...prev, botMsg]);
+        setCollectedData(response.collected_data);
+        setChatHistory(prev => [...prev, { role: 'user', content: text }, { role: 'assistant', content: botResponse }]);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
       setIsTyping(false);
-    }, 1000);
+    }
   };
 
   // --- Interactive Widgets (Sub-components) ---
@@ -154,58 +206,82 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
   };
 
   const DetailsWidget = () => {
-    const [localTime, setLocalTime] = useState('30m');
+    const [step, setStep] = useState<'servings' | 'time'>('servings');
     const [localServings, setLocalServings] = useState(4);
+    const [localTime, setLocalTime] = useState('30m');
     const [localType, setLocalType] = useState('Daily');
 
+    // Check if this step is already completed
     const isCompleted = recipeState.cookingTime !== null;
     if (isCompleted) return null;
 
-    return (
-      <div className="rounded-xl mt-2 w-full">
-        {/* Servings Counter */}
-        <div>
-          <label className="text-xs font-bold text-[#4A5D23] uppercase mb-2 flex items-center gap-1">
-            <Users className="w-3 h-3" /> Servings
-          </label>
-          <div className="flex items-center gap-3 bg-white p-1 rounded-lg border border-[#D1DAC6] w-fit">
+    const handleServingsConfirm = () => {
+      setStep('time');
+    };
+
+    const handleTimeConfirm = (time: string) => {
+      setLocalTime(time);
+      handleDetailsSubmit(time, localServings, localType);
+    };
+
+    if (step === 'servings') {
+      return (
+        <div className="flex flex-col gap-3 mt-2 max-w-[200px] animate-fade-in-up">
+          <div className="bg-white/40 backdrop-blur-sm p-4 rounded-2xl border border-white/50 shadow-sm">
+            <div className="text-center mb-3">
+              <span className="text-[#4A5D23] font-bold text-sm block">How many people are you cooking for?</span>
+              <span className="text-[#7B8C65] text-[10px] uppercase tracking-wider mt-1 block">Servings</span>
+            </div>
+
+            <div className="flex items-center justify-between bg-[#E8EDDE] rounded-xl p-1 mb-4">
+              <button
+                onClick={() => setLocalServings(Math.max(1, localServings - 1))}
+                className="w-10 h-10 flex items-center justify-center bg-white rounded-lg text-[#4A5D23] shadow-sm hover:bg-[#F5F7F2] transition-colors font-bold text-lg"
+              >
+                -
+              </button>
+              <span className="text-[#2C3E14] font-bold text-xl w-8 text-center">{localServings}</span>
+              <button
+                onClick={() => setLocalServings(localServings + 1)}
+                className="w-10 h-10 flex items-center justify-center bg-[#7D9C5B] text-white rounded-lg shadow-sm hover:bg-[#6A8E4C] transition-colors font-bold text-lg"
+              >
+                +
+              </button>
+            </div>
+
             <button
-              onClick={() => setLocalServings(Math.max(1, localServings - 1))}
-              className="w-8 h-8 flex items-center justify-center bg-[#E8EDDE] rounded text-[#4A5D23] hover:bg-[#D4DFCC]"
-            >-</button>
-            <span className="font-semibold text-[#4A5D23] w-6 text-center">{localServings}</span>
-            <button
-              onClick={() => setLocalServings(localServings + 1)}
-              className="w-8 h-8 flex items-center justify-center bg-[#E8EDDE] rounded text-[#4A5D23] hover:bg-[#D4DFCC]"
-            >+</button>
+              onClick={handleServingsConfirm}
+              className="w-full py-2 bg-[#4A5D23] text-white rounded-xl text-xs font-bold hover:bg-[#3A4A1C] transition-colors uppercase tracking-wide"
+            >
+              Next
+            </button>
           </div>
         </div>
+      );
+    }
 
-        {/* Meal Type */}
-        <div>
-          <label className="text-xs font-bold text-[#4A5D23] uppercase mb-2 flex items-center gap-1">
-            <Calendar className="w-3 h-3" /> Meal Type
-          </label>
-          <div className="flex gap-2">
-            {['Daily', 'Special'].map(t => (
+    return (
+      <div className="flex flex-col gap-3 mt-2 max-w-[280px] animate-fade-in-up">
+        <div className="bg-white/40 backdrop-blur-sm p-4 rounded-2xl border border-white/50 shadow-sm">
+          <div className="text-center mb-3">
+            <span className="text-[#4A5D23] font-bold text-sm block">How much time do you have?</span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            {['15m', '30m', '45m', '1h+'].map(t => (
               <button
                 key={t}
-                onClick={() => setLocalType(t)}
-                className={`px-4 py-1 text-sm rounded-lg border transition-colors ${localType === t ? 'bg-[#A2B886] text-white border-[#A2B886]' : 'bg-white border-[#D1DAC6] text-[#6B7F4F]'}`}
+                onClick={() => handleTimeConfirm(t)}
+                className={`py-3 px-2 rounded-xl text-sm font-semibold transition-all ${localTime === t
+                  ? 'bg-[#7D9C5B] text-white shadow-md transform scale-105'
+                  : 'bg-[#E8EDDE] text-[#4A5D23] hover:bg-[#DCE6D3]'
+                  }`}
               >
                 {t}
               </button>
             ))}
           </div>
         </div>
-
-        {/* Confirm Button */}
-        <button
-          onClick={() => handleDetailsSubmit(localTime, localServings, localType)}
-          className="w-full py-2 bg-[#7D9C5B] text-white rounded-lg font-semibold hover:bg-[#6A8E4C] transition-colors flex justify-center items-center gap-2 mt-3"
-        >
-          Confirm Details <Check size={16} />
-        </button>
       </div>
     );
   };
@@ -215,14 +291,14 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Modal */}
       <div className="relative w-full max-w-2xl h-[80vh] bg-gradient-to-b from-[#E8F1E0] to-[#F5F9ED] rounded-2xl shadow-2xl flex flex-col border border-white/30 overflow-hidden">
-        
+
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -234,7 +310,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
 
         {/* Header */}
         <div className="flex items-center gap-3 p-4 border-b border-white/30 bg-gradient-to-b from-[#E8F1E0] to-[#E8F1E0]/95 backdrop-blur-sm">
-          <img src={CookerIcon} alt="" className='w-9 h-9'/>
+          <img src={CookerIcon} alt="" className='w-9 h-9' />
           <div>
             <h1 className="font-bold text-xl text-[#3A4A28] leading-tight">Dr. Foodi Chat</h1>
             <p className="text-xs text-[#7B8C65]">Your Food Expert</p>
@@ -261,8 +337,8 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
 
               {/* Bubble */}
               <div className={`max-w-[85%] ${msg.sender === 'user'
-                  ? 'bg-[#7D9C5B] text-white rounded-xl rounded-tr-none shadow-md'
-                  : 'bg-white/30 backdrop-blur-xl border border-white/50 text-[#4A5D23] rounded-2xl rounded-tl-none shadow-sm ring-1 ring-white/40'
+                ? 'bg-[#7D9C5B] text-white rounded-xl rounded-tr-none shadow-md'
+                : 'bg-white/30 backdrop-blur-xl border border-white/50 text-[#4A5D23] rounded-2xl rounded-tl-none shadow-sm ring-1 ring-white/40'
                 } p-4 text-sm leading-relaxed`}
               >
                 {/* Text Content - Always show for user messages, or when type is text */}
@@ -277,8 +353,8 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                 {/* Final Action Button */}
                 {msg.type === 'final-action' && (
                   <div className="mt-4 pt-4 border-t border-[#E8E0D0]">
-                    <button 
-                      onClick={onGenerateRecipe}
+                    <button
+                      onClick={() => onGenerateRecipe && onGenerateRecipe(collectedData)}
                       className="w-full py-3 bg-[#6A8E4C] hover:bg-[#58783D] text-white font-bold rounded-xl shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2">
                       Generate Recipe <Send size={16} />
                     </button>

@@ -14,6 +14,7 @@ export const API_ENDPOINTS = {
   DELETESAVEDRECIPE: `${BASE_URL}/delete-saved-recipe`,
   DELETESAVEDMEAL: `${BASE_URL}/delete-saved-meal`,
   RECIPEUPDATESERVINGS: `${BASE_URL}/recipe/update-servings`,
+  CHATRECIPECONFIGURATION: `${BASE_URL}/doctor-foody/chat`,
 
 
 } as const;

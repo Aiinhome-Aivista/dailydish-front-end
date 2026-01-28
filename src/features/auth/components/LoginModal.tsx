@@ -4,6 +4,10 @@ import logo from '../../../assets/icons/Recipe logo.svg';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../../../shared/context/ToastContext';
 
+import { useNavigate } from 'react-router-dom';
+import { generateRecipes } from '../../pantry/api/recipeConfigurationService';
+import type { RecipeGenerationRequest } from '../../pantry/types/recipeConfiguration';
+
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -12,6 +16,7 @@ interface LoginModalProps {
 
 function LoginModal({ isOpen, onClose, onSwitchToSignUp }: LoginModalProps) {
   const { showToast } = useToast();
+  const navigate = useNavigate();
   const { login, isLoading, error } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,7 +29,39 @@ function LoginModal({ isOpen, onClose, onSwitchToSignUp }: LoginModalProps) {
     try {
       await login({ email, password });
       showToast('success', 'Success', 'Login Successful!');
-      onClose();
+
+      // Check for pending recipe data
+      const pendingData = localStorage.getItem('pending_recipe_data');
+      if (pendingData) {
+        try {
+          const parsedData = JSON.parse(pendingData);
+          localStorage.removeItem('pending_recipe_data');
+
+          // Construct Payload 
+          const payload: RecipeGenerationRequest = {
+            ingredients: parsedData.ingredients || [],
+            cuisine_preference: (parsedData.cuisine as string) || 'Any',
+            number_of_people: Number(parsedData.number_of_people || 2),
+            cooking_time: (parsedData.cooking_time as string) || '30m',
+            cooking_preference: (parsedData.meal_type as string) || 'Daily'
+          };
+
+          showToast('info', 'Generating', 'Preparing your AI Menu...');
+          const response = await generateRecipes(payload);
+
+          if (response && response.status === 'success') {
+            onClose();
+            navigate('/ai-curated-menu', { state: { recipes: response.data.recipes } });
+          } else {
+            showToast('error', 'Generation Failed', 'Could not generate recipes from saved chat.');
+            onClose();
+          }
+        } catch (e) {
+          onClose();
+        }
+      } else {
+        onClose();
+      }
     } catch (err) {
       // Error is handled by the auth context
     }
@@ -35,11 +72,11 @@ function LoginModal({ isOpen, onClose, onSwitchToSignUp }: LoginModalProps) {
   return (
     <div className="fixed inset-0 flex justify-center items-center p-4 z-50">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
       />
-      
+
       {/* Modal */}
       <div className='relative w-full max-w-md rounded-3xl border border-white/30 bg-white/10 p-8 shadow-2xl backdrop-blur-xl flex flex-col items-center gap-6'>
         {/* Close Button */}
@@ -108,8 +145,8 @@ function LoginModal({ isOpen, onClose, onSwitchToSignUp }: LoginModalProps) {
             </button>
 
             <p className='text-white/70 text-sm text-center'>
-              Don't have an account? <button 
-                type='button' 
+              Don't have an account? <button
+                type='button'
                 className='text-white font-semibold hover:underline hover:text-white/90 cursor-pointer'
                 onClick={onSwitchToSignUp}
               >

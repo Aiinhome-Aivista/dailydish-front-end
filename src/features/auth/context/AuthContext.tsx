@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useRef } from "react";
+import { createContext, useState, useEffect, useRef, useContext } from "react";
 import type { ReactNode } from "react";
 import { authService } from "../api/authService";
 import type { LoginPayload } from "../types/login";
@@ -6,7 +6,16 @@ import type { AuthContextType, User } from "../types/authTypes";
 
 const TOKEN_EXPIRY_TIME = 30 * 60 * 1000;
 
+
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
