@@ -1,10 +1,13 @@
 
+
 import { Sparkles } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import cookerIcon from "../../../assets/cooker.svg";
 
-const FirstSection = () => {
-  const navigate = useNavigate();
+interface FirstSectionProps {
+  onGetStarted?: () => void;
+}
+
+const FirstSection = ({ onGetStarted }: FirstSectionProps) => {
   return (
     <div className="flex flex-col items-center pt-16 pb-24 px-4">
       <div className="mb-6 animate-bounce-slow">
@@ -34,7 +37,7 @@ const FirstSection = () => {
         </p>
 
         <button
-          onClick={() => navigate("/login")}
+          onClick={onGetStarted}
           className="absolute right-2 top-2 bottom-2 bg-brand-dark text-brand-beige px-6 rounded-md font-bold flex items-center gap-2 hover:bg-opacity-90 transition-all cursor-pointer"
         >
           Generate <Sparkles size={16} />

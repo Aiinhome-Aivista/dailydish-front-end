@@ -96,8 +96,9 @@ function AppRoutes() {
         <Route element={<PublicRoute />}>
           <Route path="/" element={<SplashToLanding />} />
          
-          <Route path="login" element={<Login />} />
-          <Route path="signup" element={<SignUp />} />
+          {/* Login and SignUp pages kept as fallbacks */}
+          <Route path="login" element={<SplashToLanding />} />
+          <Route path="signup" element={<SplashToLanding />} />
           <Route path="explore-recipes" element={<RecipesPage />} />
           <Route path="How-it-Works" element={<HowItWorks />} />
           <Route path="nutritional-scoring" element={<NutritionalScoring />} />
