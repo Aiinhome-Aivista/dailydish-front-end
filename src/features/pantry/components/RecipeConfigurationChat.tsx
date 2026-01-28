@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, ChefHat, Clock, Users, Calendar, Utensils, Globe, Leaf, Check } from 'lucide-react';
+import CookerIcon from '../../../assets/cooker.svg';
 
 // --- Types ---
 type Message = {
@@ -162,7 +163,7 @@ export default function RecipeConfigurationChat() {
 
     return (
       <div className="rounded-xl  mt-2 w-full">
-
+      
 
         {/* Servings Counter */}
         <div>
@@ -216,32 +217,39 @@ export default function RecipeConfigurationChat() {
     <div className="flex flex-col h-screen w-full mx-auto text-[#2C3E14]">
 
       {/* Header */}
-      <div className="sticky top-0 z-10 flex items-center gap-3">
-        <div className="w-10 h-10 bg-[#7D9C5B] rounded-full flex items-center justify-center text-white shadow-sm">
-          <ChefHat size={22} />
-        </div>
+      <div className="sticky top-0  flex items-center gap-3">
+          
+          <img src={CookerIcon} alt="" className='w-9 h-9'/>
+       
         <div>
-          <h1 className="font-bold text-lg text-[#3A4A28] leading-tight">Recipe Configuration</h1>
-          <p className="text-xs text-[#7B8C65]">AI Chef Assistant</p>
+          <h1 className="font-bold text-xl text-[#3A4A28] leading-tight">Recipe Configuration</h1>
+          <p className="text-xs text-[#7B8C65]"> Chef Assistant</p>
         </div>
       </div>
 
       {/* Chat Stream */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <div className="flex-1 overflow-y-auto p-4 space-y-6 hide-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <style>
+          {`
+            .hide-scrollbar::-webkit-scrollbar {
+              display: none;
+            }
+          `}
+        </style>
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up`}>
 
             {/* Bot Avatar (only for bot) */}
             {msg.sender === 'bot' && (
               <div className="w-8 h-8 rounded-full flex items-center justify-center mr-2 mt-1 flex-shrink-0 text-[#7D9C5B]">
-
+              
               </div>
             )}
 
             {/* Bubble */}
             <div className={`max-w-[85%] ${msg.sender === 'user'
-              ? 'bg-[#7D9C5B] text-white rounded-2xl rounded-tr-none shadow-md'
-              : 'bg-white/30 backdrop-blur-xl border border-white/50 text-[#4A5D23] rounded-2xl rounded-tl-none shadow-sm ring-1 ring-white/40'
+                ? 'bg-[#7D9C5B] text-white rounded-2xl rounded-tr-none shadow-md'
+                : 'bg-white/30 backdrop-blur-xl border border-white/50 text-[#4A5D23] rounded-2xl rounded-tl-none shadow-sm ring-1 ring-white/40'
               } p-4 text-sm leading-relaxed`}
             >
               {/* Text Content */}
@@ -299,7 +307,7 @@ export default function RecipeConfigurationChat() {
             <Send size={18} />
           </button>
         </div>
-
+       
       </div>
     </div>
   );

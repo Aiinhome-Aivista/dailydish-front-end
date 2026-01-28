@@ -31,10 +31,11 @@ const FirstSection = ({ onGetStarted }: FirstSectionProps) => {
             menu_book_2
           </span>
         </div>
-        <p className="font-normal w-full pl-12 pr-32 py-4 rounded-lg placeholder:[#435334] focus:outline-none focus:ring-2 focus:ring-brand-dark/20 bg-brand-light">
-          
-          Enter Ingredients (e.g. Tomato, Garlic, Chicken...)
-        </p>
+       <input
+          type="text"
+          placeholder="Enter Ingredients (e.g. Tomato, Garlic, Chicken...)"
+          className="font-normal w-full pl-12 pr-32 py-4 rounded-lg placeholder:[#435334] focus:outline-none focus:ring-2 focus:ring-brand-dark/20 bg-brand-light"
+        />
 
         <button
           onClick={onGetStarted}
