@@ -31,15 +31,16 @@ const FirstSection = ({ onGetStarted }: FirstSectionProps) => {
             menu_book_2
           </span>
         </div>
-       <input
-          type="text"
-          placeholder="Enter Ingredients (e.g. Tomato, Garlic, Chicken...)"
-          className="font-normal w-full pl-12 pr-32 py-4 rounded-lg placeholder:[#435334] focus:outline-none focus:ring-2 focus:ring-brand-dark/20 bg-brand-light"
+        <textarea
+          placeholder={`Hi, I’m Dr. Foodi—your food expert. How can I help you 
+today? Enter ingredients (e.g. Tomato, Garlic, Chicken...)`}
+          rows={2}
+          className="font-normal w-full pl-12  py-1 rounded-lg placeholder:[#435334] focus:outline-none focus:ring-2 focus:ring-brand-dark/20 bg-brand-light resize-none"
         />
 
         <button
           onClick={onGetStarted}
-          className="absolute right-2 top-2 bottom-2 bg-brand-dark text-brand-beige px-6 rounded-md font-bold flex items-center gap-2 hover:bg-opacity-90 transition-all cursor-pointer"
+          className="absolute right-2 top-2 bottom-4 bg-brand-dark text-brand-beige px-2 rounded-md font-bold flex items-center gap-2 hover:bg-opacity-90 transition-all cursor-pointer"
         >
           Generate <Sparkles size={16} />
         </button>

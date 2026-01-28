@@ -28,20 +28,15 @@ const MealPlan = lazy(() => import("../features/pantry/pages/MealPlan"));
 const SplashToLanding = () => {
   const location = useLocation();
   const shouldSkipSplash = location.state?.skipSplash;
-  const [phase, setPhase] = useState<'splash' | 'loader' | 'landing'>(shouldSkipSplash ? 'landing' : 'splash');
+  const [phase, setPhase] = useState<'splash' | 'landing'>(shouldSkipSplash ? 'landing' : 'splash');
   const [LandingComponent, setLandingComponent] = useState<any>(null);
 
   useEffect(() => {
     if (shouldSkipSplash) return;
 
-    // 1. Splash Timer (3s)
-    const splashTimer = setTimeout(() => {
-      setPhase('loader');
-    }, 3000);
-
-    // 2. Preload LandingPage + Minimum Wait (7s total = 3s Splash + 4s Loader)
+    // Preload LandingPage + Minimum Wait (3s total)
     Promise.all([
-      new Promise(resolve => setTimeout(resolve, 7000)),
+      new Promise(resolve => setTimeout(resolve, 3000)),
       import('../features/landingpage/pages/LandingPage')
     ])
       .then(([_, module]) => {
@@ -50,15 +45,11 @@ const SplashToLanding = () => {
       })
       .catch(err => {
         console.error("Failed to load LandingPage", err);
-        // Fallback or error handling if needed, though rare
       });
-
-    return () => clearTimeout(splashTimer);
   }, [shouldSkipSplash]);
 
   if (shouldSkipSplash) return <LandingPage />;
   if (phase === 'splash') return <SplashScreen />;
-  if (phase === 'loader') return <DailyDishLoader />;
   if (phase === 'landing' && LandingComponent) return <LandingComponent />;
 
   return <DailyDishLoader />;
