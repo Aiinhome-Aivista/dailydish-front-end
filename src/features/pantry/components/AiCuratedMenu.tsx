@@ -10,6 +10,7 @@ import { chatRecipeConfiguration } from '../api/recipeConfigurationService';
 import type { Recipe } from "../types/aiCuratedMenu";
 import { AxiosError } from "axios";
 import DailyDishLoader from "../../../components/feedback/DailyDishLoader";
+import { useAuth } from "../../auth/context/AuthContext";
 
 
 
@@ -17,6 +18,7 @@ const AiMenuDashboard: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { user, userId } = useAuth();
   const [selectedId, setSelectedId] = useState<number>(0);
   const [savingId, setSavingId] = useState<number | null>(null);
   const [savedRecipeIds, setSavedRecipeIds] = useState<Set<number>>(new Set());
@@ -35,16 +37,24 @@ const AiMenuDashboard: React.FC = () => {
         if (pendingContext) {
           try {
             chatContext = JSON.parse(pendingContext);
-            // Add user_id if missing (it should be in localStorage as we are logged in)
-            if (!chatContext.user_id) {
-              const storedUserId = localStorage.getItem('user_id');
-              if (storedUserId) {
-                chatContext.user_id = storedUserId;
+            // Add user_id if missing or if it's guest_user
+            if (!chatContext.user_id || chatContext.user_id === 'guest_user') {
+              const currentUserId = userId || localStorage.getItem('user_id');
+              if (currentUserId) {
+                chatContext.user_id = currentUserId;
               }
             }
             localStorage.removeItem('pending_chat_context');
           } catch (e) {
             console.error("Error parsing pending chat context", e);
+          }
+        }
+      } else {
+        // If state is passed but user_id is guest_user (e.g. direct navigation which shouldn't happen for login flow usually, but good for safety)
+        if (chatContext.user_id === 'guest_user') {
+          const currentUserId = userId || localStorage.getItem('user_id');
+          if (currentUserId) {
+            chatContext.user_id = currentUserId;
           }
         }
       }
