@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../../../components/layout/NavBar';
 import LandingFooter from '../components/LandingFooter';
+import Carousel from '../components/Carousel';
 
 const NutritionalScoring = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const NutritionalScoring = () => {
         onClick={() => navigate('/', { state: { skipSplash: true } })}
         className="absolute top-18 right-12 bg-brand-primary text-brand-dark px-4 py-2 rounded-lg font-semibold hover:bg-[#CEDEBD] transition-colors cursor-pointer flex items-center gap-2"
       >
-         <span className="material-symbols-outlined">arrow_back</span>Back
+        <span className="material-symbols-outlined">arrow_back</span>Back
       </button>
       <main className="pt-20 pb-20 px-6 md:px-12 max-w-6xl mx-auto min-h-[60vh]">
         {/* Hero Section */}
@@ -65,49 +66,77 @@ const NutritionalScoring = () => {
         {/* Macro-Nutrients Breakdown Section */}
         <section className="mb-16">
           <h2 className="text-3xl font-bold text-brand-dark mb-8 text-center">Macro-Nutrient Breakdown</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+          <Carousel>
+            <div className="bg-white rounded-lg shadow-lg p-6 text-center h-full">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">🥩</span>
               </div>
               <h3 className="text-xl font-semibold text-brand-dark mb-3">Proteins</h3>
-              <p className="text-brand-dark/80 mb-4">
+              <p className="text-brand-dark/80 mb-4 text-sm">
                 Essential for muscle repair, immune function, and overall body maintenance.
                 Sources include meat, fish, eggs, dairy, legumes, and nuts.
               </p>
-              <div className="text-sm text-brand-dark/60">
-                Recommended: 10-35% of daily calories
+              <div className="text-sm text-brand-dark/60 font-medium">
+                Recommended: 10-35%
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+            <div className="bg-white rounded-lg shadow-lg p-6 text-center h-full">
               <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">🍞</span>
               </div>
               <h3 className="text-xl font-semibold text-brand-dark mb-3">Carbohydrates</h3>
-              <p className="text-brand-dark/80 mb-4">
+              <p className="text-brand-dark/80 mb-4 text-sm">
                 Primary energy source for the body and brain. Includes sugars, starches, and fiber.
                 Found in grains, fruits, vegetables, and legumes.
               </p>
-              <div className="text-sm text-brand-dark/60">
-                Recommended: 45-65% of daily calories
+              <div className="text-sm text-brand-dark/60 font-medium">
+                Recommended: 45-65%
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+            <div className="bg-white rounded-lg shadow-lg p-6 text-center h-full">
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">🧈</span>
               </div>
               <h3 className="text-xl font-semibold text-brand-dark mb-3">Fats</h3>
-              <p className="text-brand-dark/80 mb-4">
+              <p className="text-brand-dark/80 mb-4 text-sm">
                 Important for hormone production, nutrient absorption, and cell membrane health.
-                Includes saturated, unsaturated, and trans fats from various sources.
+                Includes saturated, unsaturated, and trans fats.
               </p>
-              <div className="text-sm text-brand-dark/60">
-                Recommended: 20-35% of daily calories
+              <div className="text-sm text-brand-dark/60 font-medium">
+                Recommended: 20-35%
               </div>
             </div>
-          </div>
+
+            <div className="bg-white rounded-lg shadow-lg p-6 text-center h-full">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl">🥦</span>
+              </div>
+              <h3 className="text-xl font-semibold text-brand-dark mb-3">Fiber</h3>
+              <p className="text-brand-dark/80 mb-4 text-sm">
+                Crucial for digestion and heart health. Helps maintain blood sugar levels and satiety.
+                Abundant in fruits, vegetables, and whole grains.
+              </p>
+              <div className="text-sm text-brand-dark/60 font-medium">
+                Recommended: 25-30g/day
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-lg p-6 text-center h-full">
+              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl">💊</span>
+              </div>
+              <h3 className="text-xl font-semibold text-brand-dark mb-3">Micronutrients</h3>
+              <p className="text-brand-dark/80 mb-4 text-sm">
+                Vitamins and minerals vital for immune system, energy production and bone health.
+                Found in a varied, colorful diet.
+              </p>
+              <div className="text-sm text-brand-dark/60 font-medium">
+                Varies by nutrient
+              </div>
+            </div>
+          </Carousel>
         </section>
 
         {/* How It Helps Section */}

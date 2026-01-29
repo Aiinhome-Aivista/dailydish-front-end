@@ -223,6 +223,7 @@ export default function RecipeConfigurationChat() {
       { name: 'Indian-Sub', icon: <Globe className="w-5 h-5" /> },
       { name: 'Central Asian', icon: <Leaf className="w-5 h-5" /> }, // Placeholder icon
       { name: 'European', icon: <ChefHat className="w-5 h-5" /> },
+       { name: 'Inter-Continental', icon: <ChefHat className="w-5 h-5" /> },
     ];
 
     return (

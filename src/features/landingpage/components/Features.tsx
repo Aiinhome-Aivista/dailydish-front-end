@@ -38,7 +38,7 @@ const LandingFeatures = () => {
         <div className="py-20 px-6 md:px-12 bg-brand-light">
             <div className="max-w-6xl mx-auto">
                 <h2 className="text-4xl md:text-5xl font-bold text-center text-brand-light mb-4">
-                    <span className="text-brand-accent">Why Cook with AI?</span>
+                    <span className="text-brand-accent">Why Cook with Dr. Foodi?</span>
                 </h2>
                 <p className="text-center text-brand-dark max-w-xl mx-auto mb-16 font-medium">
                     Our smart generator considers everything from your pantry inventory to your specific long-term health goals.

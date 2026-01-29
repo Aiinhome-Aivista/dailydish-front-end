@@ -88,7 +88,7 @@ function LoginModal({ isOpen, onClose, onSwitchToSignUp }: LoginModalProps) {
         {/* Close Button */}
         <button
           onClick={onClose}
-          className='absolute top-4 right-4 text-white/60 hover:text-white transition-colors'
+          className='absolute top-4 right-4 text-white/60 hover:text-white transition-colors cursor-pointer'
           aria-label="Close"
         >
           <X size={24} />

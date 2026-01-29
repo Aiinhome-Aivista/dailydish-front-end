@@ -57,7 +57,7 @@ function HowItWorks() {
           </div>
 
           {/* Step 2 */}
-          <div className="flex flex-col md:flex-row-reverse items-center mb-20">
+          {/* <div className="flex flex-col md:flex-row-reverse items-center mb-20">
             <div className="md:w-1/2 mb-8 md:mb-0 md:pl-12">
               <div className="text-6xl mb-6 animate-pulse">🤖</div>
               <h2 className="text-3xl md:text-4xl font-bold text-[#435334] mb-4">
@@ -77,14 +77,14 @@ function HowItWorks() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Step 3 */}
           <div className="flex flex-col md:flex-row items-center mb-20">
             <div className="md:w-1/2 mb-8 md:mb-0 md:pr-12">
               <div className="text-6xl mb-6 animate-bounce">👨‍🍳</div>
               <h2 className="text-3xl md:text-4xl font-bold text-[#435334] mb-4">
-                3. Cook & Enjoy
+                2. Cook & Enjoy
               </h2>
               <p className="text-lg text-[#5e7054] leading-relaxed">
                 Follow step-by-step instructions with built-in timers and tips. 

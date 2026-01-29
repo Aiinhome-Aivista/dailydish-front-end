@@ -20,7 +20,7 @@
   /* Colors & Scheme */
   color-scheme: light dark;
   color: rgb(0, 0, 0);
-  background-color:#FAF1E4;
+  background-color: #FAF1E4;
 
   /* Transitions */
   --transition-default: 200ms;
@@ -41,6 +41,7 @@
   width: 0;
   height: 0;
 }
+
 .p-toast-icon-close {
   display: none !important;
 }
@@ -49,8 +50,11 @@ input::-ms-reveal,
 input::-ms-clear {
   display: none;
 }
+
 /* Hide Scrollbar - Firefox/IE/Edge */
 * {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }

@@ -22,6 +22,7 @@ const AiMenuDashboard: React.FC = () => {
   const [savedRecipeIds, setSavedRecipeIds] = useState<Set<number>>(new Set());
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [generationContext, setGenerationContext] = useState<string>("");
 
   useEffect(() => {
     const init = async () => {
@@ -41,12 +42,31 @@ const AiMenuDashboard: React.FC = () => {
                 chatContext.user_id = storedUserId;
               }
             }
-            // Clear it so we don't re-run on refresh (unless we want to persist? better to clear on success)
-            // We will clear it after successful fetch or error to avoid loops
             localStorage.removeItem('pending_chat_context');
           } catch (e) {
             console.error("Error parsing pending chat context", e);
           }
+        }
+      }
+
+      // Extract context for display
+      if (chatContext && chatContext.collected_data) {
+        const data = chatContext.collected_data;
+        const parts = [];
+
+        if (data.ingredients && Array.isArray(data.ingredients) && data.ingredients.length > 0) {
+          // Handle both simple string arrays or object arrays if the type definition varies, 
+          // but based on types it's {name, qty}[]
+          const ingredientsList = data.ingredients.map((i: any) => i.name || i).join(", ");
+          if (ingredientsList) parts.push(ingredientsList);
+        }
+
+        if (data.cuisine || data.cuisine_preference) {
+          parts.push(data.cuisine || data.cuisine_preference);
+        }
+
+        if (parts.length > 0) {
+          setGenerationContext(parts.join(" + "));
         }
       }
 
@@ -149,9 +169,9 @@ const AiMenuDashboard: React.FC = () => {
             Welcome to Your kitchen
           </h1>
         </div>
-        <p className="text-sm text-brand-accent font-medium">
+        <p className="text-xl text-brand-accent font-medium ml-9">
           Based on:{" "}
-          <span className="">Chicken , Broccoli, Garlic, Oriental Cuisine</span>
+          <span className="text-lg text-brand-accent font-medium ">{generationContext || "Your preferences"}</span>
         </p>
       </div>
 
