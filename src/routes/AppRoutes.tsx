@@ -74,9 +74,16 @@ const PublicRoute = () => {
   }
 
   // Redirect to dashboard/configured page if already logged in
-  // return !isLoggedIn ? <Outlet /> : <Navigate to="/recipe-details" replace />;
-  // return !isLoggedIn ? <Outlet /> : <Navigate to="/ai-menu" replace />;
-  return !isLoggedIn ? <Outlet /> : <Navigate to="/recipe-configuration-chat" replace />;
+  if (!isLoggedIn) return <Outlet />;
+
+  // Check if we have a pending AI generation
+  const pendingChat = localStorage.getItem('pending_chat_context');
+  if (pendingChat) {
+    return <Navigate to="/ai-menu" replace />;
+  }
+
+  // Default redirect
+  return <Navigate to="/recipe-configuration-chat" replace />;
 };
 
 function AppRoutes() {
@@ -86,7 +93,7 @@ function AppRoutes() {
         {/* --- PUBLIC ROUTES --- */}
         <Route element={<PublicRoute />}>
           <Route path="/" element={<SplashToLanding />} />
-         
+
           {/* Login and SignUp pages kept as fallbacks */}
           <Route path="login" element={<SplashToLanding />} />
           <Route path="signup" element={<SplashToLanding />} />
@@ -101,7 +108,7 @@ function AppRoutes() {
         <Route element={<PrivateRoute />}>
           <Route element={<AppLayout />}>
             {/* <Route path="recipe-configuration" element={<RecipeConfiguration />} /> */}
-               <Route path="recipe-configuration-chat" element={<RecipeConfigurationChat />} />
+            <Route path="recipe-configuration-chat" element={<RecipeConfigurationChat />} />
             <Route path="recipe-details" element={<RecipeDetails />} />
             <Route path="ai-menu" element={<AiCuratedMenu />} />
             <Route path="saved-recipes" element={<SavedRecipes />} />

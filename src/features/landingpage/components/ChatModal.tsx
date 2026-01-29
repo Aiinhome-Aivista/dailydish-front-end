@@ -89,6 +89,24 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
 
             if (response && response.status === 'success') {
                 const botResponse = response.message;
+
+                // Check for direct recipe generation in chat response (Parity with triggerMessageSend)
+                const recipes = response.data?.recipes || response.data?.data?.recipes;
+                if (recipes && recipes.length > 0) {
+                    const context = {
+                        user_id: currentUserId,
+                        message: userText,
+                        chat_history: chatHistory,
+                        collected_data: collectedData
+                    };
+
+                    if (userId) {
+                        navigate('/ai-menu', { state: { recipes } });
+                        return;
+                    } else {
+                        if (onGenerateRecipe) onGenerateRecipe(context);
+                    }
+                }
                 const botMsg: Message = {
                     id: Date.now().toString() + '_bot',
                     sender: 'bot',
@@ -156,7 +174,13 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                         navigate('/ai-menu', { state: { recipes } });
                         return;
                     } else {
-
+                        const context = {
+                            user_id: currentUserId || "guest_user",
+                            message: text,
+                            chat_history: chatHistory,
+                            collected_data: collectedData
+                        };
+                        if (onGenerateRecipe) onGenerateRecipe(context);
                     }
                 }
 

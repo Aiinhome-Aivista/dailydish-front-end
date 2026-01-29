@@ -25,10 +25,35 @@ const AiMenuDashboard: React.FC = () => {
 
   useEffect(() => {
     const init = async () => {
-      if (location.state?.waitingForRecipes && location.state?.chatContext) {
+      let chatContext = location.state?.chatContext;
+      const waitingForRecipes = location.state?.waitingForRecipes;
+
+      // Check localStorage if not in state
+      if (!chatContext) {
+        const pendingContext = localStorage.getItem('pending_chat_context');
+        if (pendingContext) {
+          try {
+            chatContext = JSON.parse(pendingContext);
+            // Add user_id if missing (it should be in localStorage as we are logged in)
+            if (!chatContext.user_id) {
+              const storedUserId = localStorage.getItem('user_id');
+              if (storedUserId) {
+                chatContext.user_id = storedUserId;
+              }
+            }
+            // Clear it so we don't re-run on refresh (unless we want to persist? better to clear on success)
+            // We will clear it after successful fetch or error to avoid loops
+            localStorage.removeItem('pending_chat_context');
+          } catch (e) {
+            console.error("Error parsing pending chat context", e);
+          }
+        }
+      }
+
+      if ((waitingForRecipes && chatContext) || (!waitingForRecipes && chatContext)) { // Handle both cases if context exists
         setIsLoading(true);
         try {
-          const response = await chatRecipeConfiguration(location.state.chatContext);
+          const response = await chatRecipeConfiguration(chatContext);
           if (response && response.status === 'success') {
             const respData = response.data as any;
             const generatedRecipes: GeneratedRecipe[] = respData?.recipes || respData?.data?.recipes || [];
@@ -134,7 +159,7 @@ const AiMenuDashboard: React.FC = () => {
       {isLoading ? (
         <div className="flex flex-col items-center justify-center h-64">
           {/* <Loader2 size={48} className="animate-spin text-brand-accent mb-4" /> */}
-          <DailyDishLoader/>
+          <DailyDishLoader />
         </div>
       ) : (
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -30,31 +30,9 @@ function LoginModal({ isOpen, onClose, onSwitchToSignUp }: LoginModalProps) {
       await login({ email, password });
       showToast('success', 'Success', 'Login Successful!');
 
-      // Check for pending chat context (New flow)
-      const pendingChatContext = localStorage.getItem('pending_chat_context');
-      if (pendingChatContext) {
-        try {
-          const parsedContext = JSON.parse(pendingChatContext);
-          localStorage.removeItem('pending_chat_context');
+      // Check for pending chat context (New flow) - Handled by AppRoutes & AiCuratedMenu
+      // We do nothing here to avoid race conditions with PublicRoute redirect
 
-          // We need the user ID. It should be in localStorage after login
-          const storedUserId = localStorage.getItem('user_id') || 'guest_user';
-
-          // Update context with actual user ID
-          parsedContext.user_id = storedUserId;
-
-          onClose();
-          navigate('/ai-curated-menu', {
-            state: {
-              waitingForRecipes: true,
-              chatContext: parsedContext
-            }
-          });
-          return;
-        } catch (e) {
-          console.error("Error parsing pending chat context", e);
-        }
-      }
 
       // Check for pending recipe data (Old/Fallback flow)
       const pendingData = localStorage.getItem('pending_recipe_data');
