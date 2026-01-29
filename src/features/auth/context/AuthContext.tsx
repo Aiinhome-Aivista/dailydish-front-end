@@ -4,7 +4,7 @@ import { authService } from "../api/authService";
 import type { LoginPayload } from "../types/login";
 import type { AuthContextType, User } from "../types/authTypes";
 
-const TOKEN_EXPIRY_TIME = 30 * 60 * 1000;
+const TOKEN_EXPIRY_TIME = 5 * 60 * 60 * 1000;
 
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
