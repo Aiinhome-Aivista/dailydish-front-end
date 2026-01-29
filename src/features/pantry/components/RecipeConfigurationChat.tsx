@@ -29,7 +29,7 @@ export default function RecipeConfigurationChat() {
     {
       id: '1',
       sender: 'bot',
-      content: "Hello! I'm Dr. Foodi, your Chef Assistant. Let's craft your perfect meal. First, what ingredients do you have to cook with today?",
+      content: "Hello! I'm Dr. Foodie, your Chef Assistant. Let's craft your perfect meal. First, what ingredients do you have to cook with today?",
       type: 'text'
     }
   ]);
@@ -253,7 +253,7 @@ export default function RecipeConfigurationChat() {
         <img src={CookerIcon} alt="" className='w-9 h-9' />
 
         <div>
-          <h1 className="font-bold text-xl text-[#3A4A28] leading-tight">Dr. Foodi</h1>
+          <h1 className="font-bold text-xl text-[#3A4A28] leading-tight">Dr. Foodie</h1>
           <p className="text-xs text-[#7B8C65]"> Chef Assistant</p>
         </div>
       </div>

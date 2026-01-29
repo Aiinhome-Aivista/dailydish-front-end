@@ -39,7 +39,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
         {
             id: '1',
             sender: 'bot',
-            content: "Hello! I'm Dr. Foodi, your Chef Assistant. Let's craft your perfect meal. First, what ingredients do you have to cook with today?",
+            content: "Hello! I'm Dr. Foodie, your Chef Assistant. Let's craft your perfect meal. First, what ingredients do you have to cook with today?",
             type: 'text'
         }
     ]);
@@ -309,7 +309,7 @@ const PlanSummaryCard = ({ content }: { content: string }) => {
                 <div className="flex items-center gap-3 p-4 border-b border-white/30 bg-linear-to-b from-[#E8F1E0] to-[#E8F1E0]/95 backdrop-blur-sm">
                     <img src={CookerIcon} alt="" className='w-9 h-9' />
                     <div>
-                        <h1 className="font-bold text-xl text-[#3A4A28] leading-tight">Dr. Foodi</h1>
+                        <h1 className="font-bold text-xl text-[#3A4A28] leading-tight">Dr. Foodie</h1>
                         <p className="text-xs text-[#7B8C65]">Your Food Expert</p>
                     </div>
                 </div>

@@ -84,7 +84,7 @@ const FirstSection = ({ onGetStarted }: FirstSectionProps) => {
           {/* Textarea */}
           <textarea
             onClick={handleOpenChat}
-            placeholder="Hi, I'm Dr. Foodi—your food expert. How can I help you today?"
+            placeholder="Hi, I'm Dr. Foodie—your food expert. How can I help you today?"
             readOnly
             rows={1}
             className="
