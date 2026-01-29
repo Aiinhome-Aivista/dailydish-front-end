@@ -24,7 +24,7 @@ const NavItem = ({
       ? 'bg-[#CEDEBD36] text-brand-accent border border-brand-light'
       : 'text-[#95B974] hover:bg-brand-light/50 hover:text-brand-dark '
       } ${!label ? 'justify-center px-2' : ''}`}
-    title={!label ? "Navigation Item" : label}
+    title={!label ? "My Dish" : label}
   >
     <span className="material-symbols-outlined text-[24px]">{icon}</span>
     {label && <span className="whitespace-nowrap overflow-hidden transition-all duration-300">{label}</span>}
@@ -34,7 +34,7 @@ const NavItem = ({
 const SideBar = ({ isOpen, onClose }: SideBarProps) => {
   const location = useLocation();
   const currentPath = location.pathname;
-  const [isCollapsed, setIsCollapsed] = React.useState(false);
+  const [isCollapsed, setIsCollapsed] = React.useState(true);
 
   // Default to My Pantry being active if path is / or /pantry
   const isPantryActive = ['/recipe-configuration-chat', '/ai-menu', '/recipe-details'].includes(currentPath) || currentPath === '/';
