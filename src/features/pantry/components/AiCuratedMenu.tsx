@@ -11,6 +11,11 @@ import type { Recipe } from "../types/aiCuratedMenu";
 import { AxiosError } from "axios";
 import DailyDishLoader from "../../../components/feedback/DailyDishLoader";
 import { useAuth } from "../../auth/context/AuthContext";
+import Tomato from '../../../assets/tamato.avif';
+import Leaf from '../../../assets/pudina.avif';
+import momos from '../../../assets/momos.avif';
+import pizza from '../../../assets/pizza.avif';
+import burger from '../../../assets/bargar.avif';
 
 
 
@@ -164,6 +169,7 @@ const AiMenuDashboard: React.FC = () => {
 
   return (
     <div className="h-full">
+
       {/* Header Section */}
       <div className="max-w-full mb-8">
         <div className="flex items-center gap-2">
@@ -184,6 +190,22 @@ const AiMenuDashboard: React.FC = () => {
           <span className="text-lg text-brand-accent font-medium ">{generationContext || "Your preferences"}</span>
         </p>
       </div>
+
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                {/* Pink Swirls - Using SVG for crispness */}
+                <svg className="absolute top-0 left-0 w-full h-full opacity-40" viewBox="0 0 1000 1000" fill="none">
+                    <path d="M-100,200 C150,50 350,450 550,150 S850,550 1100,250" stroke="#F8C8D0" strokeWidth="2" />
+                    <path d="M1100,800 C800,600 400,950 0,750" stroke="#F8C8D0" strokeWidth="1.5" />
+                </svg>
+
+                {/* Floating Food Elements (Hardcoded positions to match image) */}
+                <img src={Leaf} className="absolute top-[10%] left-[28%] w-8 rotate-12" alt="mint" />
+                <img src={burger} className="absolute top-[40%] left-[5%] w-32 -rotate-12 blur-[0.5px]" alt="burger" />
+                <img src={momos} className="absolute top-[8%] right-[10%] w-36 rotate-6" alt="dumplings" />
+                <img src={pizza} className="absolute bottom-[20%] right-[8%] w-40 -rotate-12" alt="pizza" />
+                <img src={Tomato} className="absolute top-[35%] right-[10%]" /> {/* Tomato slice stand-in */}
+                <img src={Tomato} className="absolute bottom-[15%] left-[10%] rounded-full " />
+            </div>
 
       {/* Grid Section */}
       {isLoading ? (
