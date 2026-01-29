@@ -421,8 +421,8 @@ export default function RecipeConfigurationChat() {
             > */}
             <div
               className={`max-w-[75%] break-words whitespace-pre-wrap ${msg.sender === 'user'
-                  ? 'bg-[#CEDEBDB2] backdrop-blur-[40px] text-[#2C3E14] rounded-xl shadow-md'
-                  : 'bg-[#435334B2] backdrop-blur-[36px] text-[#F4F8F1] rounded-2xl shadow-sm border border-white/10'
+                  ? 'bg-[#CEDEBDB2] backdrop-blur-[36px] text-[#2C3E14] rounded-2xl shadow-md z-70'
+                  : 'bg-[#435334B2] backdrop-blur-[40px] text-[#F4F8F1] rounded-2xl shadow-sm border border-white/10'
                 } p-4 text-sm leading-relaxed`}
             >
               {/* Text Content - Always show for user messages, or when type is text */}
