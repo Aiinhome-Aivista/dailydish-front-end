@@ -378,8 +378,8 @@ export default function RecipeConfigurationChat() {
         <img src={CookerIcon} alt="" className='w-9 h-9' />
 
         <div>
-          <h1 className="font-bold text-xl text-[#3A4A28] leading-tight">Dr. Foodie</h1>
-          <p className="text-xs text-[#7B8C65]"> Chef Assistant</p>
+          <h1 className="font-bold text-2xl text-[#3A4A28] leading-tight">Dr. Foodie</h1>
+          <p className="text-sm text-[#7B8C65]"> Chef Assistant</p>
         </div>
       </div>
 

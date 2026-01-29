@@ -88,7 +88,7 @@ const MealPlan = () => {
     return (
         <div className="h-full text-brand-dark overflow-y-auto pb-10 space-y-4">
             {/* Header Section */}
-            <div className="max-w-full flex items-start gap-2">
+            <div className="w-full flex items-start gap-2">
                 <button
                     onClick={() => {
                         if (activeMeal) {
@@ -303,7 +303,7 @@ const MealPlan = () => {
                     );
                 })()
             ) : meals.length > 0 ? (
-                <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="max-w-7xl  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {meals.map((mealItem) => {
                         const meal = mealItem.details;
                         return (

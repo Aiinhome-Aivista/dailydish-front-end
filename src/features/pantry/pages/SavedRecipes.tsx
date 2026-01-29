@@ -74,7 +74,7 @@ const SavedRecipes = () => {
     return (
         <div className="h-full">
             {/* Header Section */}
-            <div className="max-w-full flex items-start gap-2 mb-4">
+            <div className="w-full flex items-start gap-2 mb-4">
                 <button
                     onClick={() => navigate('/ai-menu')}
                     className="mt-1 -ml-1 hover:bg-black/5 rounded-full text-brand-dark transition-colors cursor-pointer"
@@ -93,7 +93,7 @@ const SavedRecipes = () => {
             </div>
 
             {/* Grid Section */}
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {recipes.length > 0 ? (
                     recipes.map((recipe) => (
                         <div
