@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { ChevronRight, ArrowLeft } from "lucide-react";
 import { pantryService } from "../api/saveMenuService";
 import type { SavedMenuItem } from "../types/saveMenu";
-import broccoliImage from "../../../assets/Broccolli_image.svg";
+import defaultRecipeImage from '../../../assets/Recipe_default_image.webp';
 import { useToast } from "../../../shared/context/ToastContext";
 import DeleteModal from "../../../components/modal/pages/DeleteModal";
-import CuisineLoader from "../../../components/feedback/DailyDishLoader";
+import DailyDishLoader from "../../../components/feedback/DailyDishLoader";
 
 
 const SavedRecipes = () => {
@@ -68,13 +68,13 @@ const SavedRecipes = () => {
     }, []);
 
     if (loading) {
-        return <CuisineLoader />;
+        return <DailyDishLoader />;
     }
 
     return (
         <div className="h-full">
             {/* Header Section */}
-            <div className="max-w-full flex items-start gap-2 mb-4">
+            <div className="w-full flex items-start gap-2 mb-4">
                 <button
                     onClick={() => navigate('/ai-menu')}
                     className="mt-1 -ml-1 hover:bg-black/5 rounded-full text-brand-dark transition-colors cursor-pointer"
@@ -93,7 +93,7 @@ const SavedRecipes = () => {
             </div>
 
             {/* Grid Section */}
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {recipes.length > 0 ? (
                     recipes.map((recipe) => (
                         <div
@@ -103,7 +103,7 @@ const SavedRecipes = () => {
                                     menu_name: recipe.menu_name,
                                     cooking_time: recipe.cooking_time,
                                     description: recipe.description,
-                                    image_url: recipe.image_url
+                                    image_url: defaultRecipeImage
                                 }
                             })}
                             className="group relative flex flex-col p-4 rounded-4xl cursor-pointer transition-all duration-300 bg-[#d2e4c4] hover:shadow-md hover:scale-[1.01]"
@@ -111,12 +111,12 @@ const SavedRecipes = () => {
                             {/* Image Container */}
                             <div className="h-40 w-full mb-5 overflow-hidden rounded-2xl">
                                 <img
-                                    src={recipe.image_url || broccoliImage}
+                                    src={ defaultRecipeImage}
                                     loading="lazy"
                                     alt={recipe.menu_name}
                                     className="w-full h-full object-cover"
                                     onError={(e) => {
-                                        e.currentTarget.src = broccoliImage;
+                                        e.currentTarget.src = defaultRecipeImage;
                                     }}
                                 />
                             </div>
@@ -139,17 +139,17 @@ const SavedRecipes = () => {
                                         </span>
                                     </div>
 
-                                    <div className="flex items-center gap-3">
+                                    <div className="flex flex-col items-end">
                                         <button
                                             onClick={(e) => confirmDelete(e, recipe.menu_name)}
-                                            className=" hover:bg-brand-beige"
+                                            className=" rounded-full pr-8 cursor-pointer "
                                             title="Delete Recipe"
                                         >
-                                            <span className="material-symbols-outlined text-brand-accent text-[18px]">
+                                            <span className="material-symbols-outlined text-sm text-brand-accent">
                                                 delete
                                             </span>
                                         </button>
-                                        <div className="flex items-center gap-1 text-xs font-bold text-[#9dbd87] group-hover:text-[#7a9d63] transition-colors">
+                                        <div className="flex flex-row items-center gap-1 text-xs font-bold text-[#9dbd87] group-hover:text-[#7a9d63] transition-colors">
                                             <span>View Recipe</span>
                                             <ChevronRight size={16} />
                                         </div>

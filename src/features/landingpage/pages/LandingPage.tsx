@@ -1,30 +1,54 @@
-import React from 'react';
+import React, { useState } from 'react';
 import NavBar from '../../../components/layout/NavBar';
 import LandingFeatures from '../components/Features';
 import LandingLeftovers from '../components/Leftovers';
 import ReadyToCook from '../components/ReadyToCook';
-import LandingFooter from '../components/Footer';
+import LandingFooter from '../components/LandingFooter';
 import FirstSection from '../components/FirstSection';
+import LoginModal from '../../auth/components/LoginModal';
+import SignUpModal from '../../auth/components/SignUpModal';
 
 function LandingPage() {
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showSignUpModal, setShowSignUpModal] = useState(false);
+
+  const openLoginModal = () => {
+    setShowSignUpModal(false);
+    setShowLoginModal(true);
+  };
+
+  const openSignUpModal = () => {
+    setShowLoginModal(false);
+    setShowSignUpModal(true);
+  };
+
+  const closeAllModals = () => {
+    setShowLoginModal(false);
+    setShowSignUpModal(false);
+  };
+
   return (
-    // Added 'animate-fade-in' to the main wrapper
-    <div className="h-full w-full animate-[fadeIn_0.5s_ease-out]">
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-      `}</style>
-      
-      <NavBar />
+    <div className="h-full w-full">
+      <NavBar onLoginClick={openLoginModal} onSignUpClick={openSignUpModal} />
       <main>
-        <FirstSection/>
+        <FirstSection onGetStarted={openLoginModal} />
         <LandingFeatures />
         <LandingLeftovers />
         <ReadyToCook />
       </main>
       <LandingFooter />
+
+      {/* Modals */}
+      <LoginModal 
+        isOpen={showLoginModal}
+        onClose={closeAllModals}
+        onSwitchToSignUp={openSignUpModal}
+      />
+      <SignUpModal 
+        isOpen={showSignUpModal}
+        onClose={closeAllModals}
+        onSwitchToLogin={openLoginModal}
+      />
     </div>
   );
 }

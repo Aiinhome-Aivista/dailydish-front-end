@@ -46,5 +46,39 @@ interface OptionProps {
   icon?: string;
   onClick?: () => void;
 }
+
+export interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface CollectedData {
+  ingredients?: Array<{ name: string; qty: string }>;
+  [key: string]: any;
+}
+
+export interface ChatRequest {
+  user_id: string;
+  message: string;
+  chat_history: ChatMessage[];
+  collected_data: CollectedData;
+}
+
+export interface ChatResponse {
+  bot_name?: string;
+  collected_data: CollectedData;
+  message: string;
+  status: string;
+  user_id?: string;
+  chat_history?: ChatMessage[];
+  data?: {
+    recipes?: GeneratedRecipe[];
+    data?: {
+      recipes: GeneratedRecipe[];
+      total_recipes?: number;
+    };
+    [key: string]: any;
+  };
+}
 // Recipe Details Types
 

@@ -14,13 +14,13 @@ const icons = [
   { icon: "local_cafe", color: "#D9D9D9" },
 ];
 
-const CuisineLoader: React.FC = () => {
+const DailyDishLoader: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % icons.length);
-    }, 2000);
+    }, 1300);
     return () => clearInterval(interval);
   }, []);
 
@@ -47,7 +47,7 @@ const CuisineLoader: React.FC = () => {
         {getVisibleIcons().map((item) => (
           <span
             key={item.key}
-            className={`material-symbols-outlined absolute transition-all duration-700 ease-in-out
+            className={`material-symbols-outlined absolute transition-all duration-500 ease-in-out
               ${item.position === "center" ? "text-6xl opacity-100 z-20" : ""}
               ${item.position === "left" || item.position === "right" ? "text-3xl z-10" : ""}
               ${item.position === "far-left" || item.position === "far-right" ? "text-xl opacity-0 z-0" : ""}
@@ -79,4 +79,4 @@ const CuisineLoader: React.FC = () => {
   );
 };
 
-export default CuisineLoader;
+export default DailyDishLoader;

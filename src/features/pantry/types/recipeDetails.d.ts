@@ -23,6 +23,8 @@ export interface IngredientsAnalysis {
 
 export interface RecipeDetailData {
     menu_name: string;
+    description: string;
+    cooking_time: string;
     servings: number;
     nutrition: RecipeNutrition;
     steps: RecipeSteps;
@@ -40,3 +42,32 @@ export interface RecipeDetailsResponse {
     user_id: string;
 }
 
+
+export interface RecipeUpdateServingsRequest {
+    new_servings: number;
+    recipe_details: {
+        menu_name: string;
+        servings: number;
+        time_breakdown: {
+            cook_time: string;
+            prep_time: string;
+        };
+        ingredients_analysis: IngredientsAnalysis;
+        nutrition: RecipeNutrition;
+    };
+}
+
+export interface RecipeUpdateServingsResponse {
+    details: {
+        menu_name: string;
+        servings: number;
+        time_breakdown: {
+            cook_time: string;
+            prep_time: string;
+        };
+        ingredients_analysis: IngredientsAnalysis;
+        nutrition: RecipeNutrition;
+    };
+    message: string;
+    status: string;
+}

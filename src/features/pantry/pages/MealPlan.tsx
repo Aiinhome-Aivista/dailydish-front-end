@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { pantryService } from '../api/saveMenuService';
 import type { SavedMealItem } from '../types/saveMeal';
-import CuisineLoader from '../../../components/feedback/DailyDishLoader';
-import { Check, ArrowLeft } from 'lucide-react';
-import defaultRecipeImage from "../../../assets/Recipe_default_image.jpeg";
+import DailyDishLoader from '../../../components/feedback/DailyDishLoader';
+import { Check, ArrowLeft, ChevronRight } from 'lucide-react';
+import defaultRecipeImage from "../../../assets/Recipe_default_image.webp";
 
 import { useToast } from '../../../shared/context/ToastContext';
 import DeleteModal from '../../../components/modal/pages/DeleteModal';
@@ -13,12 +13,13 @@ const MealPlan = () => {
     const navigate = useNavigate();
     const { showToast } = useToast();
     const [meals, setMeals] = useState<SavedMealItem[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     // Modal State
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedMeal, setSelectedMeal] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [activeMeal, setActiveMeal] = useState<SavedMealItem | null>(null);
 
     const confirmDelete = (menu_name: string) => {
         setSelectedMeal(menu_name);
@@ -35,6 +36,9 @@ const MealPlan = () => {
                 showToast("success", "Deleted", response.message || "Meal deleted successfully");
                 setMeals(prev => prev.filter(m => m.details.menu_name !== selectedMeal));
                 setIsDeleteModalOpen(false);
+                if (activeMeal?.details.menu_name === selectedMeal) {
+                    setActiveMeal(null);
+                }
             } else {
                 showToast("error", "Error", "Failed to delete meal");
             }
@@ -65,32 +69,53 @@ const MealPlan = () => {
         fetchSavedMeal();
     }, []);
 
+    const getSuitabilityColor = (item: string) => {
+        const match = item.match(/(\d+)%/);
+        if (match) {
+            const value = parseInt(match[1]);
+            if (value <= 35) return "bg-red-400";
+            if (value <= 65) return "bg-orange-400";
+            if (value <= 100) return "bg-brand-accent";
+            return "bg-[#95B974]";
+        }
+        return "bg-brand-accent";
+    };
+
     if (loading) {
-        return <CuisineLoader />;
+        return <DailyDishLoader />;
     }
 
     return (
-        <div className="h-full text-brand-dark overflow-y-auto pb-10 space-y-12">
+        <div className="h-full text-brand-dark overflow-y-auto pb-10 space-y-4">
             {/* Header Section */}
-            <div className="max-w-full flex items-start gap-2">
+            <div className="w-full flex items-start gap-2">
                 <button
-                    onClick={() => navigate("/recipe-details")}
+                    onClick={() => {
+                        if (activeMeal) {
+                            setActiveMeal(null);
+                        } else {
+                            navigate("/ai-menu");
+                        }
+                    }}
                     className="mt-1 hover:bg-black/5 rounded-full text-brand-dark transition-colors cursor-pointer"
                 >
                     <ArrowLeft size={24} />
                 </button>
                 <div>
                     <h1 className="text-2xl font-bold text-brand-dark leading-tight">
-                        Your Meal Plan
+                        {activeMeal ? 'Meal Details' : 'Your Meal Plan'}
                     </h1>
-                    <p className="text-sm text-brand-accent font-medium mt-1">
-                        {meals.length} Planned Meals
-                    </p>
+                    {!activeMeal && (
+                        <p className="text-sm text-brand-accent font-medium mt-1">
+                            {meals.length} Planned Meals
+                        </p>
+                    )}
                 </div>
             </div>
 
-            {meals.length > 0 ? (
-                meals.map((mealItem) => {
+            {activeMeal ? (
+                (() => {
+                    const mealItem = activeMeal;
                     const meal = mealItem.details;
                     // Combine ingredients for display
                     const allIngredients = [
@@ -102,13 +127,13 @@ const MealPlan = () => {
                     const prepSteps = meal.steps?.preparation || [];
 
                     return (
-                        <div key={mealItem.id} className="border-b border-[#43533414] pb-12 last:border-0 last:pb-0">
+                        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12">
                             <div className="mb-6 flex justify-between items-start">
                                 <div>
                                     <h2 className="text-2xl font-bold">{meal.menu_name}</h2>
                                     <p className="text-sm text-brand-accent">Saved at: {mealItem.saved_at}</p>
                                 </div>
-                                <button
+                                {/* <button
                                     onClick={() => confirmDelete(meal.menu_name)}
                                     className="p-2 hover:bg-red-100 rounded-full transition-colors group/delete cursor-pointer"
                                     title="Delete Meal"
@@ -116,7 +141,7 @@ const MealPlan = () => {
                                     <span className="material-symbols-outlined text-red-400 group-hover/delete:text-red-600">
                                         delete
                                     </span>
-                                </button>
+                                </button> */}
                             </div>
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -129,6 +154,9 @@ const MealPlan = () => {
                                                 src={defaultRecipeImage}
                                                 alt={meal.menu_name}
                                                 className="w-full h-full object-cover opacity-60"
+                                                onError={(e) => {
+                                                    e.currentTarget.src = defaultRecipeImage;
+                                                }}
                                             />
                                         </div>
 
@@ -226,9 +254,27 @@ const MealPlan = () => {
                                             <h3 className="text-lg font-bold mb-3">Suitability</h3>
                                             <div className="flex flex-wrap gap-2">
                                                 {meal.suitability.map((item: string, idx: number) => (
-                                                    <span key={idx} className="bg-brand-accent text-brand-beige px-3 py-1 rounded-full text-sm font-bold shadow-sm">
+                                                    <span key={idx} className={`${getSuitabilityColor(item)} text-brand-beige px-3 py-1 rounded-full text-sm font-bold shadow-sm`}>
                                                         {item}
                                                     </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                                                        {/* Preparation Steps */}
+                                    {prepSteps.length > 0 && (
+                                        <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit">
+                                            <h3 className="text-xl font-bold pb-4">Preparation Steps</h3>
+                                            <div className="space-y-4">
+                                                {prepSteps.map((step: string, idx: number) => (
+                                                    <div key={idx} className="flex gap-4">
+                                                        <div className="shrink-0 w-8 h-8 rounded-full bg-brand-accent text-brand-beige flex items-center justify-center font-bold text-sm">
+                                                            {idx + 1}
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-sm leading-relaxed">{step}</p>
+                                                        </div>
+                                                    </div>
                                                 ))}
                                             </div>
                                         </div>
@@ -250,29 +296,99 @@ const MealPlan = () => {
                                             ))}
                                         </div>
                                     </div>
-                                    {/* Preparation Steps */}
-                                    {prepSteps.length > 0 && (
-                                        <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit">
-                                            <h3 className="text-xl font-bold pb-4">Preparation Steps</h3>
-                                            <div className="space-y-4">
-                                                {prepSteps.map((step: string, idx: number) => (
-                                                    <div key={idx} className="flex gap-4">
-                                                        <div className="shrink-0 w-8 h-8 rounded-full bg-brand-accent text-brand-beige flex items-center justify-center font-bold text-sm">
-                                                            {idx + 1}
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-sm leading-relaxed">{step}</p>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
+
                                 </div>
                             </div>
                         </div>
                     );
-                })
+                })()
+            ) : meals.length > 0 ? (
+                <div className="max-w-7xl  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {meals.map((mealItem) => {
+                        const meal = mealItem.details;
+                        return (
+                            <div
+                                key={mealItem.id}
+                                onClick={() => setActiveMeal(mealItem)}
+                                className="group relative flex flex-col p-4 rounded-4xl cursor-pointer transition-all duration-300 bg-[#d2e4c4] hover:shadow-md hover:scale-[1.01]"
+                            >
+                                {/* Image Container */}
+                                <div className="h-40 w-full mb-5 overflow-hidden rounded-2xl">
+                                    <img
+                                        src={defaultRecipeImage}
+                                        loading="lazy"
+                                        alt={meal.menu_name}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.currentTarget.src = defaultRecipeImage;
+                                        }}
+                                    />
+                                </div>
+
+                                {/* Content */}
+                                <div className="flex flex-col grow">
+                                    <h3 className="text-xl font-bold mb-2 text-[#3e5035]">
+                                        {meal.menu_name}
+                                    </h3>
+
+                                    <div className="text-sm leading-relaxed text-[#5e7054] mb-6 line-clamp-3">
+                                        <p className="text-xs font-medium mb-2">
+                                            Saved: {mealItem.saved_at}
+                                        </p>
+                                        {meal.suitability && meal.suitability.length > 0 && (
+                                            <div className="flex flex-wrap gap-1">
+                                                {meal.suitability.slice(0, 3).map((tag: string, idx: number) => (
+                                                    <span key={idx} className="text-[10px] px-2 py-1 bg-white/50 rounded-full text-[#3e5035] font-bold">
+                                                        {tag}
+                                                    </span>
+                                                ))}
+                                                {meal.suitability.length > 3 && (
+                                                    <span className="text-[10px] px-2 py-1 bg-white/50 rounded-full text-[#3e5035] font-bold">
+                                                        +{meal.suitability.length - 3}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Footer: Meta & Action */}
+                                    <div className="mt-auto flex items-center justify-between">
+                                        <div className="flex flex-row gap-2">
+                                            {meal.time_breakdown?.prep_time && (
+                                                <>
+                                                    <span className="text-xs font-bold text-[#3e5035]">
+                                                        {meal.time_breakdown.prep_time} prep
+                                                    </span>
+                                                    <span className="text-xs font-bold text-[#3e5035]">
+                                                        {meal.time_breakdown.cook_time} cook
+                                                    </span>
+                                                </>
+                                            )}
+                                        </div>
+                                        <div className="flex flex-col items-end">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    confirmDelete(meal.menu_name);
+                                                }}
+                                                className=" rounded-full pr-8 cursor-pointer "
+                                                title="Delete Meal"
+                                            >
+                                                <span className="material-symbols-outlined text-sm text-brand-accent">
+                                                    delete
+                                                </span>
+                                            </button>
+                                            <div className="flex flex-row items-center gap-1 text-xs font-bold text-[#9dbd87] group-hover:text-[#7a9d63] transition-colors">
+                                                <span>View Plan</span>
+                                                <ChevronRight size={16} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
             ) : (
                 <div className="flex justify-center items-center py-20">
                     <p className="text-xl text-[#7A8F63] font-bold">No saved meals found</p>
