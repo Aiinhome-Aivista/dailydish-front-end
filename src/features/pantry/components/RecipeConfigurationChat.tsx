@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, ChefHat, Utensils, Globe, Leaf } from 'lucide-react';
-import CookerIcon from '../../../assets/cooker.svg';
+import CookerIcon from '../../../assets/icons/Recipe logo.svg';
 import { useAuth } from '../../auth/context/AuthContext';
 import { chatRecipeConfiguration } from '../api/recipeConfigurationService';
 import type { ChatMessage, CollectedData } from '../types/recipeConfiguration';
@@ -370,7 +370,7 @@ export default function RecipeConfigurationChat() {
 
 
   return (
-    <div className="flex flex-col w-full mx-auto text-[#2C3E14] h-[calc(97vh-9rem)]">
+    <div className="flex flex-col w-full mx-auto text-[#FAF1E4] h-[calc(97vh-9rem)]">
 
       {/* Header */}
       <div className="flex items-center gap-3 pb-1 border-b border-[#43533414]">
@@ -378,9 +378,9 @@ export default function RecipeConfigurationChat() {
         <img src={CookerIcon} alt="" className='w-9 h-9' />
 
         <div>
-          <h1 className="font-bold text-2xl text-[#3A4A28] leading-tight">Dr. Foodie</h1>
+          <h1 className="font-bold text-2xl text-[#FAF1E4] leading-tight">Dr. Foodie</h1>
                     {/* <h1 className="font-bold text-2xl text-[#FAF1E4] leading-tight">Dr. Foodie</h1> */}
-          <p className="text-sm text-[#7B8C65]"> Chef Assistant</p>
+          <p className="text-sm text-[#FAF1E4]"> Chef Assistant</p>
         </div>
       </div>
 
@@ -406,7 +406,7 @@ export default function RecipeConfigurationChat() {
             {/* Bubble */}
             <div className={`max-w-[85%] ${msg.sender === 'user'
               ? 'bg-[#7D9C5B] text-white rounded-xl shadow-md'
-              : 'bg-white/30 backdrop-blur-xl border border-white/50 text-[#4A5D23] rounded-2xl  shadow-sm ring-1 ring-white/40'
+              : 'bg-white/30 backdrop-blur-xl border border-white/50 text-[#FAF1E4] rounded-2xl  shadow-sm ring-1 ring-white/40'
               } p-4 text-sm leading-relaxed`}
             >
               {/* Text Content - Always show for user messages, or when type is text */}
@@ -456,14 +456,14 @@ export default function RecipeConfigurationChat() {
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
             placeholder="e.g. Fresh Atlantic Salmon, Broccoli, Lemon..."
-            className="flex-1 bg-transparent px-2 py-3 outline-none text-[#4A5D23] placeholder-[#6B7F4F] text-sm font-medium"
+            className="flex-1 bg-transparent px-2 py-3 outline-none text-[#FAF1E4] placeholder-[#FAF1E4] text-sm font-medium"
           />
           <button
             onClick={handleSendMessage}
             disabled={!inputValue.trim()}
             className={`p-3 rounded-full transition-all transform ${inputValue.trim() ? 'bg-[#7D9C5B] hover:bg-[#6A8E4C]' : 'scale-95'}`}
           >
-            <Send size={18} className="text-brand-dark" />
+            <Send size={18} className="text-[#FAF1E4]" />
           </button>
         </div>
       </div>

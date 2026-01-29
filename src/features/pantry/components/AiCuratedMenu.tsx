@@ -171,17 +171,17 @@ const AiMenuDashboard: React.FC = () => {
             onClick={() => navigate("/recipe-configuration")}
             className=" rounded-xl font-bold cursor-pointer"
           >
-            <span className="material-symbols-outlined text-brand-dark">
+            <span className="material-symbols-outlined text-[#FAF1E4]">
               arrow_back
             </span>
           </button>
-          <h1 className="text-3xl font-bold text-brand-dark">
+          <h1 className="text-3xl font-bold text-[#FAF1E4]">
             Welcome to Your kitchen
           </h1>
         </div>
-        <p className="text-xl text-brand-accent font-medium ml-9">
+        <p className="text-xl text-[#FAF1E4] font-medium ml-9">
           Based on:{" "}
-          <span className="text-lg text-brand-accent font-medium ">{generationContext || "Your preferences"}</span>
+          <span className="text-lg text-[#FAF1E4] font-medium ">{generationContext || "Your preferences"}</span>
         </p>
       </div>
 

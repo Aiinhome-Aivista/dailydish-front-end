@@ -141,7 +141,7 @@ export default function RecipeDetails() {
   if (!recipeData) {
     return (
       <div className="h-full flex flex-col items-center justify-center">
-        <p className="text-xl text-[#7A8F63] font-bold mb-4">Recipe details not found.</p>
+        <p className="text-xl text-[#FAF1E4] font-bold mb-4">Recipe details not found.</p>
         <button
           onClick={() => navigate("/ai-menu")}
           className="bg-brand-accent text-white px-6 py-2 rounded-xl font-bold"
@@ -163,18 +163,18 @@ export default function RecipeDetails() {
   const prepSteps = recipeData.steps.preparation || [];
 
   return (
-    <div className="h-full text-brand-dark">
+    <div className="h-full text-[#FAF1E4]">
       {/* Header */}
       <div className="mb-6">
         <button
           onClick={() => navigate(-1)}
-          className="mb-4 flex items-center gap-2 text-brand-accent font-bold hover:text-brand-dark transition-colors cursor-pointer"
+          className="mb-4 flex items-center gap-2 text-[#FAF1E4] font-bold hover:text-brand-dark transition-colors cursor-pointer"
         >
           <ArrowLeft size={20} />
           Back to Menu
         </button>
         <h1 className="text-2xl md:text-2xl font-bold">Recipe | {recipeData.menu_name}</h1>
-        <p className="text-brand-accent font-medium text-sm">Delicious & Healthy Choice</p>
+        <p className="text-[#FAF1E4] font-medium text-sm">Delicious & Healthy Choice</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

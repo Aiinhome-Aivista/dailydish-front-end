@@ -72,7 +72,7 @@ const DailyDishLoader: React.FC = () => {
       </div>
 
      
-      <p className="text-sm text-brand-accent tracking-wide animate-pulse">
+      <p className="text-sm text-[#FAF1E4] tracking-wide animate-pulse">
         Preparing your Cuisine...
       </p>
     </div>

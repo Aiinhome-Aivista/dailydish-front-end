@@ -86,7 +86,7 @@ const MealPlan = () => {
     }
 
     return (
-        <div className="h-full text-brand-dark overflow-y-auto pb-10 space-y-4">
+        <div className="h-full text-[#FAF1E4] overflow-y-auto pb-10 space-y-4">
             {/* Header Section */}
             <div className="w-full flex items-start gap-2">
                 <button
@@ -97,16 +97,16 @@ const MealPlan = () => {
                             navigate("/ai-menu");
                         }
                     }}
-                    className="mt-1 hover:bg-black/5 rounded-full text-brand-dark transition-colors cursor-pointer"
+                    className="mt-1 hover:bg-black/5 rounded-full text-[#FAF1E4] transition-colors cursor-pointer"
                 >
                     <ArrowLeft size={24} />
                 </button>
                 <div>
-                    <h1 className="text-2xl font-bold text-brand-dark leading-tight">
+                    <h1 className="text-2xl font-bold text-[#FAF1E4] leading-tight">
                         {activeMeal ? 'Meal Details' : 'Your Meal Plan'}
                     </h1>
                     {!activeMeal && (
-                        <p className="text-sm text-brand-accent font-medium mt-1">
+                        <p className="text-sm text-[#FAF1E4] font-medium mt-1">
                             {meals.length} Planned Meals
                         </p>
                     )}

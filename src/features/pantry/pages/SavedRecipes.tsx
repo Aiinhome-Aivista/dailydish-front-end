@@ -77,16 +77,16 @@ const SavedRecipes = () => {
             <div className="w-full flex items-start gap-2 mb-4">
                 <button
                     onClick={() => navigate('/ai-menu')}
-                    className="mt-1 -ml-1 hover:bg-black/5 rounded-full text-brand-dark transition-colors cursor-pointer"
+                    className="mt-1 -ml-1 hover:bg-black/5 rounded-full text-[#FAF1E4] transition-colors cursor-pointer"
                    
                 >
                     <ArrowLeft size={24} />
                 </button>
                 <div>
-                    <h1 className="text-2xl font-bold text-brand-dark leading-tight">
+                    <h1 className="text-2xl font-bold text-[#FAF1E4] leading-tight">
                         Saved Recipes
                     </h1>
-                    <p className="text-sm text-brand-accent font-medium mt-1">
+                    <p className="text-sm text-[#FAF1E4] font-medium mt-1">
                         Your favorite dishes
                     </p>
                 </div>
