@@ -29,7 +29,7 @@ export default function RecipeConfigurationChat() {
     {
       id: '1',
       sender: 'bot',
-      content: "Hello! I'm your AI Chef. Let's craft your perfect meal. First, what ingredients do we have to work with today?",
+      content: "Hello! I'm Dr. Foodi, your Chef Assistant. Let's craft your perfect meal. First, what ingredients do you have to cook with today?",
       type: 'text'
     }
   ]);
@@ -247,13 +247,13 @@ export default function RecipeConfigurationChat() {
     <div className="flex flex-col w-full mx-auto text-[#2C3E14] h-[calc(98vh-9rem)]">
 
       {/* Header */}
-      <div className="flex items-center gap-3 pb-4 border-b border-[#43533414]">
+      <div className="flex items-center gap-3 pb-1 border-b border-[#43533414]">
 
         <img src={CookerIcon} alt="" className='w-9 h-9' />
 
         <div>
-          <h1 className="font-bold text-xl text-[#3A4A28] leading-tight">Recipe Configuration</h1>
-          <p className="text-xs text-[#7B8C65]"> Chef Assistant {user?.username ? `for ${user.username}` : ''}</p>
+          <h1 className="font-bold text-xl text-[#3A4A28] leading-tight">Dr. Foodi</h1>
+          <p className="text-xs text-[#7B8C65]"> Chef Assistant</p>
         </div>
       </div>
 
@@ -278,8 +278,8 @@ export default function RecipeConfigurationChat() {
 
             {/* Bubble */}
             <div className={`max-w-[85%] ${msg.sender === 'user'
-              ? 'bg-[#7D9C5B] text-white rounded-xl rounded-tr-none shadow-md'
-              : 'bg-white/30 backdrop-blur-xl border border-white/50 text-[#4A5D23] rounded-2xl rounded-tl-none shadow-sm ring-1 ring-white/40'
+              ? 'bg-[#7D9C5B] text-white rounded-xl shadow-md'
+              : 'bg-white/30 backdrop-blur-xl border border-white/50 text-[#4A5D23] rounded-2xl  shadow-sm ring-1 ring-white/40'
               } p-4 text-sm leading-relaxed`}
             >
               {/* Text Content - Always show for user messages, or when type is text */}
@@ -308,7 +308,7 @@ export default function RecipeConfigurationChat() {
         {/* Typing Indicator */}
         {isTyping && (
           <div className="flex justify-start items-center ml-10">
-            <div className=" p-3 rounded-2xl rounded-tl-none shadow-sm flex gap-1">
+            <div className=" p-3 rounded-2xl shadow-sm flex gap-1">
               <span className="w-1.5 h-1.5 bg-[#A2B886] rounded-full animate-bounce"></span>
               <span className="w-1.5 h-1.5 bg-[#A2B886] rounded-full animate-bounce delay-100"></span>
               <span className="w-1.5 h-1.5 bg-[#A2B886] rounded-full animate-bounce delay-200"></span>
@@ -319,14 +319,14 @@ export default function RecipeConfigurationChat() {
       </div>
 
       {/* Sticky Input Area */}
-      <div className="">
+      <div className="pl-12">
         <div className="flex items-center gap-2 bg-white/20 backdrop-blur-xl p-1.5 rounded-2xl border border-white/40 shadow-lg ring-1 ring-white/30 focus-within:ring-2 focus-within:ring-[#A2B886] focus-within:border-transparent transition-all">
           <input
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-            placeholder="Type your answer here..."
+            placeholder="e.g. Fresh Atlantic Salmon, Broccoli, Lemon..."
             className="flex-1 bg-transparent px-2 py-3 outline-none text-[#4A5D23] placeholder-[#6B7F4F] text-sm font-medium"
           />
           <button

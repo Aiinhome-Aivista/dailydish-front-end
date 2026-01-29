@@ -5,6 +5,8 @@ import CookerIcon from '../../../assets/cooker.svg';
 import { useAuth } from '../../auth/context/AuthContext';
 import { chatRecipeConfiguration } from '../../pantry/api/recipeConfigurationService';
 import type { ChatMessage, CollectedData } from '../../pantry/types/recipeConfiguration';
+import { Sparkles } from 'lucide-react';
+
 
 // --- Types ---
 type Message = {
@@ -37,7 +39,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
         {
             id: '1',
             sender: 'bot',
-            content: "Hello! I'm Dr. Foodi, your Chef Assistant. Let's craft your perfect meal. First, what ingredients do we have to work with today?",
+            content: "Hello! I'm Dr. Foodi, your Chef Assistant. Let's craft your perfect meal. First, what ingredients do you have to cook with today?",
             type: 'text'
         }
     ]);
@@ -213,6 +215,8 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
         }
     };
 
+
+
     // --- Interactive Widgets (Sub-components) ---
 
     const CuisineSelector = () => {
@@ -232,7 +236,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                     <button
                         key={c.name}
                         onClick={() => handleCuisineSelect(c.name)}
-                        className="flex flex-col items-center justify-center min-w-[90px] p-3 bg-[#E8EDDE] border-2 border-[#DCE6D3] rounded-xl hover:bg-[#D4DFCC] hover:border-[#7D9C5B] transition-colors text-[#4A5D23] snap-start"
+                        className="flex flex-col items-center justify-center min-w-22.5 p-3 bg-[#E8EDDE] border-2 border-[#DCE6D3] rounded-xl hover:bg-[#D4DFCC] hover:border-[#7D9C5B] transition-colors text-[#4A5D23] snap-start"
                     >
                         <div className="mb-1 text-[#5A7338]">{c.icon}</div>
                         <span className="text-[10px] font-bold uppercase tracking-wide">{c.name}</span>
@@ -241,6 +245,39 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
             </div>
         );
     };
+
+const ParsedText = ({ text }: { text: string }) => {
+  if (!text) return null;
+  return (
+    <div className="space-y-2">
+      {text.split('\n').map((line, lineIdx) => (
+        <p key={lineIdx} className="leading-relaxed">
+          {line.split(/(\*\*.*?\*\*)/g).map((part, partIdx) => {
+            if (part.startsWith('**') && part.endsWith('**')) {
+              return <strong key={partIdx} className="font-bold text-[#2C3E14]">{part.slice(2, -2)}</strong>;
+            }
+            return <span key={partIdx}>{part}</span>;
+          })}
+        </p>
+      ))}
+    </div>
+  );
+};
+
+// --- Helper: Plan Summary Card ---
+const PlanSummaryCard = ({ content }: { content: string }) => {
+  return (
+    <div className="bg-white/60 p-4 rounded-xl border border-white/50 mt-2 shadow-sm">
+      <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[#7D9C5B]/20">
+        <Sparkles className="w-4 h-4 text-[#7D9C5B]" />
+        <span className="font-bold text-[#3A4A28] text-sm uppercase tracking-wide">Cooking Plan</span>
+      </div>
+      <div className="text-sm text-[#4A5D23]">
+        <ParsedText text={content} />
+      </div>
+    </div>
+  );
+};
 
 
 
@@ -260,7 +297,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                 {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-10 text-[#4A5D23] hover:text-brand-dark transition-colors"
+                    className="absolute top-4 right-4 z-10 text-[#4A5D23] hover:text-brand-dark transition-colors cursor-pointer"
                     aria-label="Close"
                 >
                     <X size={28} />
@@ -288,15 +325,15 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                         <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up`}>
 
                             {/* Bot Avatar (only for bot) */}
-                            {msg.sender === 'bot' && (
+                            {/* {msg.sender === 'bot' && (
                                 <div className="w-8 h-8 rounded-full flex items-center justify-center mr-2 mt-1 flex-shrink-0 text-[#7D9C5B]">
                                 </div>
-                            )}
+                            )} */}
 
                             {/* Bubble */}
                             <div className={`max-w-[85%] ${msg.sender === 'user'
-                                ? 'bg-[#7D9C5B] text-white rounded-xl rounded-tr-none shadow-md'
-                                : 'bg-white/30 backdrop-blur-xl border border-white/50 text-[#4A5D23] rounded-2xl rounded-tl-none shadow-sm ring-1 ring-white/40'
+                                ? 'bg-[#7D9C5B] text-white rounded-xl shadow-md'
+                                : 'bg-white/30 backdrop-blur-xl border border-white/50 text-[#4A5D23] rounded-2xl  shadow-sm ring-1 ring-white/40'
                                 } p-4 text-sm leading-relaxed`}
                             >
                                 {/* Text Content - Always show for user messages, or when type is text */}
@@ -342,8 +379,8 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
 
                     {/* Typing Indicator */}
                     {isTyping && (
-                        <div className="flex justify-start items-center ml-10">
-                            <div className="p-3 rounded-2xl rounded-tl-none shadow-sm flex gap-1">
+                        <div className="flex justify-start items-center">
+                            <div className="p-4 rounded-2xl shadow-sm flex gap-1">
                                 <span className="w-1.5 h-1.5 bg-[#A2B886] rounded-full animate-bounce"></span>
                                 <span className="w-1.5 h-1.5 bg-[#A2B886] rounded-full animate-bounce delay-100"></span>
                                 <span className="w-1.5 h-1.5 bg-[#A2B886] rounded-full animate-bounce delay-200"></span>
@@ -361,15 +398,15 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                            placeholder="Type your answer here..."
-                            className="flex-1 bg-transparent px-4 py-3 outline-none text-[#4A5D23] placeholder-[#6B7F4F] text-sm font-medium"
+                            placeholder="e.g. Fresh Atlantic Salmon, Broccoli, Lemon..."
+                            className="flex-1 bg-transparent px-2 py-3 outline-none text-[#4A5D23] placeholder-[#6B7F4F] text-sm font-medium"
                         />
                         <button
                             onClick={() => handleSendMessage()}
                             disabled={!inputValue.trim()}
                             className={`p-3 rounded-full transition-all transform ${inputValue.trim() ? 'bg-[#7D9C5B] hover:bg-[#6A8E4C]' : 'scale-95'}`}
                         >
-                            <Send size={18} className="text-white" />
+                            <Send size={18} className="text-brand-dark" />
                         </button>
                     </div>
                 </div>

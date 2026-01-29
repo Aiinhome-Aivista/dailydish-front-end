@@ -37,7 +37,7 @@ const SideBar = ({ isOpen, onClose }: SideBarProps) => {
   const [isCollapsed, setIsCollapsed] = React.useState(false);
 
   // Default to My Pantry being active if path is / or /pantry
-  const isPantryActive = ['/recipe-configuration', '/ai-menu', '/recipe-details'].includes(currentPath) || currentPath === '/';
+  const isPantryActive = ['/recipe-configuration-chat', '/ai-menu', '/recipe-details'].includes(currentPath) || currentPath === '/';
 
   return (
     <>
@@ -85,7 +85,7 @@ const SideBar = ({ isOpen, onClose }: SideBarProps) => {
             <NavItem
               icon="award_meal"
               label={!isCollapsed ? "My Pantry" : ""}
-              to="/recipe-configuration"
+              to="/recipe-configuration-chat"
               isActive={isPantryActive}
             />
             <NavItem
