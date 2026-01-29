@@ -424,10 +424,16 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                             )} */}
 
                             {/* Bubble */}
-                            <div className={`max-w-[85%] ${msg.sender === 'user'
+                            {/* <div className={`max-w-[85%] ${msg.sender === 'user'
                                 ? 'bg-[#CEDEBDB2] backdrop-blur-[40px] text-[#2C3E14] rounded-xl shadow-md'
                                 : 'bg-[#435334B2] backdrop-blur-[36px] text-[#F4F8F1] rounded-2xl shadow-sm border border-white/10'
                                 } p-4 text-sm leading-relaxed`}
+                            > */}
+                            <div
+                                className={`max-w-[75%] break-words whitespace-pre-wrap ${msg.sender === 'user'
+                                        ? 'bg-[#CEDEBDB2] backdrop-blur-[40px] text-[#2C3E14] rounded-xl shadow-md'
+                                        : 'bg-[#435334B2] backdrop-blur-[36px] text-[#F4F8F1] rounded-2xl shadow-sm border border-white/10'
+                                    } p-4 text-sm leading-relaxed`}
                             >
                                 {/* Text Content - Always show for user messages, or when type is text */}
                                 {msg.sender === 'user' || msg.type === 'text' || msg.type === 'cuisine-selector' || msg.type === 'details-selector' ? (
