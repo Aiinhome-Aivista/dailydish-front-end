@@ -16,6 +16,10 @@ import Leaf from '../../../assets/pudina.avif';
 import momos from '../../../assets/momos.avif';
 import pizza from '../../../assets/pizza.avif';
 import burger from '../../../assets/bargar.avif';
+import RightLine from '../../../assets/Right-line.avif';
+import Line from '../../../assets/line.avif';
+import EatHealthyBg from '../../../assets/eat-healthy.svg';
+
 
 
 
@@ -169,6 +173,13 @@ const AiMenuDashboard: React.FC = () => {
 
   return (
     <div className="h-full">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <img
+                src={EatHealthyBg}
+                alt="Healthy Food Background"
+                className="w-2/3 max-w-xs object-contain" // Re-adding small opacity to ensure text is readable since they explicitly removed background color
+              />
+            </div>
 
       {/* Header Section */}
       <div className="max-w-full mb-8">
@@ -192,19 +203,18 @@ const AiMenuDashboard: React.FC = () => {
       </div>
 
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                {/* Pink Swirls - Using SVG for crispness */}
-                <svg className="absolute top-0 left-0 w-full h-full opacity-40" viewBox="0 0 1000 1000" fill="none">
-                    <path d="M-100,200 C150,50 350,450 550,150 S850,550 1100,250" stroke="#F8C8D0" strokeWidth="2" />
-                    <path d="M1100,800 C800,600 400,950 0,750" stroke="#F8C8D0" strokeWidth="1.5" />
-                </svg>
+                <img src={Line} className="absolute w-full h-full opacity-40" alt="" />
+                <img src={RightLine} className="absolute w-full h-full opacity-40" alt="" />
 
                 {/* Floating Food Elements (Hardcoded positions to match image) */}
-                <img src={Leaf} className="absolute top-[10%] left-[28%] w-8 rotate-12" alt="mint" />
+
+                <img src={Leaf} className="absolute top-[10%] left-[28%] w-20 rotate-12" alt="mint" />
                 <img src={burger} className="absolute top-[40%] left-[5%] w-32 -rotate-12 blur-[0.5px]" alt="burger" />
                 <img src={momos} className="absolute top-[8%] right-[10%] w-36 rotate-6" alt="dumplings" />
                 <img src={pizza} className="absolute bottom-[20%] right-[8%] w-40 -rotate-12" alt="pizza" />
-                <img src={Tomato} className="absolute top-[35%] right-[10%]" /> {/* Tomato slice stand-in */}
-                <img src={Tomato} className="absolute bottom-[15%] left-[10%] rounded-full " />
+                 <img src={Leaf} className="absolute bottom-[10%] right-[8%] w-20 rotate-12" alt="mint" />
+                <img src={Tomato} className="absolute top-[35%] right-[10%] w-20" /> {/* Tomato slice stand-in */}
+                <img src={Tomato} className="absolute bottom-[15%] left-[10%] w-20 " />
             </div>
 
       {/* Grid Section */}
