@@ -11,30 +11,38 @@ const NavItem = ({
   icon,
   label,
   to,
-  isActive
+  isActive,
+  isCollapsed
 }: {
   icon: string,
   label: string,
   to: string,
-  isActive?: boolean
+  isActive?: boolean,
+  isCollapsed: boolean
 }) => (
   <Link
     to={to}
-    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-bold text-sm ${isActive
+    className={`relative group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-bold text-sm ${isActive
       ? 'bg-[#CEDEBD36] text-brand-accent border border-brand-light'
       : 'text-[#95B974] hover:bg-brand-light/50 hover:text-brand-dark '
-      } ${!label ? 'justify-center px-2' : ''}`}
-    title={!label ? "Navigation Item" : label}
+      } ${isCollapsed ? 'justify-center px-2' : ''}`}
   >
     <span className="material-symbols-outlined text-[24px]">{icon}</span>
-    {label && <span className="whitespace-nowrap overflow-hidden transition-all duration-300">{label}</span>}
+    {!isCollapsed && <span className="whitespace-nowrap overflow-hidden transition-all duration-300">{label}</span>}
+    {isCollapsed && (
+      <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1.5 bg-[#435334] text-[#F5F9ED] text-xs font-medium rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-50 pointer-events-none shadow-lg border border-[#CEDEBD]/20">
+        {label}
+        {/* Arrow */}
+        <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 border-4 border-transparent border-r-[#435334]"></div>
+      </div>
+    )}
   </Link>
 );
 
 const SideBar = ({ isOpen, onClose }: SideBarProps) => {
   const location = useLocation();
   const currentPath = location.pathname;
-  const [isCollapsed, setIsCollapsed] = React.useState(false);
+  const [isCollapsed, setIsCollapsed] = React.useState(true);
 
   // Default to My Pantry being active if path is / or /pantry
   const isPantryActive = ['/recipe-configuration-chat', '/ai-menu', '/recipe-details'].includes(currentPath) || currentPath === '/';
@@ -81,24 +89,27 @@ const SideBar = ({ isOpen, onClose }: SideBarProps) => {
         {/* Navigation */}
         <div className="flex-1 flex flex-col px-4 py-2">
           {/* Top Section - scrollable nav */}
-          <div className="flex-1 space-y-1 overflow-y-auto">
+          <div className={`flex-1 space-y-1 ${isCollapsed ? 'overflow-visible' : 'overflow-y-auto'}`}>
             <NavItem
               icon="award_meal"
-              label={!isCollapsed ? "My Pantry" : ""}
+              label="My Dish"
               to="/recipe-configuration-chat"
               isActive={isPantryActive}
+              isCollapsed={isCollapsed}
             />
             <NavItem
               icon="dine_heart"
-              label={!isCollapsed ? "Saved Recipes" : ""}
+              label="Saved Recipes"
               to="/saved-recipes"
               isActive={currentPath === '/saved-recipes'}
+              isCollapsed={isCollapsed}
             />
             <NavItem
               icon="kitchen"
-              label={!isCollapsed ? "Meal Plan" : ""}
+              label="Meal Plan"
               to="/meal-plan"
               isActive={currentPath === '/meal-plan'}
+              isCollapsed={isCollapsed}
             />
           </div>
 
