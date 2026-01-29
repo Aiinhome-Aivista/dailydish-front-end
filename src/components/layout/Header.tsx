@@ -5,9 +5,10 @@ import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   onMenuClick: () => void;
+  className?: string;
 }
 
-const Header = ({ onMenuClick }: HeaderProps) => {
+const Header = ({ onMenuClick, className = '' }: HeaderProps) => {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -28,7 +29,7 @@ const Header = ({ onMenuClick }: HeaderProps) => {
 
   return (
     <>
-      <header className="w-full bg-brand-light flex items-center justify-between sticky top-0 z-30 py-4 px-6">
+      <header className={`w-full bg-brand-light flex items-center justify-between sticky top-0 z-30 py-4 px-6 ${className}`}>
         <div className="flex items-center gap-4">
           {/* Mobile Menu Trigger */}
           <button
@@ -48,7 +49,7 @@ const Header = ({ onMenuClick }: HeaderProps) => {
               {user?.username || "User"}
             </span>
           </button>
-            <button
+          <button
             onClick={handleLogoutClick}
             className="group flex items-center h-12 bg-brand-accent hover:bg-brand-dark rounded-full transition-all duration-500 ease-in-out max-w-12 hover:max-w-30 cursor-pointer overflow-hidden shadow-sm hover:shadow-md"
           >

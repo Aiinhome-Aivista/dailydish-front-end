@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, ChefHat, Utensils, Globe, Leaf, ArrowRight } from 'lucide-react';
 import CookerIcon from '../../../assets/cooker.svg';
-import EatHealthyBg from '../../../assets/eat-healthy.svg';
 import { useAuth } from '../../auth/context/AuthContext';
 import { chatRecipeConfiguration } from '../api/recipeConfigurationService';
 import type { ChatMessage, CollectedData } from '../types/recipeConfiguration';
@@ -373,15 +372,6 @@ export default function RecipeConfigurationChat() {
   return (
     <div className="flex flex-col w-full mx-auto text-[#2C3E14] h-[calc(97vh-9rem)] relative overflow-hidden">
 
-      {/* Background Image - Centered as requested */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <img
-          src={EatHealthyBg}
-          alt="Healthy Food Background"
-          className="w-2/3 max-w-xs object-contain" // Re-adding small opacity to ensure text is readable since they explicitly removed background color
-        />
-      </div>
-
       {/* Header */}
       <div className="flex items-center gap-3 pb-1 border-b border-[#43533414] relative z-10 px-4 pt-2">
 
@@ -421,8 +411,8 @@ export default function RecipeConfigurationChat() {
             > */}
             <div
               className={`max-w-[75%] break-words whitespace-pre-wrap ${msg.sender === 'user'
-                  ? 'bg-[#CEDEBDB2] backdrop-blur-[36px] text-[#2C3E14] rounded-2xl shadow-md z-70'
-                  : 'bg-[#435334B2] backdrop-blur-[40px] text-[#F4F8F1] rounded-2xl shadow-sm border border-white/10'
+                ? 'bg-[#CEDEBDB2] backdrop-blur-[36px] text-[#2C3E14] rounded-2xl shadow-md z-70'
+                : 'bg-[#435334B2] backdrop-blur-[40px] text-[#F4F8F1] rounded-2xl shadow-sm border border-white/10'
                 } p-4 text-sm leading-relaxed`}
             >
               {/* Text Content - Always show for user messages, or when type is text */}

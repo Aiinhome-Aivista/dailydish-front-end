@@ -11,14 +11,6 @@ import type { Recipe } from "../types/aiCuratedMenu";
 import { AxiosError } from "axios";
 import DailyDishLoader from "../../../components/feedback/DailyDishLoader";
 import { useAuth } from "../../auth/context/AuthContext";
-import Tomato from '../../../assets/tamato.avif';
-import Leaf from '../../../assets/pudina.avif';
-import momos from '../../../assets/momos.avif';
-import pizza from '../../../assets/pizza.avif';
-import burger from '../../../assets/bargar.avif';
-import RightLine from '../../../assets/Right-line.avif';
-import Line from '../../../assets/line.avif';
-import EatHealthyBg from '../../../assets/eat-healthy.svg';
 
 
 
@@ -173,14 +165,6 @@ const AiMenuDashboard: React.FC = () => {
 
   return (
     <div className="h-full">
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <img
-                src={EatHealthyBg}
-                alt="Healthy Food Background"
-                className="w-2/3 max-w-xs object-contain" // Re-adding small opacity to ensure text is readable since they explicitly removed background color
-              />
-            </div>
-
       {/* Header Section */}
       <div className="max-w-full mb-8">
         <div className="flex items-center gap-2">
@@ -200,125 +184,112 @@ const AiMenuDashboard: React.FC = () => {
           Based on:{" "}
           <span className="text-lg text-brand-accent font-medium ">{generationContext || "Your preferences"}</span>
         </p>
-      </div>
-
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                <img src={Line} className="absolute w-full h-full opacity-40" alt="" />
-                <img src={RightLine} className="absolute w-full h-full opacity-40" alt="" />
-
-                {/* Floating Food Elements (Hardcoded positions to match image) */}
-
-                <img src={Leaf} className="absolute top-[10%] left-[28%] w-20 rotate-12" alt="mint" />
-                <img src={burger} className="absolute top-[40%] left-[5%] w-32 -rotate-12 blur-[0.5px]" alt="burger" />
-                <img src={momos} className="absolute top-[8%] right-[10%] w-36 rotate-6" alt="dumplings" />
-                <img src={pizza} className="absolute bottom-[20%] right-[8%] w-40 -rotate-12" alt="pizza" />
-                 <img src={Leaf} className="absolute bottom-[10%] right-[8%] w-20 rotate-12" alt="mint" />
-                <img src={Tomato} className="absolute top-[35%] right-[10%] w-20" /> {/* Tomato slice stand-in */}
-                <img src={Tomato} className="absolute bottom-[15%] left-[10%] w-20 " />
-            </div>
+      </div >
 
       {/* Grid Section */}
-      {isLoading ? (
-        <div className="flex flex-col items-center justify-center h-64">
-          {/* <Loader2 size={48} className="animate-spin text-brand-accent mb-4" /> */}
-          <DailyDishLoader />
-        </div>
-      ) : (
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {recipes.length > 0 ? (
-            recipes.map((recipe) => (
-              <div
-                key={recipe.id}
-                onClick={() => setSelectedId(recipe.id)}
-                className={`
+      {
+        isLoading ? (
+          <div className="flex flex-col items-center justify-center h-64">
+            {/* <Loader2 size={48} className="animate-spin text-brand-accent mb-4" /> */}
+            <DailyDishLoader />
+          </div>
+        ) : (
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {recipes.length > 0 ? (
+              recipes.map((recipe) => (
+                <div
+                  key={recipe.id}
+                  onClick={() => setSelectedId(recipe.id)}
+                  className={`
                 group relative flex flex-col p-4 rounded-2xl cursor-pointer transition-all duration-300
                 ${selectedId === recipe.id
-                    ? "bg-[#d2e4c4] ring-[3px] ring-brand-accent shadow-lg scale-[1.02]"
-                    : "bg-[#d2e4c4] hover:shadow-md hover:scale-[1.01]"
-                  }
+                      ? "bg-[#d2e4c4] ring-[3px] ring-brand-accent shadow-lg scale-[1.02]"
+                      : "bg-[#d2e4c4] hover:shadow-md hover:scale-[1.01]"
+                    }
 
                 `}
-              >
-                {/* Image Container */}
-                <div className="h-40 w-full mb-5 overflow-hidden rounded-2xl">
-                  <img
-                    src={recipe.image}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src = defaultRecipeImage;
-                    }}
-                  />
-                </div>
-
-                {/* Content */}
-                <div className="flex flex-col grow">
-                  <h3 className="text-xl font-bold mb-2 text-[#3e5035]">
-                    {recipe.title}
-                  </h3>
-
-                  <p className="text-sm leading-relaxed text-[#5e7054] mb-6 line-clamp-3">
-                    {recipe.description}
-                  </p>
-
-                  {/* Footer: Meta & Action */}
-                  <div className="mt-auto flex items-center justify-between">
-                    <div className="flex flex-col gap-3">
-                      <span className="text-xs font-bold text-[#3e5035]">
-                        {recipe.time}
-                      </span>
-                      {/* Heart Icon */}
-                      <button
-                        onClick={(e) => handleSaveRecipe(e, recipe)}
-                        disabled={savingId === recipe.id || savedRecipeIds.has(recipe.id)}
-                        className="text-[#8ba37a] hover:text-[#3e5035] transition-colors disabled:opacity-50"
-                      >
-                        {savingId === recipe.id ? (
-                          <Loader2 size={18} className="animate-spin" />
-                        ) : savedRecipeIds.has(recipe.id) ? (
-                          <Heart
-                            size={18}
-                            fill="#3e5035"
-                            className="text-[#3e5035]"
-                          />
-                        ) : (
-                          <Heart
-                            size={18}
-                            className="opacity-60 hover:opacity-100"
-                          />
-                        )}
-                      </button>
-                    </div>
-
-                    <div
-                      className="flex items-center gap-1 text-xs font-bold text-[#9dbd87] group-hover:text-[#7a9d63] transition-colors cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate('/recipe-details', {
-                          state: {
-                            menu_name: recipe.title,
-                            cooking_time: recipe.time,
-                            description: recipe.description,
-                            image_url: recipe.image
-                          }
-                        });
+                >
+                  {/* Image Container */}
+                  <div className="h-40 w-full mb-5 overflow-hidden rounded-2xl">
+                    <img
+                      src={recipe.image}
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = defaultRecipeImage;
                       }}
-                    >
-                      <span>View Recipe</span>
-                      <ChevronRight size={16} />
+                    />
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex flex-col grow">
+                    <h3 className="text-xl font-bold mb-2 text-[#3e5035]">
+                      {recipe.title}
+                    </h3>
+
+                    <p className="text-sm leading-relaxed text-[#5e7054] mb-6 line-clamp-3">
+                      {recipe.description}
+                    </p>
+
+                    {/* Footer: Meta & Action */}
+                    <div className="mt-auto flex items-center justify-between">
+                      <div className="flex flex-col gap-3">
+                        <span className="text-xs font-bold text-[#3e5035]">
+                          {recipe.time}
+                        </span>
+                        {/* Heart Icon */}
+                        <button
+                          onClick={(e) => handleSaveRecipe(e, recipe)}
+                          disabled={savingId === recipe.id || savedRecipeIds.has(recipe.id)}
+                          className="text-[#8ba37a] hover:text-[#3e5035] transition-colors disabled:opacity-50"
+                        >
+                          {savingId === recipe.id ? (
+                            <Loader2 size={18} className="animate-spin" />
+                          ) : savedRecipeIds.has(recipe.id) ? (
+                            <Heart
+                              size={18}
+                              fill="#3e5035"
+                              className="text-[#3e5035]"
+                            />
+                          ) : (
+                            <Heart
+                              size={18}
+                              className="opacity-60 hover:opacity-100"
+                            />
+                          )}
+                        </button>
+                      </div>
+
+                      <div
+                        className="flex items-center gap-1 text-xs font-bold text-[#9dbd87] group-hover:text-[#7a9d63] transition-colors cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate('/recipe-details', {
+                            state: {
+                              menu_name: recipe.title,
+                              cooking_time: recipe.time,
+                              description: recipe.description,
+                              image_url: recipe.image
+                            }
+                          });
+                        }}
+                      >
+                        <span>View Recipe</span>
+                        <ChevronRight size={16} />
+                      </div>
                     </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="col-span-full flex justify-center items-center py-20">
+                <p className="text-xl text-[#7A8F63] font-bold">No recipe found</p>
               </div>
-            ))
-          ) : (
-            <div className="col-span-full flex justify-center items-center py-20">
-              <p className="text-xl text-[#7A8F63] font-bold">No recipe found</p>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+            )}
+          </div>
+        )
+      }
+    </div >
 
   );
 };
