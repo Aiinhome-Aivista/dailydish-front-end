@@ -248,38 +248,129 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
         );
     };
 
-const ParsedText = ({ text }: { text: string }) => {
-  if (!text) return null;
-  return (
-    <div className="space-y-2">
-      {text.split('\n').map((line, lineIdx) => (
-        <p key={lineIdx} className="leading-relaxed">
-          {line.split(/(\*\*.*?\*\*)/g).map((part, partIdx) => {
-            if (part.startsWith('**') && part.endsWith('**')) {
-              return <strong key={partIdx} className="font-bold text-[#2C3E14]">{part.slice(2, -2)}</strong>;
-            }
-            return <span key={partIdx}>{part}</span>;
-          })}
-        </p>
-      ))}
-    </div>
-  );
-};
+    const ParsedText = ({ text }: { text: string }) => {
+        if (!text) return null;
+        return (
+            <div className="space-y-2">
+                {text.split('\n').map((line, lineIdx) => (
+                    <p key={lineIdx} className="leading-relaxed">
+                        {line.split(/(\*\*.*?\*\*)/g).map((part, partIdx) => {
+                            if (part.startsWith('**') && part.endsWith('**')) {
+                                return <strong key={partIdx} className="font-bold text-[#2C3E14]">{part.slice(2, -2)}</strong>;
+                            }
+                            return <span key={partIdx}>{part}</span>;
+                        })}
+                    </p>
+                ))}
+            </div>
+        );
+    };
 
-// --- Helper: Plan Summary Card ---
-const PlanSummaryCard = ({ content }: { content: string }) => {
-  return (
-    <div className="bg-white/60 p-4 rounded-xl border border-white/50 mt-2 shadow-sm">
-      <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[#7D9C5B]/20">
-        <Sparkles className="w-4 h-4 text-[#7D9C5B]" />
-        <span className="font-bold text-[#3A4A28] text-sm uppercase tracking-wide">Cooking Plan</span>
-      </div>
-      <div className="text-sm text-[#4A5D23]">
-        <ParsedText text={content} />
-      </div>
-    </div>
-  );
-};
+    // --- New Component: Cooking Plan Table ---
+    const CookingPlanTable = ({ content }: { content: string }) => {
+        // Parsing logic
+        const parseContent = (text: string) => {
+            let introText = '';
+            let footerText = '';
+
+            const keyRegex = /\*\*([^*]+):\*\*\s*(.*?)(?=(?:\*\*|$))/g;
+
+            const extracted: { key: string; value: string }[] = [];
+            const rawMatches = [...text.matchAll(keyRegex)];
+
+            if (rawMatches.length === 0) {
+                return { title: '', tableData: [], footerText: text };
+            }
+
+            rawMatches.forEach((m) => {
+                const key = m[1].trim();
+                let value = m[2].trim();
+
+                // Split footer if present in value
+                const splitFooter = value.split(/\s*['"]?Confirm['"]?\s+to\s+generate/i);
+                if (splitFooter.length > 1) {
+                    value = splitFooter[0].trim();
+                }
+
+                if (['Ingredients', 'Cuisine', 'Serving', 'Time', 'Type'].some(k => key.includes(k))) {
+                    extracted.push({ key, value });
+                }
+            });
+
+            // Extract Footer
+            const confirmIndex = text.toLowerCase().indexOf("'confirm'");
+            if (confirmIndex !== -1) {
+                footerText = text.substring(confirmIndex);
+            } else {
+                const lastMatch = rawMatches[rawMatches.length - 1];
+                const footerIndex = lastMatch.index! + lastMatch[0].length;
+                if (text.length > footerIndex) {
+                    const remainder = text.substring(footerIndex).trim();
+                    if (remainder.length > 5) footerText = remainder;
+                }
+            }
+
+            // Extract Title (text before first match)
+            const firstMatchIndex = rawMatches[0].index!;
+            if (firstMatchIndex > 0) {
+                introText = text.substring(0, firstMatchIndex).trim();
+            }
+
+            return { title: introText, tableData: extracted, footerText };
+        };
+
+        const { title, tableData, footerText } = parseContent(content);
+
+        if (tableData.length === 0) {
+            return <ParsedText text={content} />;
+        }
+
+        return (
+            <div className="w-full">
+                {title && <div className="mb-3 font-medium text-[#2C3E14]"><ParsedText text={title} /></div>}
+
+                <div className="overflow-hidden rounded-xl border border-[#DCE6D3] mb-4">
+                    <table className="w-full text-sm text-left">
+                        <thead className="bg-[#E8EDDE] text-[#3A4A28] uppercase text-xs font-bold tracking-wider">
+                            <tr>
+                                <th className="px-4 py-3 border-r border-[#DCE6D3] w-1/3">Detail</th>
+                                <th className="px-4 py-3">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#DCE6D3] bg-white/40">
+                            {tableData.map((row, idx) => (
+                                <tr key={idx} className="hover:bg-white/60 transition-colors">
+                                    <td className="px-4 py-2.5 font-semibold text-[#4A5D23] border-r border-[#DCE6D3]">{row.key}</td>
+                                    <td className="px-4 py-2.5 text-[#2C3E14]">{row.value}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {footerText && (
+                    <div className="text-xs text-[#5A7338] mt-2 italic border-t border-[#7D9C5B]/20 pt-2">
+                        <ParsedText text={footerText} />
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+    // --- Helper: Plan Summary Card ---
+    const PlanSummaryCard = ({ content }: { content: string }) => {
+        return (
+            <div className="bg-white/60 p-4 rounded-xl border border-white/50 mt-2 shadow-sm">
+                <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[#7D9C5B]/20">
+                    <Sparkles className="w-4 h-4 text-[#7D9C5B]" />
+                    <span className="font-bold text-[#3A4A28] text-sm uppercase tracking-wide">Cooking Plan</span>
+                </div>
+                <div className="text-sm text-[#4A5D23]">
+                    <ParsedText text={content} />
+                </div>
+            </div>
+        );
+    };
 
 
 
@@ -339,8 +430,10 @@ const PlanSummaryCard = ({ content }: { content: string }) => {
                                 } p-4 text-sm leading-relaxed`}
                             >
                                 {/* Text Content - Always show for user messages, or when type is text */}
-                                {msg.sender === 'user' || msg.type === 'text' || msg.type === 'cuisine-selector' || msg.type === 'details-selector' || msg.type === 'final-action' ? (
+                                {msg.sender === 'user' || msg.type === 'text' || msg.type === 'cuisine-selector' || msg.type === 'details-selector' ? (
                                     <p>{msg.content}</p>
+                                ) : msg.type === 'final-action' ? (
+                                    <CookingPlanTable content={msg.content as string} />
                                 ) : null}
 
                                 {/* Render Widgets inside the bubble flow */}

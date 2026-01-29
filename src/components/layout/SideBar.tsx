@@ -114,7 +114,7 @@ const SideBar = ({ isOpen, onClose }: SideBarProps) => {
           </div>
 
           {/* Bottom Section */}
-          <div className={`mt-80 space-y-2 p-4 ${isCollapsed ? 'items-center flex flex-col' : ''}`}>
+          <div className={`mt-65 space-y-2 p-4 ${isCollapsed ? 'items-center flex flex-col' : ''}`}>
             <a href="#" className={`flex items-center gap-3 text-brand-dark rounded-xl hover:bg-brand-light/50 ${isCollapsed ? 'justify-center w-full p-2' : ''}`} title="How it works">
               {isCollapsed && <span className="material-symbols-outlined">help</span>}
               {!isCollapsed && <span>How it works</span>}

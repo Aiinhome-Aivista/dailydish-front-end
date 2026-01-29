@@ -17,6 +17,131 @@ type Message = {
 
 
 
+// --- Helper Components ---
+
+const ParsedText = ({ text }: { text: string }) => {
+  if (!text) return null;
+  return (
+    <div className="space-y-2">
+      {text.split('\n').map((line, lineIdx) => (
+        <p key={lineIdx} className="leading-relaxed">
+          {line.split(/(\*\*.*?\*\*)/g).map((part, partIdx) => {
+            if (part.startsWith('**') && part.endsWith('**')) {
+              return <strong key={partIdx} className="font-bold text-[#2C3E14]">{part.slice(2, -2)}</strong>;
+            }
+            return <span key={partIdx}>{part}</span>;
+          })}
+        </p>
+      ))}
+    </div>
+  );
+};
+
+const CookingPlanTable = ({ content }: { content: string }) => {
+  // Parsing logic
+  const parseContent = (text: string) => {
+    // Expected format: **Key:** Value
+    // const tableData: { key: string; value: string }[] = []; // This was unused, `extracted` is used instead
+    let introText = '';
+    let footerText = '';
+
+    const keyRegex = /\*\*([^*]+):\*\*\s*(.*?)(?=(?:\*\*|$))/g;
+
+    // Check if there is a main title at the start
+    // const titleMatch = text.match(/^\*\*([^*]+)\*\*/); // Unused
+    // let title = ""; // Unused
+    // Avoid treating keys as title if they match the simple bold pattern but followed by colon
+    // if (titleMatch && !titleMatch[0].includes(":")) { // Unused
+    //   // but wait, titleMatch[0] is **Title**, titleMatch[1] is Title
+    //   // The regex above finds **Key:** so it won't match **Title** (no colon)
+    //   // parse keys first
+    // }
+
+    const extracted: { key: string; value: string }[] = [];
+
+    const rawMatches = [...text.matchAll(keyRegex)];
+
+    if (rawMatches.length === 0) {
+      return { title: '', tableData: [], footerText: text };
+    }
+
+    rawMatches.forEach((m) => {
+      const key = m[1].trim();
+      let value = m[2].trim();
+
+      // Split footer if present in value
+      const splitFooter = value.split(/\s*['"]?Confirm['"]?\s+to\s+generate/i);
+      if (splitFooter.length > 1) {
+        value = splitFooter[0].trim();
+      }
+
+      if (['Ingredients', 'Cuisine', 'Serving', 'Time', 'Type'].some(k => key.includes(k))) {
+        extracted.push({ key, value });
+      }
+    });
+
+    // Extract Footer
+    // Simple heuristic: find "Confirm" or the end of the last match
+    const confirmIndex = text.toLowerCase().indexOf("'confirm'");
+    if (confirmIndex !== -1) {
+      footerText = text.substring(confirmIndex);
+    } else {
+      const lastMatch = rawMatches[rawMatches.length - 1];
+      const footerIndex = lastMatch.index! + lastMatch[0].length;
+      if (text.length > footerIndex) {
+        const remainder = text.substring(footerIndex).trim();
+        // Just take it if it looks like a sentence
+        if (remainder.length > 5) footerText = remainder;
+      }
+    }
+
+    // Extract Title (text before first match)
+    const firstMatchIndex = rawMatches[0].index!;
+    if (firstMatchIndex > 0) {
+      introText = text.substring(0, firstMatchIndex).trim();
+    }
+
+    return { title: introText, tableData: extracted, footerText };
+  };
+
+  const { title, tableData, footerText } = parseContent(content);
+
+  if (tableData.length === 0) {
+    return <ParsedText text={content} />;
+  }
+
+  return (
+    <div className="w-full">
+      {title && <div className="mb-3 font-medium text-[#2C3E14]"><ParsedText text={title} /></div>}
+
+      <div className="overflow-hidden rounded-xl border border-[#DCE6D3] mb-4">
+        <table className="w-full text-sm text-left">
+          <thead className="bg-[#E8EDDE] text-[#3A4A28] uppercase text-xs font-bold tracking-wider">
+            <tr>
+              <th className="px-4 py-3 border-r border-[#DCE6D3] w-1/3">Detail</th>
+              <th className="px-4 py-3">Value</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#DCE6D3] bg-white/40">
+            {tableData.map((row, idx) => (
+              <tr key={idx} className="hover:bg-white/60 transition-colors">
+                <td className="px-4 py-2.5 font-semibold text-[#4A5D23] border-r border-[#DCE6D3]">{row.key}</td>
+                <td className="px-4 py-2.5 text-[#2C3E14]">{row.value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {footerText && (
+        <div className="text-xs text-[#5A7338] mt-2 italic border-t border-[#7D9C5B]/20 pt-2">
+          <ParsedText text={footerText} />
+        </div>
+      )}
+    </div>
+  );
+};
+
 // --- Main Component ---
 export default function RecipeConfigurationChat() {
   const { user, userId } = useAuth();
@@ -223,7 +348,7 @@ export default function RecipeConfigurationChat() {
       { name: 'Indian-Sub', icon: <Globe className="w-5 h-5" /> },
       { name: 'Central Asian', icon: <Leaf className="w-5 h-5" /> }, // Placeholder icon
       { name: 'European', icon: <ChefHat className="w-5 h-5" /> },
-       { name: 'Inter-Continental', icon: <ChefHat className="w-5 h-5" /> },
+      { name: 'Inter-Continental', icon: <ChefHat className="w-5 h-5" /> },
     ];
 
     return (
@@ -245,7 +370,7 @@ export default function RecipeConfigurationChat() {
 
 
   return (
-    <div className="flex flex-col w-full mx-auto text-[#2C3E14] h-[calc(98vh-9rem)]">
+    <div className="flex flex-col w-full mx-auto text-[#2C3E14] h-[calc(97vh-9rem)]">
 
       {/* Header */}
       <div className="flex items-center gap-3 pb-1 border-b border-[#43533414]">
@@ -271,11 +396,11 @@ export default function RecipeConfigurationChat() {
           <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up`}>
 
             {/* Bot Avatar (only for bot) */}
-            {msg.sender === 'bot' && (
+            {/* {msg.sender === 'bot' && (
               <div className="w-8 h-8 rounded-full flex items-center justify-center mr-2 mt-1 flex-shrink-0 text-[#7D9C5B]">
-                {/* <ChefHat size={24} /> */}
+             
               </div>
-            )}
+            )} */}
 
             {/* Bubble */}
             <div className={`max-w-[85%] ${msg.sender === 'user'
@@ -284,8 +409,10 @@ export default function RecipeConfigurationChat() {
               } p-4 text-sm leading-relaxed`}
             >
               {/* Text Content - Always show for user messages, or when type is text */}
-              {msg.sender === 'user' || msg.type === 'text' || msg.type === 'cuisine-selector' || msg.type === 'details-selector' || msg.type === 'final-action' ? (
+              {msg.sender === 'user' || msg.type === 'text' || msg.type === 'cuisine-selector' || msg.type === 'details-selector' ? (
                 <p>{msg.content}</p>
+              ) : msg.type === 'final-action' ? (
+                <CookingPlanTable content={msg.content as string} />
               ) : null}
 
               {/* Render Widgets inside the bubble flow */}
@@ -320,7 +447,7 @@ export default function RecipeConfigurationChat() {
       </div>
 
       {/* Sticky Input Area */}
-      <div className="pl-12">
+      <div className="pl-5">
         <div className="flex items-center gap-2 bg-white/20 backdrop-blur-xl p-1.5 rounded-2xl border border-white/40 shadow-lg ring-1 ring-white/30 focus-within:ring-2 focus-within:ring-[#A2B886] focus-within:border-transparent transition-all">
           <input
             type="text"
