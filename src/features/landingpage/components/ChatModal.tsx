@@ -96,13 +96,13 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                     type: 'text'
                 };
 
-                if (botResponse.includes("What type of cuisine") || (response.collected_data.ingredients && !response.collected_data.cuisine)) {
-                    botMsg.type = 'cuisine-selector';
-                } else if (
+                if (
                     botResponse.toLowerCase().includes("cooking plan") ||
                     botResponse.toLowerCase().includes("confirm")
                 ) {
                     botMsg.type = 'final-action';
+                } else if (botResponse.includes("What type of cuisine") || (response.collected_data.ingredients && !response.collected_data.cuisine)) {
+                    botMsg.type = 'cuisine-selector';
                 }
 
                 setMessages(prev => [...prev, botMsg]);
