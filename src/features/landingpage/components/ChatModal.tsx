@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, ChefHat, Utensils, Globe, Leaf, X } from 'lucide-react';
+import { Send, ChefHat, Utensils, Globe, Leaf, X, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CookerIcon from '../../../assets/cooker.svg';
 import { useAuth } from '../../auth/context/AuthContext';
@@ -425,8 +425,8 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
 
                             {/* Bubble */}
                             <div className={`max-w-[85%] ${msg.sender === 'user'
-                                ? 'bg-[#7D9C5B] text-white rounded-xl shadow-md'
-                                : 'bg-white/30 backdrop-blur-xl border border-white/50 text-[#4A5D23] rounded-2xl  shadow-sm ring-1 ring-white/40'
+                                ? 'bg-[#CEDEBDB2] backdrop-blur-[40px] text-[#2C3E14] rounded-xl shadow-md'
+                                : 'bg-[#435334B2] backdrop-blur-[36px] text-[#F4F8F1] rounded-2xl shadow-sm border border-white/10'
                                 } p-4 text-sm leading-relaxed`}
                             >
                                 {/* Text Content - Always show for user messages, or when type is text */}
@@ -442,7 +442,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
 
                                 {/* Final Action Button */}
                                 {msg.type === 'final-action' && (
-                                    <div className="mt-4 pt-4 border-t border-[#E8E0D0]">
+                                    <div className="mt-4 pt-4 border-t border-[#E8E0D0]/20">
                                         <button
                                             onClick={() => {
                                                 const context = {
@@ -487,7 +487,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
 
                 {/* Input Area */}
                 <div className="p-4 bg-white/10 backdrop-blur-md border-t border-white/30 z-20">
-                    <div className="flex items-center gap-2 bg-white/20 backdrop-blur-xl p-1.5 rounded-2xl border border-white/40 shadow-lg ring-1 ring-white/30 focus-within:ring-2 focus-within:ring-[#A2B886] focus-within:border-transparent transition-all">
+                    <div className="flex items-center gap-2 bg-[#FAF1E4] p-1.5 rounded-2xl border border-[#435334] ring-1 ring-white/30 focus-within:ring-2 focus-within:ring-[#A2B886] focus-within:border-transparent transition-all">
                         <input
                             type="text"
                             value={inputValue}
@@ -499,9 +499,12 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                         <button
                             onClick={() => handleSendMessage()}
                             disabled={!inputValue.trim()}
-                            className={`p-3 rounded-full transition-all transform ${inputValue.trim() ? 'bg-[#7D9C5B] hover:bg-[#6A8E4C]' : 'scale-95'}`}
+                            className={`p-1 rounded-full transition-all transform flex items-center justify-center cursor-pointer ${inputValue.trim()
+                                ? 'bg-brand-dark hover:bg-[#2C3E14] text-[#FAF1E4]'
+                                : 'bg-brand-dark text-[#FAF1E4] scale-95'
+                                }`}
                         >
-                            <Send size={18} className="text-brand-dark" />
+                            <ArrowRight size={20} strokeWidth={2.5} />
                         </button>
                     </div>
                 </div>
