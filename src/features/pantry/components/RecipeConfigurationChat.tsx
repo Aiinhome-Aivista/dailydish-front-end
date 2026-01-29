@@ -379,6 +379,7 @@ export default function RecipeConfigurationChat() {
 
         <div>
           <h1 className="font-bold text-2xl text-[#3A4A28] leading-tight">Dr. Foodie</h1>
+                    {/* <h1 className="font-bold text-2xl text-[#FAF1E4] leading-tight">Dr. Foodie</h1> */}
           <p className="text-sm text-[#7B8C65]"> Chef Assistant</p>
         </div>
       </div>
