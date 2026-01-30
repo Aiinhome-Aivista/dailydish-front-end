@@ -282,8 +282,8 @@ const AiMenuDashboard: React.FC = () => {
                 </div>
               ))
             ) : (
-              <div className="col-span-full flex justify-center items-center py-20">
-                <p className="text-xl text-[#7A8F63] font-bold">No recipe found</p>
+              <div className="col-span-full flex justify-center items-center py-36 opacity-100">
+                <p className="text-xl text-brand-dark font-bold">No recipe found</p>
               </div>
             )}
           </div>

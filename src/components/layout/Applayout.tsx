@@ -19,10 +19,6 @@ const AppLayout = () => {
   const { isLoggedIn } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // ------------------------------------------------------------------
-  // CASE 1: PUBLIC USER (Not Logged In)
-  // Shows: Navbar -> Page Content
-  // ------------------------------------------------------------------
   if (!isLoggedIn) {
     return (
       <div className="flex min-h-screen flex-col">
@@ -61,18 +57,18 @@ const AppLayout = () => {
           <img src={burger} className="absolute top-[38%] left-[4%] w-32 -rotate-12 blur-[0.5px]" alt="burger" />
           <img src={momos} className="absolute top-[8%] right-[10%] w-36 rotate-6" alt="dumplings" />
           <img src={pizza} className="absolute bottom-[20%] right-[3%] w-40 -rotate-12" alt="pizza" />
-          <img src={Leaf} className="absolute bottom-[10%] right-[8%] w-20 rotate-12" alt="mint" />
+          <img src={Leaf} className="absolute bottom-[11%] right-[30%] w-20 rotate-12" alt="mint" />
           <img src={Tomato} className="absolute top-[35%] right-[5%] w-20" alt="tomato" />
           <img src={Tomato} className="absolute bottom-[15%] left-[5%] w-20" alt="tomato" />
         </div>
 
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-50">
-          <img
-            src={EatHealthyBg}
-            alt="Healthy Food Background"
-            className="w-2/3 max-w-xs object-contain"
-          />
-        </div>
+          <div className="absolute inset-0 flex justify-center -pb-5 pointer-events-none">
+  <img
+    src={EatHealthyBg}
+    alt="Healthy Food Background"
+    className=" max-w-xs object-contain opacity-60"
+  />
+</div>
 
         {/* Dashboard Header */}
         <Header onMenuClick={() => setIsSidebarOpen(true)} className="relative z-10" />

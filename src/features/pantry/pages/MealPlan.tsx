@@ -390,8 +390,8 @@ const MealPlan = () => {
                     })}
                 </div>
             ) : (
-                <div className="flex justify-center items-center py-20">
-                    <p className="text-xl text-[#7A8F63] font-bold">No saved meals found</p>
+                <div className="flex justify-center items-center py-45 opacity-100">
+                    <p className="text-xl text-brand-dark font-bold">No saved meals found</p>
                 </div>
             )}
 

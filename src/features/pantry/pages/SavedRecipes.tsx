@@ -159,9 +159,12 @@ const SavedRecipes = () => {
                         </div>
                     ))
                 ) : (
-                    <div className="col-span-full flex justify-center items-center py-20">
-                        <p className="text-xl text-[#7A8F63] font-bold">No saved recipes found</p>
-                    </div>
+                  <div className="col-span-full flex justify-center items-center py-45 backdrop-opacity-100">
+  <p className="text-xl text-brand-dark font-bold ml-60">
+    No saved recipes found
+  </p>
+</div>
+
                 )}
             </div>
 

@@ -43,7 +43,7 @@ const DailyDishLoader: React.FC = () => {
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center text-center space-y-3 z-50">
    
-      <div className="relative flex items-center justify-center h-22 w-full">
+      <div className="relative flex items-center justify-center h-20 w-full">
         {getVisibleIcons().map((item) => (
           <span
             key={item.key}
@@ -72,7 +72,7 @@ const DailyDishLoader: React.FC = () => {
       </div>
 
      
-      <p className="text-sm text-brand-accent tracking-wide animate-pulse">
+      <p className="text-md text-brand-dark tracking-wide animate-pulse font-bold">
         Preparing your Cuisine...
       </p>
     </div>
