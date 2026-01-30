@@ -19,8 +19,8 @@ const features = [
         link: '/nutritional-scoring',
     },
     {
-        title: 'AI Personalization',
-        description: 'The more you cook, the better the AI understands your flavor profile, dislikes, and dietary restrictions.',
+        title: 'Dr. Foodie Assistant',
+        description: 'The more you cook, the better Dr. Foodie learns your taste preferences, dislikes, and dietary needs.',
         iconName: 'psychology_alt',
         link: '/ai-personalization',
     },

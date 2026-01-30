@@ -9,8 +9,8 @@ const ReadyToCook= () => {
                 <h2 className="text-4xl md:text-5xl font-bold text-brand-dark mb-6">
                     Ready to cook Smarter?
                 </h2>
-                <p className="text-brand-dark text-lg mb-10 max-w-xl mx-auto font-medium">
-                    Join 50,000+ home chefs using AI to simplify their kitchen routine and eat healthier every single day.
+                <p className="text-brand-dark text-lg mb-10 max-w-2xl mx-auto font-medium">
+                    Join 50,000+ home chefs using Dr. Foodie chef assistant to simplify their kitchen routine and eat healthier every single day.
                 </p>
 
                 <div className="flex flex-col sm:flex-row justify-center gap-4">

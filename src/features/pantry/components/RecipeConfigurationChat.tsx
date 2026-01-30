@@ -47,15 +47,6 @@ const CookingPlanTable = ({ content }: { content: string }) => {
 
     const keyRegex = /\*\*([^*]+):\*\*\s*(.*?)(?=(?:\*\*|$))/g;
 
-    // Check if there is a main title at the start
-    // const titleMatch = text.match(/^\*\*([^*]+)\*\*/); // Unused
-    // let title = ""; // Unused
-    // Avoid treating keys as title if they match the simple bold pattern but followed by colon
-    // if (titleMatch && !titleMatch[0].includes(":")) { // Unused
-    //   // but wait, titleMatch[0] is **Title**, titleMatch[1] is Title
-    //   // The regex above finds **Key:** so it won't match **Title** (no colon)
-    //   // parse keys first
-    // }
 
     const extracted: { key: string; value: string }[] = [];
 
@@ -210,7 +201,17 @@ export default function RecipeConfigurationChat() {
         if (respData && (respData.recipes || (respData.data && respData.data.recipes))) {
           const recipes = respData.recipes || respData.data.recipes;
           if (recipes && recipes.length > 0) {
-            navigate('/ai-menu', { state: { recipes } });
+            navigate('/ai-menu', {
+              state: {
+                recipes,
+                chatContext: {
+                  user_id: currentUserId,
+                  message: userText,
+                  chat_history: chatHistory,
+                  collected_data: collectedData
+                }
+              }
+            });
             return;
           }
         }
@@ -310,7 +311,17 @@ export default function RecipeConfigurationChat() {
         const respData = response.data as any;
         const recipes = respData?.recipes || respData?.data?.recipes;
         if (recipes && recipes.length > 0) {
-          navigate('/ai-menu', { state: { recipes } });
+          navigate('/ai-menu', {
+            state: {
+              recipes,
+              chatContext: {
+                user_id: currentUserId,
+                message: text,
+                chat_history: chatHistory,
+                collected_data: collectedData
+              }
+            }
+          });
           return;
         }
 
@@ -379,7 +390,7 @@ export default function RecipeConfigurationChat() {
 
         <div>
           <h1 className="font-bold text-2xl text-[#3A4A28] leading-tight">Dr. Foodie</h1>
-          {/* <h1 className="font-bold text-2xl text-[#FAF1E4] leading-tight">Dr. Foodie</h1> */}
+          {/* <h1 className="font-bold text-2xl text-brand-beige leading-tight">Dr. Foodie</h1> */}
           <p className="text-sm text-[#7B8C65]"> Chef Assistant</p>
         </div>
       </div>
@@ -410,9 +421,9 @@ export default function RecipeConfigurationChat() {
               } p-4 text-sm leading-relaxed`}
             > */}
             <div
-              className={`max-w-[75%] break-words whitespace-pre-wrap ${msg.sender === 'user'
+              className={`max-w-[75%] wrap-break-word whitespace-pre-wrap ${msg.sender === 'user'
                 ? 'bg-[#CEDEBDB2] backdrop-blur-[36px] text-[#2C3E14] rounded-2xl shadow-md z-70'
-                : 'bg-[#435334B2] backdrop-blur-[40px] text-[#F4F8F1] rounded-2xl shadow-sm border border-white/10'
+                : 'bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-sm border border-white/10'
                 } p-4 text-sm leading-relaxed`}
             >
               {/* Text Content - Always show for user messages, or when type is text */}
@@ -442,8 +453,8 @@ export default function RecipeConfigurationChat() {
 
         {/* Typing Indicator */}
         {isTyping && (
-          <div className="flex justify-start items-center ml-10">
-            <div className="p-3 bg-[#435334B2] backdrop-blur-[40px] text-[#F4F8F1] rounded-2xl shadow-sm border border-white/10 flex gap-1">
+          <div className="flex justify-start items-center ">
+            <div className="p-3 bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-sm border border-white/10 flex gap-1">
               <span className="w-1.5 h-1.5 bg-[#A2B886] rounded-full animate-bounce"></span>
               <span className="w-1.5 h-1.5 bg-[#A2B886] rounded-full animate-bounce delay-100"></span>
               <span className="w-1.5 h-1.5 bg-[#A2B886] rounded-full animate-bounce delay-200"></span>
@@ -454,8 +465,8 @@ export default function RecipeConfigurationChat() {
       </div>
 
       {/* Sticky Input Area */}
-      <div className="pl-5 relative z-10 pb-2">
-        <div className="flex items-center gap-2 bg-[#FAF1E4] p-1.5 rounded-2xl border border-[#435334] ring-1 ring-white/30 focus-within:ring-1 focus-within:ring-[#A2B886] focus-within:border-transparent transition-all">
+      <div className="pl-5 pr-5 relative z-10 pb-2">
+        <div className="flex items-center gap-2 bg-brand-beige p-1.5 rounded-2xl border border-brand-dark ring-1 ring-white/30 focus-within:ring-1 focus-within:ring-[#A2B886] focus-within:border-transparent transition-all">
           <input
             type="text"
             value={inputValue}
@@ -475,8 +486,8 @@ export default function RecipeConfigurationChat() {
             onClick={handleSendMessage}
             disabled={!inputValue.trim()}
             className={`p-1 rounded-full transition-all transform flex items-center justify-center cursor-pointer ${inputValue.trim()
-              ? 'bg-brand-dark hover:bg-[#2C3E14] text-[#FAF1E4]'
-              : 'bg-brand-dark text-[#FAF1E4] scale-95'
+              ? 'bg-brand-dark hover:bg-[#2C3E14] text-brand-beige'
+              : 'bg-brand-dark text-brand-beige scale-95'
               }`}
           >
             <ArrowRight size={20} strokeWidth={2.5} />

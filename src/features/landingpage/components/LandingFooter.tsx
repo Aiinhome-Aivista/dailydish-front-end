@@ -15,7 +15,7 @@ const LandingFooter = () => {
               <span className="text-brand-dark font-bold text-lg">DailyDish</span>
             </div>
             <p className="text-brand-dark text-lg leading-none font-medium">
-              Personalized AI recipe generator based on ingredients, cuisine preference, and nutritional value.
+              Personalized Dr. Foodie for recipe generator based on ingredients, cuisine preference, and nutritional value.
             </p>
           </div>
 

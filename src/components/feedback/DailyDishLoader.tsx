@@ -41,7 +41,7 @@ const DailyDishLoader: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center text-center space-y-3 z-100">
+    <div className="fixed inset-0 flex flex-col items-center justify-center text-center space-y-3 z-100 bg-black/10">
    
       <div className="relative flex items-center justify-center h-20 w-full">
         {getVisibleIcons().map((item) => (

@@ -18,8 +18,8 @@ const SpeedEfficiency = () => {
       <main className="pt-20 pb-20 px-6 md:px-12 max-w-6xl mx-auto min-h-[60vh]">
         {/* Hero Section */}
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-brand-dark mb-6">Speed & Efficiency</h1>
-          <p className="text-lg text-brand-dark/80 leading-relaxed max-w-3xl mx-auto">
+          <h1 className="text-4xl md:text-4xl font-bold text-brand-dark mb-6">Speed & Efficiency</h1>
+          <p className="text-lg text-brand-dark leading-relaxed max-w-3xl mx-auto">
             Get delicious meal ideas in seconds, optimized for the time you have available and minimal waste.
             Transform your cooking from time-consuming chore to efficient, enjoyable experience.
           </p>
@@ -59,67 +59,67 @@ const SpeedEfficiency = () => {
         <section className="mb-16">
           <h2 className="text-3xl font-bold text-brand-dark mb-8 text-center">Smart Time Optimization</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6">
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
                 <span className="text-2xl">⏱️</span>
               </div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-3">Time-Based Filtering</h3>
-              <p className="text-brand-dark/80 text-sm">
+              <h3 className="text-lg font-semibold  mb-3">Time-Based Filtering</h3>
+              <p className=" text-sm">
                 Filter recipes by total time, prep time, or cook time. Perfect for busy weeknights,
                 leisurely weekends, or quick lunch breaks.
               </p>
             </div>
 
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6">
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
                 <span className="text-2xl">🔄</span>
               </div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-3">Parallel Cooking</h3>
-              <p className="text-brand-dark/80 text-sm">
+              <h3 className="text-lg font-semibold  mb-3">Parallel Cooking</h3>
+              <p className=" text-sm">
                 Recipes designed for efficient multitasking. Prep multiple components simultaneously
                 to minimize total cooking time.
               </p>
             </div>
 
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6">
               <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
                 <span className="text-2xl">📱</span>
               </div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-3">Voice-Activated Cooking</h3>
-              <p className="text-brand-dark/80 text-sm">
+              <h3 className="text-lg font-semibold  mb-3">Voice-Activated Cooking</h3>
+              <p className=" text-sm">
                 Hands-free cooking instructions. Get step-by-step guidance without stopping
                 to read your phone or tablet.
               </p>
             </div>
 
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6">
               <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4">
                 <span className="text-2xl">🔥</span>
               </div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-3">One-Pot Meals</h3>
-              <p className="text-brand-dark/80 text-sm">
+              <h3 className="text-lg font-semibold  mb-3">One-Pot Meals</h3>
+              <p className=" text-sm">
                 Minimal cleanup with recipes designed to use single pots, pans, or sheets.
                 Less time cooking means less time cleaning.
               </p>
             </div>
 
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6">
               <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
                 <span className="text-2xl">🧊</span>
               </div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-3">Make-Ahead Prep</h3>
-              <p className="text-brand-dark/80 text-sm">
+              <h3 className="text-lg font-semibold  mb-3">Make-Ahead Prep</h3>
+              <p className=" text-sm">
                 Prepare ingredients or components in advance. Store prepped items for
                 ultra-fast assembly when you're ready to cook.
               </p>
             </div>
 
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6">
               <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
                 <span className="text-2xl">⚡</span>
               </div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-3">Express Mode</h3>
-              <p className="text-brand-dark/80 text-sm">
+              <h3 className="text-lg font-semibold  mb-3">Express Mode</h3>
+              <p className=" text-sm">
                 Ultra-fast recipes for when you need dinner on the table in 15 minutes or less.
                 Perfect for unexpected busy days or late nights.
               </p>
@@ -186,49 +186,49 @@ const SpeedEfficiency = () => {
         <section className="mb-16">
           <h2 className="text-3xl font-bold text-brand-dark mb-8 text-center">Kitchen Efficiency Tools</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h3 className="text-xl font-semibold text-brand-dark mb-4">🛒 Smart Shopping Lists</h3>
-              <p className="text-brand-dark/80 mb-4">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6">
+              <h3 className="text-xl font-semibold  mb-4">🛒 Smart Shopping Lists</h3>
+              <p className=" mb-4">
                 Automatically generated shopping lists with quantities optimized for your recipes.
                 Never buy too much or too little again.
               </p>
-              <div className="text-sm text-brand-dark/60">
+              <div className="text-sm ">
                 • Categorized by store sections<br />
                 • Quantity calculations<br />
                 • Cross-recipe ingredient consolidation
               </div>
             </div>
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h3 className="text-xl font-semibold text-brand-dark mb-4">📋 Step-by-Step Timers</h3>
-              <p className="text-brand-dark/80 mb-4">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6">
+              <h3 className="text-xl font-semibold  mb-4">📋 Step-by-Step Timers</h3>
+              <p className=" mb-4">
                 Built-in timers for each cooking step with notifications and progress tracking.
                 Never overcook or burn your food.
               </p>
-              <div className="text-sm text-brand-dark/60">
+              <div className="text-sm ">
                 • Automatic step progression<br />
                 • Pause and resume functionality<br />
                 • Multiple timer management
               </div>
             </div>
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h3 className="text-xl font-semibold text-brand-dark mb-4">🔍 Pantry Inventory</h3>
-              <p className="text-brand-dark/80 mb-4">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6">
+              <h3 className="text-xl font-semibold  mb-4">🔍 Pantry Inventory</h3>
+              <p className=" mb-4">
                 Track what you have on hand and get recipes that use your existing ingredients first.
                 Maximize your current stock.
               </p>
-              <div className="text-sm text-brand-dark/60">
+              <div className="text-sm ">
                 • Expiration date tracking<br />
                 • Low-stock alerts<br />
                 • Recipe suggestions from inventory
               </div>
             </div>
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h3 className="text-xl font-semibold text-brand-dark mb-4">📊 Meal Planning Calendar</h3>
-              <p className="text-brand-dark/80 mb-4">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6">
+              <h3 className="text-xl font-semibold  mb-4">📊 Meal Planning Calendar</h3>
+              <p className=" mb-4">
                 Plan your week in advance with drag-and-drop meal scheduling.
                 Prepare efficiently for the entire week.
               </p>
-              <div className="text-sm text-brand-dark/60">
+              <div className="text-sm ">
                 • Weekly overview<br />
                 • Prep day scheduling<br />
                 • Grocery list generation

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../../../components/layout/NavBar';
 import LandingFooter from '../components/LandingFooter';
@@ -19,17 +18,23 @@ const AiPersonalization = () => {
       <main className="pt-20 pb-20 px-6 md:px-12 max-w-6xl mx-auto min-h-[60vh]">
         {/* Hero Section */}
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-brand-dark mb-6">AI Personalization</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-brand-dark mb-6">
+            Dr. Foodie Assistant
+          </h1>
           <p className="text-lg text-brand-dark/80 leading-relaxed max-w-3xl mx-auto">
-            The more you cook, the better the AI understands your flavor profile, dislikes, and dietary restrictions.
-            Experience truly personalized meal recommendations that evolve with your tastes.
+            The more you cook, the better Dr. Foodie understands your flavor profile,
+            dislikes, and dietary restrictions. Experience truly personalized meal
+            recommendations that evolve with your tastes.
           </p>
+
         </div>
 
         {/* How It Works Section */}
         <section className="mb-16">
           <div className="bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-3xl font-bold text-brand-dark mb-6 text-center">How AI Personalization Works</h2>
+            <h2 className="text-3xl font-bold text-brand-dark mb-6 text-center">
+              How Dr. Foodie Assistant Works
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="w-20 h-20 bg-brand-primary rounded-full flex items-center justify-center mx-auto mb-4">
@@ -38,7 +43,7 @@ const AiPersonalization = () => {
                 <h3 className="text-xl font-semibold text-brand-dark mb-3">Initial Assessment</h3>
                 <p className="text-brand-dark/80">
                   Start with basic preferences, dietary restrictions, and cooking experience level.
-                  Our AI creates your initial profile to begin personalization.
+                  Our Dr. Foodie creates your initial profile to begin personalization.
                 </p>
               </div>
               <div className="text-center">
@@ -47,7 +52,7 @@ const AiPersonalization = () => {
                 </div>
                 <h3 className="text-xl font-semibold text-brand-dark mb-3">Continuous Learning</h3>
                 <p className="text-brand-dark/80">
-                  Every recipe you view, cook, rate, or save teaches the AI about your preferences.
+                  Every recipe you view, cook, rate, or save teaches the Dr. Foodie about your preferences.
                   The system adapts in real-time to your feedback.
                 </p>
               </div>
@@ -67,7 +72,7 @@ const AiPersonalization = () => {
 
         {/* AI Features Section */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-brand-dark mb-8 text-center">AI-Powered Features</h2>
+          <h2 className="text-3xl font-bold text-brand-dark mb-8 text-center">Dr. Foodie-Powered Features</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="bg-white rounded-lg shadow-lg p-6">
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
@@ -143,7 +148,7 @@ const AiPersonalization = () => {
             <h2 className="text-3xl font-bold mb-6 text-center">The Learning Process</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-xl font-semibold mb-4">What the AI Learns From You</h3>
+                <h3 className="text-xl font-semibold mb-4">What the Dr. Foodie Learns From You</h3>
                 <ul className="space-y-2">
                   <li className="flex items-start">
                     <span className="text-green-300 mr-2">✓</span>
@@ -198,7 +203,7 @@ const AiPersonalization = () => {
 
         {/* Benefits Section */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-brand-dark mb-8 text-center">Why AI Personalization Matters</h2>
+          <h2 className="text-3xl font-bold text-brand-dark mb-8 text-center">Why Dr. Foodie Personalization Matters</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h3 className="text-xl font-semibold text-brand-dark mb-4">🎯 Reduced Food Waste</h3>
@@ -217,7 +222,7 @@ const AiPersonalization = () => {
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h3 className="text-xl font-semibold text-brand-dark mb-4">🌱 Healthier Eating</h3>
               <p className="text-brand-dark/80">
-                The AI considers your nutritional goals while respecting your taste preferences,
+                The Dr. Foodie considers your nutritional goals while respecting your taste preferences,
                 making healthy eating enjoyable.
               </p>
             </div>
@@ -252,7 +257,7 @@ const AiPersonalization = () => {
                 </div>
                 <h3 className="text-lg font-semibold text-brand-dark mb-2">Full Control</h3>
                 <p className="text-brand-dark/80 text-sm">
-                  You can view, edit, or reset your AI profile at any time.
+                  You can view, edit, or reset your Dr. Foodie profile at any time.
                   Adjust preferences or start fresh whenever you want.
                 </p>
               </div>
@@ -262,7 +267,7 @@ const AiPersonalization = () => {
                 </div>
                 <h3 className="text-lg font-semibold text-brand-dark mb-2">Smart Learning</h3>
                 <p className="text-brand-dark/80 text-sm">
-                  The AI only learns from your explicit actions and feedback.
+                  The Dr. Foodie only learns from your explicit actions and feedback.
                   No assumptions are made without your input.
                 </p>
               </div>
@@ -275,7 +280,7 @@ const AiPersonalization = () => {
           <div className="bg-brand-primary rounded-lg p-8 text-text-brand-dark">
             <h2 className="text-2xl font-bold mb-4">Experience Personalized Cooking</h2>
             <p className="mb-6">
-              Join DailyDish and let our AI transform your cooking experience.
+              Join DailyDish and let our Dr. Foodie transform your cooking experience.
               Start with a few recipes and watch as recommendations become perfectly tailored to you.
             </p>
             <button className=" text-brand-primary px-8 py-3 rounded-lg font-semibold cursor-pointer transition-colors" onClick={() => navigate('/login')}>
