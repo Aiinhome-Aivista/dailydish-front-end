@@ -81,7 +81,10 @@ const AiMenuDashboard: React.FC = () => {
         }
       }
 
-      if ((waitingForRecipes && chatContext) || (!waitingForRecipes && chatContext)) { // Handle both cases if context exists
+
+      const hasRecipes = location.state?.recipes && Array.isArray(location.state.recipes) && location.state.recipes.length > 0;
+
+      if ((waitingForRecipes && chatContext) || (!hasRecipes && chatContext)) { // Fetch only if waiting or no recipes exist
         setIsLoading(true);
         try {
           const response = await chatRecipeConfiguration(chatContext);
@@ -98,6 +101,15 @@ const AiMenuDashboard: React.FC = () => {
             }));
             setRecipes(mappedRecipes);
             setSelectedId(0);
+
+            // SAVE STATE TO HISTORY SO IT PERSISTS ON BACK NAVIGATION
+            navigate(location.pathname, {
+              replace: true,
+              state: {
+                recipes: generatedRecipes,
+                chatContext: chatContext
+              }
+            });
           } else {
             showToast("error", "Error", "Failed to generate recipes from chat.");
           }
@@ -107,7 +119,7 @@ const AiMenuDashboard: React.FC = () => {
         } finally {
           setIsLoading(false);
         }
-      } else if (location.state && location.state.recipes) {
+      } else if (hasRecipes) {
         const generatedRecipes: GeneratedRecipe[] = location.state.recipes;
 
         const mappedRecipes: Recipe[] = generatedRecipes.map((rec, index) => {

@@ -103,7 +103,12 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                     };
 
                     if (userId) {
-                        navigate('/ai-menu', { state: { recipes } });
+                        navigate('/ai-menu', {
+                            state: {
+                                recipes,
+                                chatContext: context
+                            }
+                        });
                         return;
                     } else {
                         if (onGenerateRecipe) onGenerateRecipe(context);
@@ -173,7 +178,17 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                 if (recipes && recipes.length > 0) {
                     // If logged in, navigate directly
                     if (userId) {
-                        navigate('/ai-menu', { state: { recipes } });
+                        navigate('/ai-menu', {
+                            state: {
+                                recipes,
+                                chatContext: {
+                                    user_id: currentUserId || "guest_user",
+                                    message: text,
+                                    chat_history: chatHistory,
+                                    collected_data: collectedData
+                                }
+                            }
+                        });
                         return;
                     } else {
                         const context = {
