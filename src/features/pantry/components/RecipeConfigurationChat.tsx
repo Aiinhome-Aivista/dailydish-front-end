@@ -370,7 +370,7 @@ export default function RecipeConfigurationChat() {
 
 
   return (
-    <div className="flex flex-col w-full mx-auto text-[#2C3E14] h-[calc(97vh-9rem)] relative overflow-hidden">
+    <div className="flex flex-col w-full text-[#2C3E14] h-[calc(97vh-9rem)] relative overflow-hidden">
 
       {/* Header */}
       <div className="flex items-center gap-3 pb-1 border-b border-[#43533414] relative z-10 px-4 pt-2">
@@ -443,7 +443,7 @@ export default function RecipeConfigurationChat() {
         {/* Typing Indicator */}
         {isTyping && (
           <div className="flex justify-start items-center ml-10">
-            <div className=" p-3 rounded-2xl shadow-sm flex gap-1">
+            <div className="p-3 bg-[#435334B2] backdrop-blur-[40px] text-[#F4F8F1] rounded-2xl shadow-sm border border-white/10 flex gap-1">
               <span className="w-1.5 h-1.5 bg-[#A2B886] rounded-full animate-bounce"></span>
               <span className="w-1.5 h-1.5 bg-[#A2B886] rounded-full animate-bounce delay-100"></span>
               <span className="w-1.5 h-1.5 bg-[#A2B886] rounded-full animate-bounce delay-200"></span>
@@ -455,7 +455,7 @@ export default function RecipeConfigurationChat() {
 
       {/* Sticky Input Area */}
       <div className="pl-5 relative z-10 pb-2">
-        <div className="flex items-center gap-2 bg-[#FAF1E4] p-1.5 rounded-2xl border border-[#435334] ring-1 ring-white/30 focus-within:ring-2 focus-within:ring-[#A2B886] focus-within:border-transparent transition-all">
+        <div className="flex items-center gap-2 bg-[#FAF1E4] p-1.5 rounded-2xl border border-[#435334] ring-1 ring-white/30 focus-within:ring-1 focus-within:ring-[#A2B886] focus-within:border-transparent transition-all">
           <input
             type="text"
             value={inputValue}

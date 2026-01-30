@@ -121,7 +121,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                     botResponse.toLowerCase().includes("confirm")
                 ) {
                     botMsg.type = 'final-action';
-                } else if (botResponse.includes("What type of cuisine") || (response.collected_data.ingredients && !response.collected_data.cuisine)) {
+                } else if (botResponse.toLowerCase().includes("cuisine")) {
                     botMsg.type = 'cuisine-selector';
                 }
 
@@ -193,7 +193,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                     botResponse.toLowerCase().includes("confirm")
                 ) {
                     msgType = 'final-action';
-                } else if (botResponse.includes("What type of cuisine") || (response.collected_data.ingredients && !response.collected_data.cuisine)) {
+                } else if (botResponse.toLowerCase().includes("cuisine")) {
                     msgType = 'cuisine-selector';
                 }
 
@@ -431,8 +431,8 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                             > */}
                             <div
                                 className={`max-w-[75%] break-words whitespace-pre-wrap ${msg.sender === 'user'
-                                        ? 'bg-[#CEDEBDB2] backdrop-blur-[40px] text-[#2C3E14] rounded-xl shadow-md'
-                                        : 'bg-[#435334B2] backdrop-blur-[36px] text-[#F4F8F1] rounded-2xl shadow-sm border border-white/10'
+                                    ? 'bg-[#CEDEBDB2] backdrop-blur-[40px] text-[#2C3E14] rounded-xl shadow-md'
+                                    : 'bg-[#435334B2] backdrop-blur-[36px] text-[#F4F8F1] rounded-2xl shadow-sm border border-white/10'
                                     } p-4 text-sm leading-relaxed`}
                             >
                                 {/* Text Content - Always show for user messages, or when type is text */}
@@ -481,7 +481,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                     {/* Typing Indicator */}
                     {isTyping && (
                         <div className="flex justify-start items-center">
-                            <div className="p-4 rounded-2xl shadow-sm flex gap-1">
+                            <div className="p-3 bg-[#435334B2] backdrop-blur-[40px] text-[#F4F8F1] rounded-2xl shadow-sm border border-white/10 flex gap-1">
                                 <span className="w-1.5 h-1.5 bg-[#A2B886] rounded-full animate-bounce"></span>
                                 <span className="w-1.5 h-1.5 bg-[#A2B886] rounded-full animate-bounce delay-100"></span>
                                 <span className="w-1.5 h-1.5 bg-[#A2B886] rounded-full animate-bounce delay-200"></span>
