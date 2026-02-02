@@ -13,7 +13,7 @@ const RecipesPage = lazy(() => import('../features/landingpage/components/Explor
 const LandingPage = lazy(() => import('../features/landingpage/pages/LandingPage'));
 const HowItWorks = lazy(() => import('../features/landingpage/components/HowItWorks'));
 const NutritionalScoring = lazy(() => import('../features/landingpage/pages/NutritionalScoring'));
-const AiPersonalization = lazy(() => import('../features/landingpage/pages/AiPersonalization'));
+const AiPersonalization = lazy(() => import('../features/landingpage/pages/DoctorFoodiePersonalization'));
 const SpeedEfficiency = lazy(() => import('../features/landingpage/pages/SpeedEfficiency'));
 const Login = lazy(() => import('../features/auth/pages/Login'));
 const SignUp = lazy(() => import("../features/auth/pages/SignUp"));
@@ -107,7 +107,7 @@ function AppRoutes() {
         {/* --- PROTECTED ROUTES --- */}
         <Route element={<PrivateRoute />}>
           <Route element={<AppLayout />}>
-            {/* <Route path="recipe-configuration" element={<RecipeConfiguration />} /> */}
+
             <Route path="recipe-configuration-chat" element={<RecipeConfigurationChat />} />
             <Route path="recipe-details" element={<RecipeDetails />} />
             <Route path="ai-menu" element={<AiCuratedMenu />} />

@@ -1,19 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Send, ChefHat, Utensils, Globe, Leaf, ArrowRight } from 'lucide-react';
 import CookerIcon from '../../../assets/cooker.svg';
 import { useAuth } from '../../auth/context/AuthContext';
-import { chatRecipeConfiguration } from '../api/recipeConfigurationService';
-import type { ChatMessage, CollectedData } from '../types/recipeConfiguration';
+import { useChat } from '../../chat/context/ChatContext';
+import { sendChatMessage } from '../../../components/modal/api/chatService';
+import type { Message } from '../../../components/modal/types/chat';
+
 import { useNavigate } from 'react-router-dom';
 
-// --- Types ---
-type Message = {
-  id: string;
-  sender: 'bot' | 'user';
-  content: React.ReactNode;
-  // We use 'type' to determine if we should render text or a specialized widget
-  type?: 'text' | 'cuisine-selector' | 'details-selector' | 'final-action';
-};
+
 
 
 
@@ -140,22 +135,10 @@ export default function RecipeConfigurationChat() {
   // const { showToast } = useToast(); // Removed unused
   // const [isGenerating, setIsGenerating] = useState(false); // Removed unused
 
-  // Initial Chat State
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      sender: 'bot',
-      content: "Hello! I'm Dr. Foodie, your Chef Assistant. Let's craft your perfect meal. First, what ingredients do you have to cook with today?",
-      type: 'text'
-    }
-  ]);
+  const { messages, chatHistory, collectedData, addMessage, addHistory, updateCollectedData } = useChat();
 
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-
-  // API State
-  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
-  const [collectedData, setCollectedData] = useState<CollectedData>({});
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -174,15 +157,15 @@ export default function RecipeConfigurationChat() {
 
     // 1. Add User Message (UI)
     const userMsg: Message = { id: Date.now().toString(), sender: 'user', content: userText };
-    setMessages(prev => [...prev, userMsg]);
+    addMessage(userMsg);
     setInputValue('');
     setIsTyping(true);
     try {
-      const response = await chatRecipeConfiguration({
-        user_id: currentUserId,
+      const response = await sendChatMessage({
+        userId: currentUserId,
         message: userText,
-        chat_history: chatHistory,
-        collected_data: collectedData
+        chatHistory: chatHistory,
+        collectedData: collectedData
       });
 
       if (response && response.status === 'success') {
@@ -223,23 +206,21 @@ export default function RecipeConfigurationChat() {
           botMsg.type = 'final-action';
         }
 
-        setMessages(prev => [...prev, botMsg]);
+        addMessage(botMsg);
 
         // Update API State
-        setCollectedData(response.collected_data);
+        updateCollectedData(response.collected_data);
 
         // Update History with the exchange
-        const newHistoryItemUser: ChatMessage = { role: 'user', content: userText };
-        const newHistoryItemBot: ChatMessage = { role: 'assistant', content: botResponse };
-        setChatHistory(prev => [...prev, newHistoryItemUser, newHistoryItemBot]);
+        addHistory(userText, botResponse);
 
       } else {
         // Handle error
-        setMessages(prev => [...prev, { id: Date.now().toString(), sender: 'bot', content: "Sorry, I'm having trouble connecting to the kitchen server.", type: 'text' }]);
+        addMessage({ id: Date.now().toString(), sender: 'bot', content: "Sorry, I'm having trouble connecting to the kitchen server.", type: 'text' });
       }
     } catch (error) {
       console.error("Chat API Error", error);
-      setMessages(prev => [...prev, { id: Date.now().toString(), sender: 'bot', content: "Sorry, something went wrong.", type: 'text' }]);
+      addMessage({ id: Date.now().toString(), sender: 'bot', content: "Sorry, something went wrong.", type: 'text' });
     } finally {
       setIsTyping(false);
     }
@@ -277,7 +258,7 @@ export default function RecipeConfigurationChat() {
     if (!text) return;
     const currentUserId = userId || user?.username || "guest_user";
     const userMsg: Message = { id: Date.now().toString(), sender: 'user', content: text };
-    setMessages(prev => [...prev, userMsg]);
+    addMessage(userMsg);
     setIsTyping(true);
 
     // If text is "generate now" or "confirm", we navigate immediately to show loader on result page
@@ -297,11 +278,11 @@ export default function RecipeConfigurationChat() {
     }
 
     try {
-      const response = await chatRecipeConfiguration({
-        user_id: currentUserId,
+      const response = await sendChatMessage({
+        userId: currentUserId,
         message: text,
-        chat_history: chatHistory,
-        collected_data: collectedData
+        chatHistory: chatHistory,
+        collectedData: collectedData
       });
 
       if (response && response.status === 'success') {
@@ -340,9 +321,9 @@ export default function RecipeConfigurationChat() {
           type: msgType
         };
 
-        setMessages(prev => [...prev, botMsg]);
-        setCollectedData(response.collected_data);
-        setChatHistory(prev => [...prev, { role: 'user', content: text }, { role: 'assistant', content: botResponse }]);
+        addMessage(botMsg);
+        updateCollectedData(response.collected_data);
+        addHistory(text, botResponse);
       }
     } catch (err) {
       console.error(err);

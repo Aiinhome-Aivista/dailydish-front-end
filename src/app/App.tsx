@@ -3,15 +3,19 @@ import AppRoutes from "../routes/AppRoutes";
 import { AuthProvider } from "../features/auth/context/AuthContext";
 import { ToastProvider } from "../shared/context/ToastContext";
 
+import { ChatProvider } from "../features/chat/context/ChatContext";
+
 function App() {
   return (
-            <ToastProvider>
-              <AuthProvider>
-                <BrowserRouter>
-                  <AppRoutes />
-                </BrowserRouter>
-              </AuthProvider>
-            </ToastProvider>
+    <ToastProvider>
+      <AuthProvider>
+        <ChatProvider>
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </ChatProvider>
+      </AuthProvider>
+    </ToastProvider>
   );
 }
 

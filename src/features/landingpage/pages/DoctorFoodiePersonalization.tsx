@@ -38,7 +38,7 @@ const ChefPersonalization = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="w-20 h-20 bg-brand-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl text-white font-bold">1</span>
+                  <span className="text-2xl text-brand-dark font-bold">1</span>
                 </div>
                 <h3 className="text-xl font-semibold text-brand-dark mb-3">Initial Assessment</h3>
                 <p className="text-brand-dark/80">
@@ -48,7 +48,7 @@ const ChefPersonalization = () => {
               </div>
               <div className="text-center">
                 <div className="w-20 h-20 bg-brand-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl text-white font-bold">2</span>
+                  <span className="text-2xl text-brand-dark font-bold">2</span>
                 </div>
                 <h3 className="text-xl font-semibold text-brand-dark mb-3">Continuous Learning</h3>
                 <p className="text-brand-dark/80">
@@ -58,7 +58,7 @@ const ChefPersonalization = () => {
               </div>
               <div className="text-center">
                 <div className="w-20 h-20 bg-brand-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl text-white font-bold">3</span>
+                  <span className="text-2xl text-brand-dark font-bold">3</span>
                 </div>
                 <h3 className="text-xl font-semibold text-brand-dark mb-3">Smart Recommendations</h3>
                 <p className="text-brand-dark/80">
@@ -144,7 +144,7 @@ const ChefPersonalization = () => {
 
         {/* Learning Process Section */}
         <section className="mb-16">
-          <div className="bg-gradient-to-r from-brand-primary to-brand-secondary rounded-lg p-8 text-brand-dark">
+          <div className="bg-linear-to-r from-brand-primary to-brand-secondary rounded-lg p-8 text-brand-dark">
             <h2 className="text-3xl font-bold mb-6 text-center">The Learning Process</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>

@@ -2,7 +2,7 @@ import { Sparkles } from "lucide-react";
 import { useState } from "react";
 
 import RecipeLogo from "../../../assets/icons/Recipe logo.svg";
-import ChatModal from "./ChatModal";
+import ChatModal from "../../../components/modal/pages/ChatModal";
 
 interface FirstSectionProps {
   onGetStarted?: () => void;

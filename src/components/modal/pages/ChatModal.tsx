@@ -1,28 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useChat } from '../../../features/chat/context/ChatContext';
 import { Send, ChefHat, Utensils, Globe, Leaf, X, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CookerIcon from '../../../assets/cooker.svg';
-import { useAuth } from '../../auth/context/AuthContext';
-import { chatRecipeConfiguration } from '../../pantry/api/recipeConfigurationService';
-import type { ChatMessage, CollectedData } from '../../pantry/types/recipeConfiguration';
-import { Sparkles } from 'lucide-react';
+import { useAuth } from '../../../features/auth/context/AuthContext';
+import { sendChatMessage } from '../api/chatService';
+import type { Message, RecipeState } from '../types/chat';
 
-
-// --- Types ---
-type Message = {
-    id: string;
-    sender: 'bot' | 'user';
-    content: React.ReactNode;
-    type?: 'text' | 'cuisine-selector' | 'details-selector' | 'final-action';
-};
-
-type RecipeState = {
-    ingredients: string[];
-    cuisine: string | null;
-    cookingTime: string | null;
-    servings: number;
-    mealType: string | null;
-};
 
 interface ChatModalProps {
     isOpen: boolean;
@@ -34,22 +18,15 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
     const { user, userId } = useAuth();
     const navigate = useNavigate();
 
-    // Initial Chat State
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            id: '1',
-            sender: 'bot',
-            content: "Hello! I'm Dr. Foodie, your Chef Assistant. Let's craft your perfect meal. First, what ingredients do you have to cook with today?",
-            type: 'text'
-        }
-    ]);
+    const { messages, chatHistory, collectedData, addMessage, addHistory, updateCollectedData } = useChat();
+
+    // Auto-scroll on messages change
+
 
     const [inputValue, setInputValue] = useState('');
     const [isTyping, setIsTyping] = useState(false);
 
-    // API State
-    const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
-    const [collectedData, setCollectedData] = useState<CollectedData>({});
+
 
     // Form State Capture
     const [recipeState, setRecipeState] = useState<RecipeState>({
@@ -62,10 +39,11 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    // Auto-scroll to bottom whenever messages change
+    // Auto-scroll on messages change
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages, isTyping]);
+
 
     // --- Logic Handlers ---
 
@@ -73,20 +51,20 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
         if (!inputValue.trim()) return;
 
         const userText = inputValue;
-        const currentUserId = userId || user?.username || "guest_user";
+        const currentUserId = userId || "guest_user";
 
         // 1. Add User Message (UI)
         const userMsg: Message = { id: Date.now().toString(), sender: 'user', content: userText };
-        setMessages(prev => [...prev, userMsg]);
+        addMessage(userMsg);
         setInputValue('');
         setIsTyping(true);
 
         try {
-            const response = await chatRecipeConfiguration({
-                user_id: currentUserId,
+            const response = await sendChatMessage({
+                userId: currentUserId,
                 message: userText,
-                chat_history: chatHistory,
-                collected_data: collectedData
+                chatHistory: chatHistory,
+                collectedData: collectedData
             });
 
             if (response && response.status === 'success') {
@@ -130,19 +108,17 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                     botMsg.type = 'cuisine-selector';
                 }
 
-                setMessages(prev => [...prev, botMsg]);
-                setCollectedData(response.collected_data);
+                addMessage(botMsg);
+                updateCollectedData(response.collected_data);
 
-                const newHistoryItemUser: ChatMessage = { role: 'user', content: userText };
-                const newHistoryItemBot: ChatMessage = { role: 'assistant', content: botResponse };
-                setChatHistory(prev => [...prev, newHistoryItemUser, newHistoryItemBot]);
+                addHistory(userText, botResponse);
 
             } else {
-                setMessages(prev => [...prev, { id: Date.now().toString(), sender: 'bot', content: "Sorry, I'm having trouble connecting to the kitchen server.", type: 'text' }]);
+                addMessage({ id: Date.now().toString(), sender: 'bot', content: "Sorry, I'm having trouble connecting to the kitchen server.", type: 'text' });
             }
         } catch (error) {
             console.error("Chat API Error", error);
-            setMessages(prev => [...prev, { id: Date.now().toString(), sender: 'bot', content: "Sorry, something went wrong.", type: 'text' }]);
+            addMessage({ id: Date.now().toString(), sender: 'bot', content: "Sorry, something went wrong.", type: 'text' });
         } finally {
             setIsTyping(false);
         }
@@ -157,17 +133,17 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
 
     const triggerMessageSend = async (text: string) => {
         if (!text) return;
-        const currentUserId = userId || user?.username || "guest_user";
+        const currentUserId = userId || "guest_user";
         const userMsg: Message = { id: Date.now().toString(), sender: 'user', content: text };
-        setMessages(prev => [...prev, userMsg]);
+        addMessage(userMsg);
         setIsTyping(true);
 
         try {
-            const response = await chatRecipeConfiguration({
-                user_id: currentUserId,
+            const response = await sendChatMessage({
+                userId: currentUserId,
                 message: text,
-                chat_history: chatHistory,
-                collected_data: collectedData
+                chatHistory: chatHistory,
+                collectedData: collectedData
             });
 
             if (response && response.status === 'success') {
@@ -219,9 +195,9 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                     type: msgType
                 };
 
-                setMessages(prev => [...prev, botMsg]);
-                setCollectedData(response.collected_data);
-                setChatHistory(prev => [...prev, { role: 'user', content: text }, { role: 'assistant', content: botResponse }]);
+                addMessage(botMsg);
+                updateCollectedData(response.collected_data);
+                addHistory(text, botResponse);
             }
         } catch (err) {
             console.error(err);
@@ -371,22 +347,6 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
             </div>
         );
     };
-
-    // --- Helper: Plan Summary Card ---
-    const PlanSummaryCard = ({ content }: { content: string }) => {
-        return (
-            <div className="bg-white/60 p-4 rounded-xl border border-white/50 mt-2 shadow-sm">
-                <div className="flex items-center gap-2 mb-3 pb-2 border-b border-[#7D9C5B]/20">
-                    <Sparkles className="w-4 h-4 text-[#7D9C5B]" />
-                    <span className="font-bold text-[#3A4A28] text-sm uppercase tracking-wide">Cooking Plan</span>
-                </div>
-                <div className="text-sm text-[#4A5D23]">
-                    <ParsedText text={content} />
-                </div>
-            </div>
-        );
-    };
-
 
 
     if (!isOpen) return null;

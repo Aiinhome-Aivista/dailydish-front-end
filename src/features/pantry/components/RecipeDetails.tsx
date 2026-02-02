@@ -3,12 +3,11 @@ import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Check, ArrowLeft, Loader2, Heart } from 'lucide-react';
 import defaultRecipeImage from '../../../assets/Recipe_default_image.webp';
-import axiosApi from '../../../lib/axiosApi';
-import { API_ENDPOINTS } from '../../../config/endpoints';
 import { pantryService } from '../api/saveMenuService';
+import { getRecipeDetails } from '../api/recipeDetailsService';
 import { useToast } from '../../../shared/context/ToastContext';
 import { AxiosError } from 'axios';
-import type { RecipeDetailsResponse, RecipeDetailData, } from '../types/recipeDetails';
+import type { RecipeDetailData } from '../types/recipeDetails';
 import DailyDishLoader from '../../../components/feedback/DailyDishLoader';
 
 
@@ -31,13 +30,10 @@ export default function RecipeDetails() {
 
       try {
         setLoading(true);
-        const response = await axiosApi<RecipeDetailsResponse>(API_ENDPOINTS.RECIPEDETAILS, {
-          method: 'POST',
-          data: {
-            menu_name,
-            cooking_time: cooking_time || "10 minutes",
-            image_url: defaultRecipeImage
-          }
+        const response = await getRecipeDetails({
+          menu_name,
+          cooking_time: cooking_time || "10 minutes",
+          image_url: defaultRecipeImage
         });
 
         if (response && response.status === 'success') {

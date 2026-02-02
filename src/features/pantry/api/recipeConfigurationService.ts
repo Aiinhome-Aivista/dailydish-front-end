@@ -1,6 +1,6 @@
 import axiosApi from "../../../lib/axiosApi";
 import { API_ENDPOINTS } from "../../../config/endpoints";
-import type { RecipeGenerationRequest, RecipeGenerationResponse, ChatRequest, ChatResponse } from "../types/recipeConfiguration";
+import type { RecipeGenerationRequest, RecipeGenerationResponse, ChatRequest, ChatResponse } from "../types/recipeConfigurationChat";
 
 
 export const generateRecipes = async (data: RecipeGenerationRequest): Promise<RecipeGenerationResponse | null> => {

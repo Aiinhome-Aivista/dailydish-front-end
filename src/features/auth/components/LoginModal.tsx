@@ -6,7 +6,7 @@ import { useToast } from '../../../shared/context/ToastContext';
 
 import { useNavigate } from 'react-router-dom';
 import { generateRecipes } from '../../pantry/api/recipeConfigurationService';
-import type { RecipeGenerationRequest } from '../../pantry/types/recipeConfiguration';
+import type { RecipeGenerationRequest } from '../../pantry/types/recipeConfigurationChat';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -30,11 +30,6 @@ function LoginModal({ isOpen, onClose, onSwitchToSignUp }: LoginModalProps) {
       await login({ email, password });
       showToast('success', 'Success', 'Login Successful!');
 
-      // Check for pending chat context (New flow) - Handled by AppRoutes & AiCuratedMenu
-      // We do nothing here to avoid race conditions with PublicRoute redirect
-
-
-      // Check for pending recipe data (Old/Fallback flow)
       const pendingData = localStorage.getItem('pending_recipe_data');
       if (pendingData) {
         try {

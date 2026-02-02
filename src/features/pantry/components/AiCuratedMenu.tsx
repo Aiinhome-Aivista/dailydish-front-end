@@ -1,13 +1,12 @@
 import React, { useState, useEffect, } from "react";
 import { Heart, ChevronRight, Loader2 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import type { GeneratedRecipe, } from "../types/recipeConfiguration";
 import type { SaveRecipeRequest } from "../types/saveMenu";
 import defaultRecipeImage from "../../../assets/Recipe_default_image.webp";
 import { pantryService } from "../api/saveMenuService";
 import { useToast } from "../../../shared/context/ToastContext";
-import { chatRecipeConfiguration } from '../api/recipeConfigurationService';
-import type { Recipe } from "../types/aiCuratedMenu";
+import { fetchAiRecipes } from "../api/aicuratedMenuService";
+import type { Recipe, GeneratedRecipe } from "../types/aiCuratedMenu";
 import { AxiosError } from "axios";
 import DailyDishLoader from "../../../components/feedback/DailyDishLoader";
 import { useAuth } from "../../auth/context/AuthContext";
@@ -19,7 +18,7 @@ const AiMenuDashboard: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { showToast } = useToast();
-  const { user, userId } = useAuth();
+  const { userId } = useAuth();
   const [selectedId, setSelectedId] = useState<number>(0);
   const [savingId, setSavingId] = useState<number | null>(null);
   const [savedRecipeIds, setSavedRecipeIds] = useState<Set<number>>(new Set());
@@ -87,11 +86,9 @@ const AiMenuDashboard: React.FC = () => {
       if ((waitingForRecipes && chatContext) || (!hasRecipes && chatContext)) { // Fetch only if waiting or no recipes exist
         setIsLoading(true);
         try {
-          const response = await chatRecipeConfiguration(chatContext);
-          if (response && response.status === 'success') {
-            const respData = response.data as any;
-            const generatedRecipes: GeneratedRecipe[] = respData?.recipes || respData?.data?.recipes || [];
+          const generatedRecipes = await fetchAiRecipes(chatContext);
 
+          if (generatedRecipes.length > 0) {
             const mappedRecipes: Recipe[] = generatedRecipes.map((rec, index) => ({
               id: index + 1,
               title: rec.menu_name,
@@ -111,7 +108,13 @@ const AiMenuDashboard: React.FC = () => {
               }
             });
           } else {
-            showToast("error", "Error", "Failed to generate recipes from chat.");
+            // Handle case where success but empty recipes? or just treat as error?
+            // Original logic showed error toast on non-success status. 
+            // Service returns empty array on failure or no recipes. 
+            // We can check length.
+            if (generatedRecipes.length === 0) {
+              showToast("error", "Error", "Failed to generate recipes from chat.");
+            }
           }
         } catch (error) {
           console.error("Fetch recipes error", error);

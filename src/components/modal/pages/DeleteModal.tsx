@@ -2,9 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Loader2, X, AlertTriangle } from 'lucide-react';
 import  type { DeleteModalProps } from '../types/delete';
 
-
-
-
 const DeleteModal: React.FC<DeleteModalProps> = ({
   isOpen,
   onClose,
