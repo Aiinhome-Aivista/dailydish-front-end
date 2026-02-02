@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import NavBar from '../../../components/layout/NavBar';
 import LandingFooter from '../components/LandingFooter';
 
-const AiPersonalization = () => {
+const ChefPersonalization = () => {
   const navigate = useNavigate();
 
   return (
@@ -31,7 +31,7 @@ const AiPersonalization = () => {
 
         {/* How It Works Section */}
         <section className="mb-16">
-          <div className="bg-white rounded-lg shadow-lg p-8">
+          <div className="">
             <h2 className="text-3xl font-bold text-brand-dark mb-6 text-center">
               How Dr. Foodie Assistant Works
             </h2>
@@ -74,67 +74,67 @@ const AiPersonalization = () => {
         <section className="mb-16">
           <h2 className="text-3xl font-bold text-brand-dark mb-8 text-center">Dr. Foodie-Powered Features</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1]  rounded-2xl p-6 shadow-lg">
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
                 <span className="text-2xl">🎯</span>
               </div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-3">Flavor Profile Analysis</h3>
-              <p className="text-brand-dark/80 text-sm">
+              <h3 className="text-lg font-semibold  mb-3">Flavor Profile Analysis</h3>
+              <p className=" text-sm">
                 Identifies your preferred taste combinations, spice levels, and ingredient pairings
                 to suggest recipes that match your palate perfectly.
               </p>
             </div>
 
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1]  rounded-2xl p-6 shadow-lg">
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
                 <span className="text-2xl">🚫</span>
               </div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-3">Smart Allergen Detection</h3>
-              <p className="text-brand-dark/80 text-sm">
+              <h3 className="text-lg font-semibold t mb-3">Smart Allergen Detection</h3>
+              <p className=" text-sm">
                 Automatically filters out ingredients you're allergic to or prefer to avoid,
                 ensuring all recommendations are safe for you.
               </p>
             </div>
 
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1]  rounded-2xl p-6 shadow-lg">
               <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
                 <span className="text-2xl">⚡</span>
               </div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-3">Cooking Skill Adaptation</h3>
-              <p className="text-brand-dark/80 text-sm">
+              <h3 className="text-lg font-semibold  mb-3">Cooking Skill Adaptation</h3>
+              <p className=" text-sm">
                 Adjusts recipe complexity based on your cooking experience and time constraints,
                 from beginner-friendly to gourmet challenges.
               </p>
             </div>
 
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1]  rounded-2xl p-6 shadow-lg">
               <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4">
                 <span className="text-2xl">📊</span>
               </div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-3">Nutritional Intelligence</h3>
-              <p className="text-brand-dark/80 text-sm">
+              <h3 className="text-lg font-semibold  mb-3">Nutritional Intelligence</h3>
+              <p className=" text-sm">
                 Considers your health goals, dietary needs, and nutritional preferences
                 to balance taste with wellness objectives.
               </p>
             </div>
 
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1]  rounded-2xl p-6 shadow-lg">
               <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
                 <span className="text-2xl">🔄</span>
               </div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-3">Seasonal Adaptation</h3>
-              <p className="text-brand-dark/80 text-sm">
+              <h3 className="text-lg font-semibold  mb-3">Seasonal Adaptation</h3>
+              <p className=" text-sm">
                 Suggests recipes using in-season ingredients and adapts to weather patterns
                 for optimal freshness and variety.
               </p>
             </div>
 
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1]  rounded-2xl p-6 shadow-lg">
               <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
                 <span className="text-2xl">👥</span>
               </div>
-              <h3 className="text-lg font-semibold text-brand-dark mb-3">Family & Group Cooking</h3>
-              <p className="text-brand-dark/80 text-sm">
+              <h3 className="text-lg font-semibold  mb-3">Family & Group Cooking</h3>
+              <p className=" text-sm">
                 Learns preferences for multiple people in your household and suggests
                 meals that accommodate everyone's tastes and dietary needs.
               </p>
@@ -144,7 +144,7 @@ const AiPersonalization = () => {
 
         {/* Learning Process Section */}
         <section className="mb-16">
-          <div className="bg-gradient-to-r from-brand-primary to-brand-secondary rounded-lg p-8 text-text-brand-dark">
+          <div className="bg-gradient-to-r from-brand-primary to-brand-secondary rounded-lg p-8 text-brand-dark">
             <h2 className="text-3xl font-bold mb-6 text-center">The Learning Process</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
@@ -205,30 +205,30 @@ const AiPersonalization = () => {
         <section className="mb-16">
           <h2 className="text-3xl font-bold text-brand-dark mb-8 text-center">Why Dr. Foodie Personalization Matters</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h3 className="text-xl font-semibold text-brand-dark mb-4">🎯 Reduced Food Waste</h3>
-              <p className="text-brand-dark/80">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1]  rounded-2xl p-6 shadow-lg">
+              <h3 className="text-xl font-semibold  mb-4">🎯 Reduced Food Waste</h3>
+              <p className=" text-sm">
                 By suggesting recipes you'll actually enjoy and finish, you waste less food
                 and save money on groceries.
               </p>
             </div>
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h3 className="text-xl font-semibold text-brand-dark mb-4">⏰ Time Savings</h3>
-              <p className="text-brand-dark/80">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1]  rounded-2xl p-6 shadow-lg">
+              <h3 className="text-xl font-semibold  mb-4">⏰ Time Savings</h3>
+              <p className=" text-sm">
                 Skip the endless scrolling through irrelevant recipes. Get instant suggestions
                 that match your preferences and schedule.
               </p>
             </div>
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h3 className="text-xl font-semibold text-brand-dark mb-4">🌱 Healthier Eating</h3>
-              <p className="text-brand-dark/80">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1]  rounded-2xl p-6 shadow-lg">
+              <h3 className="text-xl font-semibold  mb-4">🌱 Healthier Eating</h3>
+              <p className=" text-sm">
                 The Dr. Foodie considers your nutritional goals while respecting your taste preferences,
                 making healthy eating enjoyable.
               </p>
             </div>
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h3 className="text-xl font-semibold text-brand-dark mb-4">✨ Culinary Discovery</h3>
-              <p className="text-brand-dark/80">
+            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1]  rounded-2xl p-6 shadow-lg">
+              <h3 className="text-xl font-semibold  mb-4">✨ Culinary Discovery</h3>
+              <p className=" text-sm">
                 Gradually introduces new ingredients and flavors that complement your existing
                 preferences, expanding your culinary horizons.
               </p>
@@ -238,7 +238,7 @@ const AiPersonalization = () => {
 
         {/* Privacy & Data Section */}
         <section className="mb-16">
-          <div className="bg-gray-50 rounded-lg p-8">
+          <div className="">
             <h2 className="text-3xl font-bold text-brand-dark mb-6 text-center">Your Data, Your Control</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center">
@@ -246,7 +246,7 @@ const AiPersonalization = () => {
                   <span className="text-2xl text-white">🔒</span>
                 </div>
                 <h3 className="text-lg font-semibold text-brand-dark mb-2">Secure & Private</h3>
-                <p className="text-brand-dark/80 text-sm">
+                <p className="text-brand-dark text-sm">
                   Your cooking preferences and data are encrypted and stored securely.
                   We never share your personal information with third parties.
                 </p>
@@ -256,7 +256,7 @@ const AiPersonalization = () => {
                   <span className="text-2xl text-white">⚙️</span>
                 </div>
                 <h3 className="text-lg font-semibold text-brand-dark mb-2">Full Control</h3>
-                <p className="text-brand-dark/80 text-sm">
+                <p className="text-brand-dark text-sm">
                   You can view, edit, or reset your Dr. Foodie profile at any time.
                   Adjust preferences or start fresh whenever you want.
                 </p>
@@ -266,7 +266,7 @@ const AiPersonalization = () => {
                   <span className="text-2xl text-white">🧠</span>
                 </div>
                 <h3 className="text-lg font-semibold text-brand-dark mb-2">Smart Learning</h3>
-                <p className="text-brand-dark/80 text-sm">
+                <p className="text-brand-dark text-sm">
                   The Dr. Foodie only learns from your explicit actions and feedback.
                   No assumptions are made without your input.
                 </p>
@@ -277,7 +277,7 @@ const AiPersonalization = () => {
 
         {/* Call to Action */}
         <section className="text-center">
-          <div className="bg-brand-primary rounded-lg p-8 text-text-brand-dark">
+          <div className="bg-brand-primary rounded-lg p-8 text-brand-dark">
             <h2 className="text-2xl font-bold mb-4">Experience Personalized Cooking</h2>
             <p className="mb-6">
               Join DailyDish and let our Dr. Foodie transform your cooking experience.
@@ -294,4 +294,4 @@ const AiPersonalization = () => {
   );
 };
 
-export default AiPersonalization;
+export default ChefPersonalization;

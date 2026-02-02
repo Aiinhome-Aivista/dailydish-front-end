@@ -129,9 +129,9 @@ const SpeedEfficiency = () => {
 
         {/* Waste Reduction Section */}
         <section className="mb-16">
-          <div className="bg-white rounded-lg shadow-lg p-8">
+          <div className="">
             <h2 className="text-3xl font-bold text-brand-dark mb-6 text-center">Minimal Food Waste</h2>
-            <p className="text-lg text-brand-dark/80 text-center mb-8 max-w-3xl mx-auto">
+            <p className="text-lg text-brand-dark text-center mb-8 max-w-3xl mx-auto">
               Smart portioning, ingredient optimization, and leftover utilization to ensure
               nothing goes to waste while maximizing your grocery budget.
             </p>
@@ -141,19 +141,19 @@ const SpeedEfficiency = () => {
                 <ul className="space-y-3">
                   <li className="flex items-start">
                     <span className="text-green-500 mr-3 mt-1">✓</span>
-                    <span className="text-brand-dark/80">Adjustable serving sizes based on household needs</span>
+                    <span className="text-brand-dark">Adjustable serving sizes based on household needs</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-3 mt-1">✓</span>
-                    <span className="text-brand-dark/80">Precise measurements to avoid over-purchasing</span>
+                    <span className="text-brand-dark">Precise measurements to avoid over-purchasing</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-3 mt-1">✓</span>
-                    <span className="text-brand-dark/80">Leftovers transformed into new meals</span>
+                    <span className="text-brand-dark">Leftovers transformed into new meals</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-3 mt-1">✓</span>
-                    <span className="text-brand-dark/80">Storage suggestions for optimal freshness</span>
+                    <span className="text-brand-dark">Storage suggestions for optimal freshness</span>
                   </li>
                 </ul>
               </div>
@@ -162,19 +162,19 @@ const SpeedEfficiency = () => {
                 <ul className="space-y-3">
                   <li className="flex items-start">
                     <span className="text-green-500 mr-3 mt-1">✓</span>
-                    <span className="text-brand-dark/80">Recipes using commonly available ingredients</span>
+                    <span className="text-brand-dark">Recipes using commonly available ingredients</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-3 mt-1">✓</span>
-                    <span className="text-brand-dark/80">Minimal specialty item requirements</span>
+                    <span className="text-brand-dark">Minimal specialty item requirements</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-3 mt-1">✓</span>
-                    <span className="text-brand-dark/80">Cross-recipe ingredient utilization</span>
+                    <span className="text-brand-dark">Cross-recipe ingredient utilization</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-500 mr-3 mt-1">✓</span>
-                    <span className="text-brand-dark/80">Seasonal ingredient recommendations</span>
+                    <span className="text-brand-dark">Seasonal ingredient recommendations</span>
                   </li>
                 </ul>
               </div>
