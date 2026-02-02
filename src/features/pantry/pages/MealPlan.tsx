@@ -310,7 +310,7 @@ const MealPlan = () => {
                             <div
                                 key={mealItem.id}
                                 onClick={() => setActiveMeal(mealItem)}
-                                className="group relative flex flex-col p-4 rounded-4xl cursor-pointer transition-all duration-300 bg-[#d2e4c4] hover:shadow-md hover:scale-[1.01]"
+                                className="group relative flex flex-col p-4 rounded-4xl cursor-pointer transition-all duration-300 bg-[#CEDEBDB2] backdrop-blur-xl border border-white/30 hover:shadow-xl hover:scale-[1.01]"
                             >
                                 {/* Image Container */}
                                 <div className="h-40 w-full mb-5 overflow-hidden rounded-2xl">

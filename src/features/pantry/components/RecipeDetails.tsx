@@ -263,7 +263,7 @@ export default function RecipeDetails() {
         {/* Right Column */}
         <div className="flex flex-col gap-8">
           {/* Nutrition Dashboard */}
-          <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 flex flex-col justify-between">
+          <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 flex flex-col justify-between ">
             <h3 className="text-xl font-bold mb-4">Nutrition Dashboard</h3>
 
             <div className="grid grid-cols-2 gap-4 mb-8">

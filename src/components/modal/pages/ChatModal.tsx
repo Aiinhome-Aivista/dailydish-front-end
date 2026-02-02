@@ -49,79 +49,9 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
 
     const handleSendMessage = async () => {
         if (!inputValue.trim()) return;
-
-        const userText = inputValue;
-        const currentUserId = userId || "guest_user";
-
-        // 1. Add User Message (UI)
-        const userMsg: Message = { id: Date.now().toString(), sender: 'user', content: userText };
-        addMessage(userMsg);
+        const text = inputValue;
         setInputValue('');
-        setIsTyping(true);
-
-        try {
-            const response = await sendChatMessage({
-                userId: currentUserId,
-                message: userText,
-                chatHistory: chatHistory,
-                collectedData: collectedData
-            });
-
-            if (response && response.status === 'success') {
-                const botResponse = response.message;
-
-                // Check for direct recipe generation in chat response (Parity with triggerMessageSend)
-                const recipes = response.data?.recipes || response.data?.data?.recipes;
-                if (recipes && recipes.length > 0) {
-                    const context = {
-                        user_id: currentUserId,
-                        message: userText,
-                        chat_history: chatHistory,
-                        collected_data: collectedData
-                    };
-
-                    if (userId) {
-                        navigate('/ai-menu', {
-                            state: {
-                                recipes,
-                                chatContext: context
-                            }
-                        });
-                        return;
-                    } else {
-                        if (onGenerateRecipe) onGenerateRecipe(context);
-                    }
-                }
-                const botMsg: Message = {
-                    id: Date.now().toString() + '_bot',
-                    sender: 'bot',
-                    content: botResponse,
-                    type: 'text'
-                };
-
-                if (
-                    botResponse.toLowerCase().includes("cooking plan") ||
-                    botResponse.toLowerCase().includes("confirm")
-                ) {
-                    botMsg.type = 'final-action';
-                } else if (botResponse.toLowerCase().includes("cuisine")) {
-                    botMsg.type = 'cuisine-selector';
-                }
-
-                addMessage(botMsg);
-                updateCollectedData(response.collected_data);
-
-                addHistory(userText, botResponse);
-
-            } else {
-                addMessage({ id: Date.now().toString(), sender: 'bot', content: "Sorry, I'm having trouble connecting to the kitchen server.", type: 'text' });
-            }
-        } catch (error) {
-            console.error("Chat API Error", error);
-            addMessage({ id: Date.now().toString(), sender: 'bot', content: "Sorry, something went wrong.", type: 'text' });
-        } finally {
-            setIsTyping(false);
-        }
+        await triggerMessageSend(text);
     };
 
     const handleCuisineSelect = (cuisine: string) => {

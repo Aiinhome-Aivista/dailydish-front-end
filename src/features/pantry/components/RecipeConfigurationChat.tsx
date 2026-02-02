@@ -135,7 +135,11 @@ export default function RecipeConfigurationChat() {
   // const { showToast } = useToast(); // Removed unused
   // const [isGenerating, setIsGenerating] = useState(false); // Removed unused
 
-  const { messages, chatHistory, collectedData, addMessage, addHistory, updateCollectedData } = useChat();
+  const { messages, chatHistory, collectedData, addMessage, addHistory, updateCollectedData, resetChat } = useChat();
+
+  useEffect(() => {
+    resetChat();
+  }, []);
 
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);

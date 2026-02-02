@@ -1,5 +1,6 @@
 import React, { useState, useEffect, } from "react";
 import { Heart, ChevronRight, Loader2 } from "lucide-react";
+
 import { useLocation, useNavigate } from "react-router-dom";
 import type { SaveRecipeRequest } from "../types/saveMenu";
 import defaultRecipeImage from "../../../assets/Recipe_default_image.webp";
@@ -113,12 +114,13 @@ const AiMenuDashboard: React.FC = () => {
             // Service returns empty array on failure or no recipes. 
             // We can check length.
             if (generatedRecipes.length === 0) {
-              showToast("error", "Error", "Failed to generate recipes from chat.");
+              showToast("error", "Error", "No recipes were found.");
             }
           }
-        } catch (error) {
+        } catch (error: any) {
           console.error("Fetch recipes error", error);
-          showToast("error", "Error", "An error occurred while fetching recipes.");
+          const msg = error.response?.data?.message || error.message || "An error occurred while fetching recipes.";
+          showToast("error", "Error", msg);
         } finally {
           setIsLoading(false);
         }
@@ -216,10 +218,10 @@ const AiMenuDashboard: React.FC = () => {
                   key={recipe.id}
                   onClick={() => setSelectedId(recipe.id)}
                   className={`
-                group relative flex flex-col p-4 rounded-2xl cursor-pointer transition-all duration-300
+                group relative flex flex-col p-4 rounded-4xl cursor-pointer transition-all duration-300 bg-[#CEDEBDB2] backdrop-blur-xl border border-white/30
                 ${selectedId === recipe.id
-                      ? "bg-[#d2e4c4] ring-[3px] ring-brand-accent shadow-lg scale-[1.02]"
-                      : "bg-[#d2e4c4] hover:shadow-md hover:scale-[1.01]"
+                      ? "ring-[3px] ring-brand-accent shadow-lg scale-[1.02]"
+                      : "hover:shadow-xl hover:scale-[1.01]"
                     }
 
                 `}
@@ -227,6 +229,7 @@ const AiMenuDashboard: React.FC = () => {
                   {/* Image Container */}
                   <div className="h-40 w-full mb-5 overflow-hidden rounded-2xl">
                     <img
+
                       src={recipe.image}
                       loading="lazy"
                       className="w-full h-full object-cover"

@@ -11,7 +11,7 @@ export const fetchAiRecipes = async (chatContext: ChatRequest): Promise<Generate
             const generatedRecipes: GeneratedRecipe[] = respData?.recipes || respData?.data?.recipes || [];
             return generatedRecipes;
         }
-        return [];
+        throw new Error(response?.message || "Failed to generate recipes.");
     } catch (error) {
         console.error("Fetch recipes error", error);
         throw error;

@@ -66,7 +66,7 @@ const AppLayout = () => {
           <img
             src={EatHealthyBg}
             alt="Healthy Food Background"
-            className=" max-w-xs object-contain opacity-60"
+            className=" max-w-xs object-contain opacity-40"
           />
         </div>
 
