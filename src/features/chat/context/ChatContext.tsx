@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from '../../auth/context/AuthContext';
 import type { ChatMessage, CollectedData } from '../../pantry/types/recipeConfigurationChat';
 import type { Message } from '../../../components/modal/types/chat';
 
@@ -16,15 +17,16 @@ interface ChatContextType {
 const ChatContext = createContext<ChatContextType | null>(null);
 
 export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            id: '1',
-            sender: 'bot',
-            content:
-                "Hello! I'm Dr. Foodie, your Chef Assistant. Let's craft your perfect meal. First, what ingredients do you have to cook with today?",
-            type: 'text'
-        }
-    ]);
+    const { userId } = useAuth();
+
+    const initialMessage: Message = {
+        id: '1',
+        sender: 'bot',
+        content: "Hello! I'm Dr. Foodie, your Chef Assistant. Let's craft your perfect meal. First, what ingredients do you have to cook with today?",
+        type: 'text'
+    };
+
+    const [messages, setMessages] = useState<Message[]>([initialMessage]);
 
     const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
     const [collectedData, setCollectedData] = useState<CollectedData>({});
@@ -43,10 +45,15 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
         setCollectedData(data);
 
     const resetChat = () => {
-        setMessages([]);
+        setMessages([initialMessage]);
         setChatHistory([]);
         setCollectedData({});
     };
+
+    // Reset chat when user changes (e.g. login/logout)
+    useEffect(() => {
+        resetChat();
+    }, [userId]);
 
     return (
         <ChatContext.Provider
