@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, ChefHat, Utensils, Globe, Leaf, ArrowRight, Check } from 'lucide-react';
+import { Send, ChefHat, Utensils, Globe, Leaf, ArrowRight, Check, RefreshCw } from 'lucide-react';
 import CookerIcon from '../../../assets/cooker.svg';
 import AnimatedChef from '../../../assets/animated_chef-removebg-preview.png';
 import { useAuth } from '../../auth/context/AuthContext';
@@ -8,6 +8,7 @@ import { sendChatMessage } from '../../../components/modal/api/chatService';
 import type { Message } from '../../../components/modal/types/chat';
 import EatHealthyBg from '../../../assets/eat-healthy.svg';
 import { useNavigate } from 'react-router-dom';
+import DailyDishLoader from '../../../components/feedback/DailyDishLoader';
 
 
 
@@ -144,6 +145,7 @@ export default function RecipeConfigurationChat() {
 
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
   const [localMealType, setLocalMealType] = useState<string | null>(null); // Track locally for instant UI feedback
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -259,6 +261,14 @@ export default function RecipeConfigurationChat() {
         }
       }
     });
+  };
+
+  const handleReset = async () => {
+    setIsResetting(true);
+    // Add artificial delay for visual feedback
+    await new Promise(resolve => setTimeout(resolve, 800));
+    resetChat();
+    setIsResetting(false);
   };
 
   const triggerMessageSend = async (text: string) => {
@@ -422,11 +432,20 @@ export default function RecipeConfigurationChat() {
         <img src={CookerIcon} alt="" className='w-9 h-9' />
 
 
-        <div>
+        <div className="flex-1">
           <h1 className="font-bold text-2xl text-[#3A4A28] leading-tight">Dr. Foodie</h1>
           {/* <h1 className="font-bold text-2xl text-brand-beige leading-tight">Dr. Foodie</h1> */}
           <p className="text-sm text-[#7B8C65]"> Chef Assistant</p>
         </div>
+
+        <button
+          onClick={handleReset}
+          className="p-2 rounded-xl border-2 border-[#DCE6D3] bg-[#E8EDDE] hover:bg-[#D4DFCC] hover:border-[#7D9C5B] text-[#5A7338] transition-all cursor-pointer"
+          title="Restart Chat"
+          disabled={isResetting}
+        >
+          <RefreshCw size={20} className={isResetting ? 'animate-spin' : ''} />
+        </button>
       </div>
 
 
@@ -447,8 +466,8 @@ export default function RecipeConfigurationChat() {
         </style>
         {messages.map((msg, index) => (
           <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up items-end gap-2`}>
-            {msg.sender === 'bot' &&  (
-              <div className="rounded-full  flex items-center justify-center relative overflow-hidden bg-[#435334B2] shadow-lg w-16 h-16" >
+            {msg.sender === 'bot' && (
+              <div className="rounded-full  flex items-center justify-center relative overflow-hidden bg-[#435334B2] shadow-lg w-15 h-15" >
                 <img
                   src={AnimatedChef}
                   alt="Dr. Foodie"
@@ -546,6 +565,15 @@ export default function RecipeConfigurationChat() {
           </button>
         </div>
       </div>
+
+      {/* Loading Overlay */}
+      {isResetting && (
+        <div className="absolute inset-0 flex  items-center justify-center">
+          <div className="opacity-90 absolute inset-0 z-20">
+            <DailyDishLoader />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
