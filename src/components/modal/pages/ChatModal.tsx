@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useChat } from '../../../features/chat/context/ChatContext';
-import { Send, ChefHat, Utensils, Globe, Leaf, X, ArrowRight } from 'lucide-react';
+import { Send, ChefHat, Utensils, Globe, Leaf, X, ArrowRight, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import CookerIcon from '../../../assets/cooker.svg';
+import AnimatedChef from '../../../assets/animated_chef-removebg-preview.png';
 import { useAuth } from '../../../features/auth/context/AuthContext';
 import { sendChatMessage } from '../api/chatService';
 import type { Message, RecipeState } from '../types/chat';
@@ -107,7 +108,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                     }
                 }
 
-                let msgType: 'text' | 'cuisine-selector' | 'details-selector' | 'final-action' = 'text';
+                let msgType: 'text' | 'cuisine-selector' | 'details-selector' | 'final-action' | 'meal-type-selector' = 'text';
 
                 if (
                     botResponse.toLowerCase().includes("cooking plan") ||
@@ -116,6 +117,11 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                     msgType = 'final-action';
                 } else if (botResponse.toLowerCase().includes("cuisine")) {
                     msgType = 'cuisine-selector';
+                } else if (
+                    botResponse.toLowerCase().includes("daily meal") &&
+                    botResponse.toLowerCase().includes("special occasion")
+                ) {
+                    msgType = 'meal-type-selector';
                 }
 
                 const botMsg: Message = {
@@ -150,21 +156,70 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
 
         ];
 
-        const isCompleted = recipeState.cuisine !== null;
-        if (isCompleted) return null;
+        // if (isCompleted) return null; // Keep visible
 
         return (
             <div className="flex gap-2 overflow-x-auto pb-2 mt-2 hide-scrollbar snap-x">
-                {cuisines.map((c) => (
-                    <button
-                        key={c.name}
-                        onClick={() => handleCuisineSelect(c.name)}
-                        className="flex flex-col items-center justify-center min-w-22.5 p-3 bg-[#E8EDDE] border-2 border-[#DCE6D3] rounded-xl hover:bg-[#D4DFCC] hover:border-[#7D9C5B] transition-colors text-[#4A5D23] snap-start"
-                    >
-                        <div className="mb-1 text-[#5A7338]">{c.icon}</div>
-                        <span className="text-[10px] font-bold uppercase tracking-wide">{c.name}</span>
-                    </button>
-                ))}
+                {cuisines.map((c) => {
+                    const isSelected = recipeState.cuisine === c.name;
+                    return (
+                        <button
+                            key={c.name}
+                            // disabled={isCompleted} // Allow re-selection
+                            onClick={() => handleCuisineSelect(c.name)}
+                            className={`flex flex-col items-center justify-center min-w-22.5 p-3 border-2 rounded-xl transition-colors snap-start
+                                ${isSelected
+                                    ? 'bg-[#E8EDDE] border-[#7D9C5B] text-[#2C3E14]'
+                                    : 'bg-[#E8EDDE] border-[#DCE6D3] text-[#4A5D23] hover:bg-[#D4DFCC] hover:border-[#7D9C5B]'
+                                }
+                            `}
+                        >
+                            <div className={`mb-1 ${isSelected ? 'text-[#3A4A28]' : 'text-[#5A7338]'}`}>{c.icon}</div>
+                            <span className="text-[10px] font-bold uppercase tracking-wide">{c.name}</span>
+                            {/* Optional: Add checkmark for selected state if desired, keeping it clean for now */}
+                        </button>
+                    );
+                })}
+            </div>
+        );
+    };
+
+    const MealTypeSelector = () => {
+        const mealTypes = [
+            { name: 'Daily Meal' },
+            { name: 'Special Occasion' },
+        ];
+
+        // if (isCompleted) return null; // We now want it to stay visible
+
+        return (
+            <div className="flex flex-row gap-2 mt-2 w-full">
+                {mealTypes.map((type) => {
+                    const isSelected = recipeState.mealType === type.name;
+                    return (
+                        <button
+                            key={type.name}
+                            // disabled={isCompleted} // Allow re-selection
+                            onClick={() => {
+                                triggerMessageSend(type.name);
+                                setRecipeState(prev => ({ ...prev, mealType: type.name }));
+                            }}
+                            className={`flex items-center gap-3 p-2 border rounded-lg transition-colors text-left flex-1
+                                ${isSelected
+                                    ? 'bg-[#E8EDDE] border-[#7D9C5B] text-[#2C3E14]'
+                                    : 'bg-[#E8EDDE]/50 border-[#DCE6D3] text-[#4A5D23] hover:bg-[#D4DFCC]'
+                                }
+                            `}
+                        >
+                            <div className={`w-4 h-4 rounded-sm border-2 flex items-center justify-center
+                                ${isSelected ? 'bg-[#5A7338] border-[#5A7338]' : 'border-[#5A7338]'}
+                            `}>
+                                {isSelected && <Check size={10} strokeWidth={4} className="text-white" />}
+                            </div>
+                            <span className="text-xs font-bold uppercase tracking-wide">{type.name}</span>
+                        </button>
+                    );
+                })}
             </div>
         );
     };
@@ -319,8 +374,23 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
               }
             `}
                     </style>
-                    {messages.map((msg) => (
-                        <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up`}>
+                    {messages.map((msg, index) => (
+                        <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up items-end gap-2`}>
+                            {msg.sender === 'bot' && (
+                                // <div className="relative rounded-full p-1 bg-[#E8EDDE] shadow-lg flex items-center justify-center -top-3">
+                                //     <img src={AnimatedChef} alt="Dr. Foodie" className="w-20 h-18 object-contain z-0" />
+                                // </div>
+
+                                <div className="rounded-full  flex items-center justify-center -top-3 relative overflow-hidden bg-[#435334B2] shadow-lg w-18 h-18" >
+                                    <img
+                                        src={AnimatedChef}
+                                        alt="Dr. Foodie"
+                                        className="w-21 h-21 object-contain translate-y-2"
+                                    />
+                                </div>
+
+
+                            )}
 
                             {/* Bot Avatar (only for bot) */}
                             {/* {msg.sender === 'bot' && (
@@ -341,7 +411,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                                     } p-4 text-sm leading-relaxed`}
                             >
                                 {/* Text Content - Always show for user messages, or when type is text */}
-                                {msg.sender === 'user' || msg.type === 'text' || msg.type === 'cuisine-selector' || msg.type === 'details-selector' ? (
+                                {msg.sender === 'user' || msg.type === 'text' || msg.type === 'cuisine-selector' || msg.type === 'details-selector' || msg.type === 'meal-type-selector' ? (
                                     <p>{msg.content}</p>
                                 ) : msg.type === 'final-action' ? (
                                     <CookingPlanTable content={msg.content as string} />
@@ -349,7 +419,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
 
                                 {/* Render Widgets inside the bubble flow */}
                                 {msg.type === 'cuisine-selector' && <CuisineSelector />}
-
+                                {msg.type === 'meal-type-selector' && <MealTypeSelector />}
 
                                 {/* Final Action Button */}
                                 {msg.type === 'final-action' && (
@@ -397,7 +467,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                 </div>
 
                 {/* Input Area */}
-                <div className="p-4 bg-white/10 backdrop-blur-md border-t border-white/30 z-20">
+                <div className="px-4 py-2 bg-white/10 backdrop-blur-md border-t border-white/30 z-20">
                     <div className="flex items-center gap-2 bg-brand-beige p-1.5 rounded-2xl border border-brand-dark ring-1 ring-white/30 focus-within:ring-2 focus-within:ring-[#A2B886] focus-within:border-transparent transition-all">
                         <input
                             type="text"

@@ -7,7 +7,7 @@ import { pantryService } from '../api/saveMenuService';
 import { getRecipeDetails } from '../api/recipeDetailsService';
 import { useToast } from '../../../shared/context/ToastContext';
 import { AxiosError } from 'axios';
-import type { RecipeDetailData } from '../types/recipeDetails';
+import type { RecipeDetailData, IngredientAnalysisItem } from '../types/recipeDetails';
 import DailyDishLoader from '../../../components/feedback/DailyDishLoader';
 
 
@@ -57,7 +57,10 @@ export default function RecipeDetails() {
       setSaving(true);
 
       const payload = {
-        details: recipeData
+        details: {
+          ...recipeData,
+          ingredients_analysis: recipeData.ingredients_analysis,
+        }
       };
 
       const response = await pantryService.saveMeal(payload);
@@ -94,6 +97,7 @@ export default function RecipeDetails() {
           servings: recipeData.servings,
           time_breakdown: recipeData.time_breakdown,
           ingredients_analysis: recipeData.ingredients_analysis,
+          ingredients_used: recipeData.ingredients_used,
           nutrition: recipeData.nutrition
         }
       });
@@ -106,6 +110,7 @@ export default function RecipeDetails() {
           servings: details.servings,
           nutrition: details.nutrition,
           ingredients_analysis: details.ingredients_analysis,
+          ingredients_used: details.ingredients_used,
           time_breakdown: details.time_breakdown
         }) : null);
         showToast("success", "Success", response.message || "Recipe servings updated successfully.");
@@ -149,14 +154,19 @@ export default function RecipeDetails() {
   }
 
   // Combine ingredients for display
-  const allIngredients = [
-    ...recipeData.ingredients_analysis.current.map(i => ({ ...i, available: true })),
-    ...recipeData.ingredients_analysis.missing.map(i => ({ ...i, available: false }))
-  ];
+  let allIngredients: (IngredientAnalysisItem & { available: boolean })[] = [];
+  if (recipeData.ingredients_analysis) {
+    allIngredients = [
+      ...(recipeData.ingredients_analysis?.current || []).map(i => ({ ...i, available: true })),
+      ...(recipeData.ingredients_analysis?.missing || []).map(i => ({ ...i, available: false }))
+    ];
+  } else if (recipeData.ingredients_used) {
+    allIngredients = recipeData.ingredients_used.map(i => ({ ...i, available: true }));
+  }
 
   // Separate steps for display
-  const cookingSteps = recipeData.steps.cooking || [];
-  const prepSteps = recipeData.steps.preparation || [];
+  const cookingSteps = recipeData.steps?.cooking || [];
+  const prepSteps = recipeData.steps?.preparation || [];
 
   return (
     <div className="h-full text-brand-dark">
@@ -192,17 +202,17 @@ export default function RecipeDetails() {
             <div className="absolute bottom-0 left-0 p-8 w-full bg-linear-to-t from-black/80 to-transparent text-white">
               <h2 className="text-3xl font-bold mb-2 text-brand-beige">{recipeData.menu_name}</h2>
               <div className="flex gap-4 text-sm font-medium">
-                <span className="flex items-center gap-1">{recipeData.time_breakdown.prep_time} prep</span>
-                <span className="flex items-center gap-1">{recipeData.time_breakdown.cook_time} cook</span>
+                <span className="flex items-center gap-1">{recipeData.time_breakdown?.prep_time} prep</span>
+                <span className="flex items-center gap-1">{recipeData.time_breakdown?.cook_time} cook</span>
               </div>
             </div>
           </div>
 
           {/* Ingredients */}
           <div className="h-fit">
-            <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit">
+            <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit backdrop-blur-xl">
               <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#43533414]">
-                <h3 className="text-xl font-bold">Ingredients</h3>
+                <h3 className="text-xl font-bold">Ingredients <span className="text-sm font-medium text-brand-accent ml-2">(Suggested for {servings} {servings > 1 ? 'People' : 'Person'})</span></h3>
                 <div className="flex items-center bg-brand-light rounded-lg p-1">
                   <span className="text-xs font-bold px-2">Servings:</span>
                   <button
@@ -228,9 +238,15 @@ export default function RecipeDetails() {
                       <div className={`min-w-6 h-6 rounded-full flex items-center justify-center text-white ${ing.available ? 'bg-[#95B974]' : 'bg-orange-400'}`}>
                         <Check size={14} strokeWidth={4} />
                       </div>
-                      <span className="font-bold text-sm lg:text-base">{ing.name}</span>
+                      <span className="font-bold text-sm lg:text-base">
+                        {ing.name} <span className="text-[#7A8F63] font-normal">({ing.qty})</span>
+                      </span>
                     </div>
-                    <span className="text-sm font-medium opacity-70 whitespace-nowrap">{ing.qty}</span>
+                    {ing.model_qty && (
+                      <span className="text-sm font-medium opacity-70 whitespace-nowrap bg-[#E8EDDE] px-2 py-1 rounded text-[#4A5D23]">
+                        {ing.model_qty}
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
@@ -263,18 +279,18 @@ export default function RecipeDetails() {
         {/* Right Column */}
         <div className="flex flex-col gap-8">
           {/* Nutrition Dashboard */}
-          <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 flex flex-col justify-between ">
+          <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 flex flex-col justify-between backdrop-blur-xl ">
             <h3 className="text-xl font-bold mb-4">Nutrition Dashboard</h3>
 
             <div className="grid grid-cols-2 gap-4 mb-8">
               <div className="bg-[#CEDEBD36] rounded-2xl p-6 text-center">
                 <div className="text-xs font-bold text-brand-accent mb-1">CALORIES</div>
-                <div className="text-3xl font-extrabold text-brand-accent">{recipeData.nutrition.total_calories?.replace(' kcal', '')}</div>
+                <div className="text-3xl font-extrabold text-brand-accent">{recipeData.nutrition?.total_calories?.replace(' kcal', '')}</div>
                 <div className="text-xs text-brand-accent">Per Serving</div>
               </div>
               <div className="bg-[#CEDEBD36] rounded-2xl p-6 text-center">
                 <div className="text-xs font-bold text-brand-accent mb-1">FIBER</div>
-                <div className="text-3xl font-extrabold text-brand-accent">{recipeData.nutrition.fiber}</div>
+                <div className="text-3xl font-extrabold text-brand-accent">{recipeData.nutrition?.fiber}</div>
                 <div className="text-xs text-brand-accent">{/* Daily Value not in API */}</div>
               </div>
             </div>
@@ -283,7 +299,7 @@ export default function RecipeDetails() {
               <div>
                 <div className="flex justify-between mb-1">
                   <span>Protein</span>
-                  <span>{recipeData.nutrition.protein}</span>
+                  <span>{recipeData.nutrition?.protein}</span>
                 </div>
                 <div className="h-3 bg-[#CEDEBD36] rounded-full overflow-hidden">
                   <div className="h-full bg-brand-accent w-[30%]"></div>
@@ -292,7 +308,7 @@ export default function RecipeDetails() {
               <div>
                 <div className="flex justify-between mb-1">
                   <span>Carbohydrates</span>
-                  <span>{recipeData.nutrition.carbohydrates}</span>
+                  <span>{recipeData.nutrition?.carbohydrates}</span>
                 </div>
                 <div className="h-3 bg-[#CEDEBD36] rounded-full overflow-hidden">
                   <div className="h-full bg-brand-accent w-[65%]"></div>
@@ -301,7 +317,7 @@ export default function RecipeDetails() {
               <div>
                 <div className="flex justify-between mb-1">
                   <span>Fats</span>
-                  <span>{recipeData.nutrition.fat}</span>
+                  <span>{recipeData.nutrition?.fat}</span>
                 </div>
                 <div className="h-3 bg-[#CEDEBD36] rounded-full overflow-hidden">
                   <div className="h-full bg-brand-accent w-[20%]"></div>
@@ -312,7 +328,7 @@ export default function RecipeDetails() {
 
           {/* Suitability */}
           {recipeData.suitability && recipeData.suitability.length > 0 && (
-            <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-6">
+            <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-6 backdrop-blur-xl">
               <h3 className="text-lg font-bold mb-3">Suitability</h3>
               <div className="flex flex-wrap gap-2">
                 {recipeData.suitability.map((item, idx) => (
@@ -328,7 +344,7 @@ export default function RecipeDetails() {
 
           {/* Preparation Steps */}
           {prepSteps.length > 0 && (
-            <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit">
+            <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit backdrop-blur-xl">
               <h3 className="text-xl font-bold pb-4">Preparation Steps</h3>
               <div className="space-y-4">
                 {prepSteps.map((step, idx) => (
@@ -346,7 +362,7 @@ export default function RecipeDetails() {
           )}
 
           {/* Cooking Steps */}
-          <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit">
+          <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit backdrop-blur-xl">
             <h3 className="text-xl font-bold pb-4">Cooking Steps</h3>
             <div className="space-y-4">
               {cookingSteps.map((step, idx) => (

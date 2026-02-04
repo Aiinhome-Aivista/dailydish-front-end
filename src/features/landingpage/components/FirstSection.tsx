@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import RecipeLogo from "../../../assets/icons/Recipe logo.svg";
 import ChatModal from "../../../components/modal/pages/ChatModal";
+import AnimatedChef from "../../../assets/animated_chef-removebg-preview.png";
 
 interface FirstSectionProps {
   onGetStarted?: () => void;
@@ -75,10 +76,21 @@ const FirstSection = ({ onGetStarted }: FirstSectionProps) => {
 
         <div className="w-full max-w-2xl relative">
           {/* Left Icon */}
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 z-20">
-            <span className="material-symbols-outlined text-[#435334] text-[24px]">
+          {/* <div className="absolute left-2 top-7 -translate-y-1/2 z-20 rounded-full backdrop-blur-md shadow-lg flex items-center justify-center w-9 h-9 bg-brand-dark">
+             <span className="material-symbols-outlined text-[#435334] text-[24px]">
               menu_book_2
-            </span>
+            </span> 
+            <img src={AnimatedChef} alt="Dr. Foodie" className="w-8 h-8 object-cover " />
+          </div> */}
+        
+        <div className="absolute left-1 top-7 -translate-y-1/2 z-20 
+            rounded-full overflow-hidden backdrop-blur-md shadow-lg 
+            flex items-center justify-center w-10 h-10 bg-brand-dark">
+            <img
+              src={AnimatedChef}
+              alt="Dr. Foodie"
+              className="w-full h-full object-cover"
+            />
           </div>
 
           {/* Textarea */}

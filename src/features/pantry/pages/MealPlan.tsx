@@ -118,10 +118,15 @@ const MealPlan = () => {
                     const mealItem = activeMeal;
                     const meal = mealItem.details;
                     // Combine ingredients for display
-                    const allIngredients = [
-                        ...(meal.ingredients_analysis?.current?.map((i: any) => ({ ...i, available: true })) || []),
-                        ...(meal.ingredients_analysis?.missing?.map((i: any) => ({ ...i, available: false })) || [])
-                    ];
+                    let allIngredients: any[] = [];
+                    if (meal.ingredients_used && meal.ingredients_used.length > 0) {
+                        allIngredients = meal.ingredients_used.map((i: any) => ({ ...i, available: true }));
+                    } else if (meal.ingredients_analysis) {
+                        allIngredients = [
+                            ...(meal.ingredients_analysis?.current?.map((i: any) => ({ ...i, available: true })) || []),
+                            ...(meal.ingredients_analysis?.missing?.map((i: any) => ({ ...i, available: false })) || [])
+                        ];
+                    }
 
                     const cookingSteps = meal.steps?.cooking || [];
                     const prepSteps = meal.steps?.preparation || [];
@@ -173,7 +178,7 @@ const MealPlan = () => {
                                     <div className="h-fit">
                                         <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit">
                                             <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#43533414]">
-                                                <h3 className="text-xl font-bold">Ingredients</h3>
+                                                <h3 className="text-xl font-bold">Ingredients <span className="text-sm font-medium text-brand-accent ml-2">(Suggested for {meal.servings} {meal.servings > 1 ? 'People' : 'Person'})</span></h3>
                                                 <div className="flex items-center bg-brand-light rounded-lg p-1">
                                                     <span className="text-xs font-bold px-2">Servings:</span>
                                                     <span className="w-8 text-center font-bold px-2">{meal.servings}</span>
@@ -187,9 +192,15 @@ const MealPlan = () => {
                                                             <div className={`min-w-6 h-6 rounded-full flex items-center justify-center text-white ${ing.available ? 'bg-[#95B974]' : 'bg-orange-400'}`}>
                                                                 <Check size={14} strokeWidth={4} />
                                                             </div>
-                                                            <span className="font-bold text-sm lg:text-base">{ing.name}</span>
+                                                            <span className="font-bold text-sm lg:text-base">
+                                                                {ing.name} <span className="text-[#7A8F63] font-normal">({ing.qty})</span>
+                                                            </span>
                                                         </div>
-                                                        <span className="text-sm font-medium opacity-70 whitespace-nowrap">{ing.qty}</span>
+                                                        {ing.model_qty && (
+                                                            <span className="text-sm font-medium opacity-70 whitespace-nowrap bg-[#E8EDDE] px-2 py-1 rounded text-[#4A5D23]">
+                                                                {ing.model_qty}
+                                                            </span>
+                                                        )}
                                                     </div>
                                                 ))}
                                             </div>
@@ -261,7 +272,7 @@ const MealPlan = () => {
                                             </div>
                                         </div>
                                     )}
-                                                                        {/* Preparation Steps */}
+                                    {/* Preparation Steps */}
                                     {prepSteps.length > 0 && (
                                         <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit">
                                             <h3 className="text-xl font-bold pb-4">Preparation Steps</h3>

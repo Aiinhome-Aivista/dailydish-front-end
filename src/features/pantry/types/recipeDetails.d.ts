@@ -14,6 +14,7 @@ export interface RecipeSteps {
 export interface IngredientAnalysisItem {
     name: string;
     qty: string;
+    model_qty?: string; // Suggested quantity from model
 }
 
 export interface IngredientsAnalysis {
@@ -28,7 +29,8 @@ export interface RecipeDetailData {
     servings: number;
     nutrition: RecipeNutrition;
     steps: RecipeSteps;
-    ingredients_analysis: IngredientsAnalysis;
+    ingredients_analysis?: IngredientsAnalysis;
+    ingredients_used?: IngredientAnalysisItem[]; // New field from API
     suitability: string[];
     time_breakdown: {
         cook_time: string;
@@ -52,7 +54,8 @@ export interface RecipeUpdateServingsRequest {
             cook_time: string;
             prep_time: string;
         };
-        ingredients_analysis: IngredientsAnalysis;
+        ingredients_analysis?: IngredientsAnalysis;
+        ingredients_used?: IngredientAnalysisItem[];
         nutrition: RecipeNutrition;
     };
 }
@@ -65,7 +68,8 @@ export interface RecipeUpdateServingsResponse {
             cook_time: string;
             prep_time: string;
         };
-        ingredients_analysis: IngredientsAnalysis;
+        ingredients_analysis?: IngredientsAnalysis;
+        ingredients_used?: IngredientAnalysisItem[];
         nutrition: RecipeNutrition;
     };
     message: string;

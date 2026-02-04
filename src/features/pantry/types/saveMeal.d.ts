@@ -8,6 +8,7 @@ export interface TimeBreakdown {
 export interface IngredientItem {
     name: string;
     qty: string;
+    model_qty?: string;
 }
 
 export interface IngredientsAnalysis {
@@ -31,11 +32,12 @@ export interface RecipeNutrition {
 export interface MealDetails {
     menu_name: string;
     description: string;
- 
+
     cooking_time: string;
     servings: number;
     time_breakdown: TimeBreakdown;
-    ingredients_analysis: IngredientsAnalysis;
+    ingredients_analysis?: IngredientsAnalysis;
+    ingredients_used?: IngredientItem[];
     suitability: string[];
     steps: RecipeSteps;
     nutrition: RecipeNutrition;

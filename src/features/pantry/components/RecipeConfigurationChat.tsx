@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, ChefHat, Utensils, Globe, Leaf, ArrowRight } from 'lucide-react';
+import { Send, ChefHat, Utensils, Globe, Leaf, ArrowRight, Check } from 'lucide-react';
 import CookerIcon from '../../../assets/cooker.svg';
+import AnimatedChef from '../../../assets/animated_chef-removebg-preview.png';
 import { useAuth } from '../../auth/context/AuthContext';
 import { useChat } from '../../chat/context/ChatContext';
 import { sendChatMessage } from '../../../components/modal/api/chatService';
 import type { Message } from '../../../components/modal/types/chat';
-
+import EatHealthyBg from '../../../assets/eat-healthy.svg';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -143,6 +144,7 @@ export default function RecipeConfigurationChat() {
 
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [localMealType, setLocalMealType] = useState<string | null>(null); // Track locally for instant UI feedback
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -206,6 +208,8 @@ export default function RecipeConfigurationChat() {
 
         if (botResponse.toLowerCase().includes("cuisine") && !botResponse.toLowerCase().includes("cooking plan")) {
           botMsg.type = 'cuisine-selector';
+        } else if (botResponse.toLowerCase().includes("daily meal") && botResponse.toLowerCase().includes("special occasion")) {
+          botMsg.type = 'meal-type-selector';
         } else if (botResponse.toLowerCase().includes("cooking plan") || botResponse.toLowerCase().includes("confirm")) {
           botMsg.type = 'final-action';
         }
@@ -310,10 +314,12 @@ export default function RecipeConfigurationChat() {
           return;
         }
 
-        let msgType: 'text' | 'cuisine-selector' | 'details-selector' | 'final-action' = 'text';
+        let msgType: 'text' | 'cuisine-selector' | 'details-selector' | 'final-action' | 'meal-type-selector' = 'text';
 
         if (botResponse.toLowerCase().includes("cuisine") && !botResponse.toLowerCase().includes("cooking plan")) {
           msgType = 'cuisine-selector';
+        } else if (botResponse.toLowerCase().includes("daily meal") && botResponse.toLowerCase().includes("special occasion")) {
+          msgType = 'meal-type-selector';
         } else if (botResponse.toLowerCase().includes("cooking plan") || botResponse.toLowerCase().includes("confirm")) {
           msgType = 'final-action';
         }
@@ -337,6 +343,48 @@ export default function RecipeConfigurationChat() {
   };
 
   // --- Interactive Widgets (Sub-components) ---
+
+  const MealTypeSelector = () => {
+    const mealTypes = [
+      { name: 'Daily Meal' },
+      { name: 'Special Occasion' },
+    ];
+
+    // logic adapted from ChatModal
+    // Prioritize local state effectively for instant feedback, fallback to collectedData
+    const currentSelection = localMealType || collectedData?.meal_type || collectedData?.mealType;
+
+    return (
+      <div className="flex flex-row gap-2 mt-2 w-full">
+        {mealTypes.map((type) => {
+          const isSelected = currentSelection === type.name;
+          return (
+            <button
+              key={type.name}
+              // disabled={isCompleted} // Allow re-selection
+              onClick={() => {
+                triggerMessageSend(type.name);
+                setLocalMealType(type.name); // Immediate UI update
+              }}
+              className={`flex items-center gap-3 p-2 border rounded-lg transition-colors text-left flex-1
+                ${isSelected
+                  ? 'bg-[#E8EDDE] border-[#7D9C5B] text-[#2C3E14]'
+                  : 'bg-[#E8EDDE]/50 border-[#DCE6D3] text-[#4A5D23] hover:bg-[#D4DFCC]'
+                }
+              `}
+            >
+              <div className={`w-4 h-4 rounded-sm border-2 flex items-center justify-center
+                ${isSelected ? 'bg-[#5A7338] border-[#5A7338]' : 'border-[#5A7338]'}
+              `}>
+                {isSelected && <Check size={10} strokeWidth={4} className="text-white" />}
+              </div>
+              <span className="text-xs font-bold uppercase tracking-wide">{type.name}</span>
+            </button>
+          );
+        })}
+      </div>
+    );
+  };
 
   const CuisineSelector = () => {
     const cuisines = [
@@ -369,9 +417,10 @@ export default function RecipeConfigurationChat() {
     <div className="flex flex-col w-full text-[#2C3E14] h-[calc(97vh-9rem)] relative overflow-hidden">
 
       {/* Header */}
-      <div className="flex items-center gap-3 pb-1 border-b border-[#43533414] relative z-10 px-4 pt-2">
+      <div className="flex items-center gap-3 pb-1 border-b border-[#43533414] relative z-10 px-4">
 
         <img src={CookerIcon} alt="" className='w-9 h-9' />
+
 
         <div>
           <h1 className="font-bold text-2xl text-[#3A4A28] leading-tight">Dr. Foodie</h1>
@@ -379,6 +428,13 @@ export default function RecipeConfigurationChat() {
           <p className="text-sm text-[#7B8C65]"> Chef Assistant</p>
         </div>
       </div>
+
+
+
+      {/* Global Background Elements */}
+
+
+
 
       {/* Chat Stream */}
       <div className="flex-1 overflow-y-auto p-4 space-y-6 hide-scrollbar relative z-10" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
@@ -389,8 +445,18 @@ export default function RecipeConfigurationChat() {
             }
           `}
         </style>
-        {messages.map((msg) => (
-          <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up`}>
+        {messages.map((msg, index) => (
+          <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up items-end gap-2`}>
+            {msg.sender === 'bot' &&  (
+              <div className="rounded-full  flex items-center justify-center relative overflow-hidden bg-[#435334B2] shadow-lg w-16 h-16" >
+                <img
+                  src={AnimatedChef}
+                  alt="Dr. Foodie"
+                  className="w-20 h-20 object-contain translate-y-2"
+                />
+              </div>
+            )}
+
 
             {/* Bot Avatar (only for bot) */}
             {/* {msg.sender === 'bot' && (
@@ -412,7 +478,7 @@ export default function RecipeConfigurationChat() {
                 } p-4 text-sm leading-relaxed`}
             >
               {/* Text Content - Always show for user messages, or when type is text */}
-              {msg.sender === 'user' || msg.type === 'text' || msg.type === 'cuisine-selector' || msg.type === 'details-selector' ? (
+              {msg.sender === 'user' || msg.type === 'text' || msg.type === 'cuisine-selector' || msg.type === 'details-selector' || msg.type === 'meal-type-selector' ? (
                 <p>{msg.content}</p>
               ) : msg.type === 'final-action' ? (
                 <CookingPlanTable content={msg.content as string} />
@@ -420,6 +486,7 @@ export default function RecipeConfigurationChat() {
 
               {/* Render Widgets inside the bubble flow */}
               {msg.type === 'cuisine-selector' && <CuisineSelector />}
+              {msg.type === 'meal-type-selector' && <MealTypeSelector />}
 
 
               {/* Final Action Button */}
