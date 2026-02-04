@@ -1,14 +1,16 @@
 export interface Ingredient {
   name: string;
   qty: string;
+  unit?: string;
+  unclear?: boolean;
 }
 
-interface Ingredient {
-  id: string;
-  name: string;
-  qty: string;
-  unit: string;
-}
+// interface Ingredient { // Removed duplicate interface
+//   id: string;
+//   name: string;
+//   qty: string;
+//   unit: string;
+// }
 
 export interface RecipeGenerationRequest {
   ingredients: Ingredient[];
@@ -53,7 +55,7 @@ export interface ChatMessage {
 }
 
 export interface CollectedData {
-  ingredients?: Array<{ name: string; qty: string }>;
+  ingredients?: Ingredient[];
   [key: string]: any;
 }
 
@@ -81,4 +83,18 @@ export interface ChatResponse {
   };
 }
 
+
+export interface Message {
+  id: string;
+  sender: 'user' | 'bot';
+  content: string;
+  type?: 
+    | 'text'
+    | 'cuisine-selector'
+    | 'details-selector'
+    | 'meal-type-selector'
+    | 'ingredient-qty-selector'
+    | 'final-action';
+  ingredients?: any[]; // ✅ ADD THIS
+}
 

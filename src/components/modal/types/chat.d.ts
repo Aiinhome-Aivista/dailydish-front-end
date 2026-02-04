@@ -4,7 +4,7 @@ export type Message = {
     id: string;
     sender: 'bot' | 'user';
     content: React.ReactNode;
-    type?: 'text' | 'cuisine-selector' | 'details-selector' | 'final-action' | 'meal-type-selector';
+    type?: 'text' | 'cuisine-selector' | 'details-selector' | 'final-action' | 'meal-type-selector' | 'ingredient-qty-selector';
 };
 
 export type RecipeState = {

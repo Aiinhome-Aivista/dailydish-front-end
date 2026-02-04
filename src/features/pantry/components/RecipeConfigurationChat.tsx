@@ -6,7 +6,6 @@ import { useAuth } from '../../auth/context/AuthContext';
 import { useChat } from '../../chat/context/ChatContext';
 import { sendChatMessage } from '../../../components/modal/api/chatService';
 import type { Message } from '../../../components/modal/types/chat';
-import EatHealthyBg from '../../../assets/eat-healthy.svg';
 import { useNavigate } from 'react-router-dom';
 import DailyDishLoader from '../../../components/feedback/DailyDishLoader';
 
@@ -130,6 +129,87 @@ const CookingPlanTable = ({ content }: { content: string }) => {
   );
 };
 
+const QuantitySelector = ({ initialIngredients, onConfirm }: { initialIngredients: any[], onConfirm: (ingredients: any[]) => void }) => {
+  const [ingredients, setIngredients] = useState(initialIngredients.map(i => ({ ...i, unit: i.unit || 'gm' })));
+
+  // Update local state when input changes
+  const handleChange = (index: number, field: string, value: string) => {
+    const newIngredients = [...ingredients];
+    newIngredients[index] = { ...newIngredients[index], [field]: value };
+    setIngredients(newIngredients);
+  };
+
+  // Sync state with props if they change (e.g. late data arrival)
+  useEffect(() => {
+    if (initialIngredients && initialIngredients.length > 0) {
+      setIngredients(initialIngredients.map(i => ({ ...i, unit: i.unit || 'gm' })));
+    }
+  }, [initialIngredients]);
+
+  const units = ['gm', 'kg', 'cup', 'tbsp', 'tsp', 'pieces'];
+
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  if (isSubmitted) {
+    return (
+      <div className="p-3 bg-white/20 rounded-xl mt-2">
+        <p className="text-sm font-semibold text-[#2C3E14] mb-1">ingredients:</p>
+        {ingredients.map((ing, idx) => (
+          <p key={idx} className="text-xs text-[#4A5D23]">
+            {ing.name}: {ing.qty} {ing.unit}
+          </p>
+        ))}
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col gap-2 mt-2 w-full p-2 bg-white/40 rounded-xl border border-[#DCE6D3]">
+      {ingredients.map((ing, idx) => (
+        <div key={idx} className="flex flex-col gap-1">
+          <label className="text-[10px] font-bold text-[#4A5D23] uppercase tracking-wide ml-1">{ing.name}</label>
+          <div className="flex gap-2 items-center">
+            <input
+              type="text"
+              placeholder="Qty"
+              value={ing.qty === "some" ? "" : ing.qty}
+              onChange={(e) => handleChange(idx, 'qty', e.target.value)}
+              className="w-16 p-2 rounded-lg border border-[#DCE6D3] text-sm bg-white/80 focus:border-[#7D9C5B] outline-none text-[#2C3E14] text-center"
+            />
+            <div className="relative">
+              <select
+                value={ing.unit || 'gm'}
+                onChange={(e) => handleChange(idx, 'unit', e.target.value)}
+                className="p-2 pr-6 rounded-lg border border-[#DCE6D3] text-sm bg-white/80 focus:border-[#7D9C5B] outline-none appearance-none text-[#2C3E14]"
+              >
+                {units.map(u => <option key={u} value={u}>{u}</option>)}
+              </select>
+              <div className="absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none text-[#4A5D23]">
+                <svg width="8" height="5" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Show send button inline */}
+            {idx === ingredients.length - 1 && (
+              <button
+                onClick={() => {
+                  setIsSubmitted(true);
+                  onConfirm(ingredients);
+                }}
+                className="p-2 bg-[#6A8E4C] hover:bg-[#58783D] text-white rounded-lg transition-colors shadow-sm flex items-center justify-center"
+              >
+                <ArrowRight size={16} />
+              </button>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 // --- Main Component ---
 export default function RecipeConfigurationChat() {
   const { user, userId } = useAuth();
@@ -157,10 +237,10 @@ export default function RecipeConfigurationChat() {
 
   // --- Logic Handlers ---
 
-  const handleSendMessage = async () => {
-    if (!inputValue.trim()) return;
+  const handleSendMessage = async (customText?: string) => {
+    if (!inputValue.trim() && !customText) return;
 
-    const userText = inputValue;
+    const userText = customText || inputValue;
     const currentUserId = userId || user?.username || "guest_user"; // Fallback if no user
 
     // 1. Add User Message (UI)
@@ -324,14 +404,16 @@ export default function RecipeConfigurationChat() {
           return;
         }
 
-        let msgType: 'text' | 'cuisine-selector' | 'details-selector' | 'final-action' | 'meal-type-selector' = 'text';
+        let msgType: 'text' | 'cuisine-selector' | 'details-selector' | 'final-action' | 'meal-type-selector' | 'ingredient-qty-selector' = 'text';
 
-        if (botResponse.toLowerCase().includes("cuisine") && !botResponse.toLowerCase().includes("cooking plan")) {
+        if (botResponse.toLowerCase().includes("cooking plan") || botResponse.toLowerCase().includes("confirm")) {
+          msgType = 'final-action';
+        } else if (response.collected_data?.ingredients?.some((i: any) => i.unclear)) {
+          msgType = 'ingredient-qty-selector';
+        } else if (botResponse.toLowerCase().includes("cuisine") && !botResponse.toLowerCase().includes("cooking plan")) {
           msgType = 'cuisine-selector';
         } else if (botResponse.toLowerCase().includes("daily meal") && botResponse.toLowerCase().includes("special occasion")) {
           msgType = 'meal-type-selector';
-        } else if (botResponse.toLowerCase().includes("cooking plan") || botResponse.toLowerCase().includes("confirm")) {
-          msgType = 'final-action';
         }
 
         const botMsg: Message = {
@@ -388,7 +470,7 @@ export default function RecipeConfigurationChat() {
               `}>
                 {isSelected && <Check size={10} strokeWidth={4} className="text-white" />}
               </div>
-              <span className="text-xs font-bold uppercase tracking-wide">{type.name}</span>
+              <span className="text-xs font-bold uppercase tracking-wide whitespace-nowrap">{type.name}</span>
             </button>
           );
         })}
@@ -423,6 +505,9 @@ export default function RecipeConfigurationChat() {
 
 
 
+
+
+
   return (
     <div className="flex flex-col w-full text-[#2C3E14] h-[calc(97vh-9rem)] relative overflow-hidden">
 
@@ -450,10 +535,6 @@ export default function RecipeConfigurationChat() {
 
 
 
-      {/* Global Background Elements */}
-
-
-
 
       {/* Chat Stream */}
       <div className="flex-1 overflow-y-auto p-4 space-y-6 hide-scrollbar relative z-10" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
@@ -464,7 +545,7 @@ export default function RecipeConfigurationChat() {
             }
           `}
         </style>
-        {messages.map((msg, index) => (
+        {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up items-end gap-2`}>
             {msg.sender === 'bot' && (
               <div className="rounded-full  flex items-center justify-center relative overflow-hidden bg-[#435334B2] shadow-lg w-15 h-15" >
@@ -475,21 +556,6 @@ export default function RecipeConfigurationChat() {
                 />
               </div>
             )}
-
-
-            {/* Bot Avatar (only for bot) */}
-            {/* {msg.sender === 'bot' && (
-              <div className="w-8 h-8 rounded-full flex items-center justify-center mr-2 mt-1 flex-shrink-0 text-[#7D9C5B]">
-             
-              </div>
-            )} */}
-
-            {/* Bubble */}
-            {/* <div className={`max-w-[85%] ${msg.sender === 'user'
-              ? 'bg-[#CEDEBDB2] backdrop-blur-[40px] text-[#2C3E14] rounded-xl shadow-md'
-              : 'bg-[#435334B2] backdrop-blur-[36px] text-[#F4F8F1] rounded-2xl shadow-sm border border-white/10'
-              } p-4 text-sm leading-relaxed`}
-            > */}
             <div
               className={`max-w-[75%] wrap-break-word whitespace-pre-wrap ${msg.sender === 'user'
                 ? 'bg-[#CEDEBDB2] backdrop-blur-[36px] text-[#2C3E14] rounded-2xl shadow-md z-70'
@@ -497,7 +563,7 @@ export default function RecipeConfigurationChat() {
                 } p-4 text-sm leading-relaxed`}
             >
               {/* Text Content - Always show for user messages, or when type is text */}
-              {msg.sender === 'user' || msg.type === 'text' || msg.type === 'cuisine-selector' || msg.type === 'details-selector' || msg.type === 'meal-type-selector' ? (
+              {msg.sender === 'user' || msg.type === 'text' || msg.type === 'cuisine-selector' || msg.type === 'details-selector' || msg.type === 'meal-type-selector' || msg.type === 'ingredient-qty-selector' ? (
                 <p>{msg.content}</p>
               ) : msg.type === 'final-action' ? (
                 <CookingPlanTable content={msg.content as string} />
@@ -506,6 +572,15 @@ export default function RecipeConfigurationChat() {
               {/* Render Widgets inside the bubble flow */}
               {msg.type === 'cuisine-selector' && <CuisineSelector />}
               {msg.type === 'meal-type-selector' && <MealTypeSelector />}
+              {msg.type === 'ingredient-qty-selector' && (
+                <QuantitySelector
+                  initialIngredients={collectedData.ingredients?.filter(i => i.unclear) || []}
+                  onConfirm={async (updatedIngredients) => {
+                    const messageText = updatedIngredients.map(ing => `${ing.name} ${ing.qty}${ing.unit}`).join(', ');
+                    await handleSendMessage(messageText);
+                  }}
+                />
+              )}
 
 
               {/* Final Action Button */}
@@ -554,7 +629,7 @@ export default function RecipeConfigurationChat() {
             <Send size={18} className="text-brand-dark" />
           </button> */}
           <button
-            onClick={handleSendMessage}
+            onClick={() => handleSendMessage()}
             disabled={!inputValue.trim()}
             className={`p-1 rounded-full transition-all transform flex items-center justify-center cursor-pointer ${inputValue.trim()
               ? 'bg-brand-dark hover:bg-[#2C3E14] text-brand-beige'

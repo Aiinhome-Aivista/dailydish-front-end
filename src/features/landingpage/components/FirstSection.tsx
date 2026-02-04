@@ -83,13 +83,13 @@ const FirstSection = ({ onGetStarted }: FirstSectionProps) => {
             <img src={AnimatedChef} alt="Dr. Foodie" className="w-8 h-8 object-cover " />
           </div> */}
         
-        <div className="absolute left-1 top-7 -translate-y-1/2 z-20 
+        <div className="absolute left-2 top-7 -translate-y-1/2 z-20 
             rounded-full overflow-hidden backdrop-blur-md shadow-lg 
-            flex items-center justify-center w-10 h-10 bg-brand-dark">
+            flex items-center justify-center w-8 h-8 bg-brand-dark">
             <img
               src={AnimatedChef}
               alt="Dr. Foodie"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover translate-y-1"
             />
           </div>
 
