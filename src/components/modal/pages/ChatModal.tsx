@@ -184,6 +184,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                 }
 
                 let msgType: 'text' | 'cuisine-selector' | 'details-selector' | 'final-action' | 'meal-type-selector' | 'ingredient-qty-selector' = 'text';
+                let cuisineOptions: string[] | undefined;
 
                 if (
                     botResponse.toLowerCase().includes("cooking plan") ||
@@ -194,6 +195,10 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                     msgType = 'ingredient-qty-selector';
                 } else if (botResponse.toLowerCase().includes("cuisine")) {
                     msgType = 'cuisine-selector';
+                    const notFeasible = (response.collected_data as any)?._cuisine_not_feasible;
+                    if (notFeasible?.alternatives && Array.isArray(notFeasible.alternatives) && notFeasible.alternatives.length > 0) {
+                        cuisineOptions = notFeasible.alternatives;
+                    }
                 } else if (
                     botResponse.toLowerCase().includes("daily meal") &&
                     botResponse.toLowerCase().includes("special occasion")
@@ -207,6 +212,10 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                     content: botResponse,
                     type: msgType
                 };
+
+                if (cuisineOptions) {
+                    (botMsg as any).cuisineOptions = cuisineOptions;
+                }
 
                 addMessage(botMsg);
                 updateCollectedData(response.collected_data);
@@ -223,17 +232,34 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
 
     // --- Interactive Widgets (Sub-components) ---
 
-    const CuisineSelector = () => {
-        const cuisines = [
+    const CuisineSelector = ({ options }: { options?: string[] }) => {
+        const defaultCuisines = [
             { name: 'Oriental', icon: <Utensils className="w-5 h-5" /> },
             { name: 'Indian-Sub', icon: <Globe className="w-5 h-5" /> },
-            { name: 'Central Asian', icon: <Leaf className="w-5 h-5" /> },
+            { name: 'Central Asian', icon: <Leaf className="w-5 h-5" /> }, // Placeholder icon
             { name: 'European', icon: <ChefHat className="w-5 h-5" /> },
             { name: 'Inter-Continental', icon: <ChefHat className="w-5 h-5" /> },
-
         ];
 
-        // if (isCompleted) return null; // Keep visible
+        let cuisines = defaultCuisines;
+
+        if (options && options.length > 0) {
+            cuisines = options.map((name) => {
+                const defaultMatch = defaultCuisines.find(c => c.name === name);
+                return {
+                    name,
+                    icon: defaultMatch ? defaultMatch.icon : <Globe className="w-5 h-5" />
+                };
+            });
+        } else {
+            const notFeasible = (collectedData as any)?._cuisine_not_feasible;
+            if (notFeasible?.alternatives && Array.isArray(notFeasible.alternatives) && notFeasible.alternatives.length > 0) {
+                cuisines = notFeasible.alternatives.map((name: string) => ({
+                    name: name,
+                    icon: <Globe className="w-5 h-5" />
+                }));
+            }
+        }
 
         return (
             <div className="flex gap-2 overflow-x-auto pb-2 mt-2 hide-scrollbar snap-x">
@@ -253,7 +279,6 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                         >
                             <div className={`mb-1 ${isSelected ? 'text-[#3A4A28]' : 'text-[#5A7338]'}`}>{c.icon}</div>
                             <span className="text-[10px] font-bold uppercase tracking-wide">{c.name}</span>
-                            {/* Optional: Add checkmark for selected state if desired, keeping it clean for now */}
                         </button>
                     );
                 })}
@@ -497,7 +522,7 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
                                 ) : null}
 
                                 {/* Render Widgets inside the bubble flow */}
-                                {msg.type === 'cuisine-selector' && <CuisineSelector />}
+                                {msg.type === 'cuisine-selector' && <CuisineSelector options={(msg as any).cuisineOptions} />}
                                 {msg.type === 'meal-type-selector' && <MealTypeSelector />}
                                 {msg.type === 'ingredient-qty-selector' && (
                                     <QuantitySelector

@@ -280,6 +280,7 @@ export default function RecipeConfigurationChat() {
           }
         }
 
+        let cuisineOptions: string[] | undefined;
 
         if (botResponse.toLowerCase().includes("cooking plan") || botResponse.toLowerCase().includes("confirm")) {
           botMsg.type = 'final-action';
@@ -287,8 +288,16 @@ export default function RecipeConfigurationChat() {
           botMsg.type = 'ingredient-qty-selector';
         } else if (botResponse.toLowerCase().includes("cuisine") && !botResponse.toLowerCase().includes("cooking plan")) {
           botMsg.type = 'cuisine-selector';
+          const notFeasible = (response.collected_data as any)?._cuisine_not_feasible;
+          if (notFeasible?.alternatives && Array.isArray(notFeasible.alternatives) && notFeasible.alternatives.length > 0) {
+            cuisineOptions = notFeasible.alternatives;
+          }
         } else if (botResponse.toLowerCase().includes("daily meal") && botResponse.toLowerCase().includes("special occasion")) {
           botMsg.type = 'meal-type-selector';
+        }
+
+        if (cuisineOptions) {
+          (botMsg as any).cuisineOptions = cuisineOptions;
         }
 
         addMessage(botMsg);
@@ -400,6 +409,7 @@ export default function RecipeConfigurationChat() {
         }
 
         let msgType: 'text' | 'cuisine-selector' | 'details-selector' | 'final-action' | 'meal-type-selector' | 'ingredient-qty-selector' = 'text';
+        let cuisineOptions: string[] | undefined;
 
         if (botResponse.toLowerCase().includes("cooking plan") || botResponse.toLowerCase().includes("confirm")) {
           msgType = 'final-action';
@@ -407,6 +417,10 @@ export default function RecipeConfigurationChat() {
           msgType = 'ingredient-qty-selector';
         } else if (botResponse.toLowerCase().includes("cuisine") && !botResponse.toLowerCase().includes("cooking plan")) {
           msgType = 'cuisine-selector';
+          const notFeasible = (response.collected_data as any)?._cuisine_not_feasible;
+          if (notFeasible?.alternatives && Array.isArray(notFeasible.alternatives) && notFeasible.alternatives.length > 0) {
+            cuisineOptions = notFeasible.alternatives;
+          }
         } else if (botResponse.toLowerCase().includes("daily meal") && botResponse.toLowerCase().includes("special occasion")) {
           msgType = 'meal-type-selector';
         }
@@ -417,6 +431,10 @@ export default function RecipeConfigurationChat() {
           content: botResponse,
           type: msgType
         };
+
+        if (cuisineOptions) {
+          (botMsg as any).cuisineOptions = cuisineOptions;
+        }
 
         addMessage(botMsg);
         updateCollectedData(response.collected_data);
@@ -473,14 +491,34 @@ export default function RecipeConfigurationChat() {
     );
   };
 
-  const CuisineSelector = () => {
-    const cuisines = [
+  const CuisineSelector = ({ options }: { options?: string[] }) => {
+    const defaultCuisines = [
       { name: 'Oriental', icon: <Utensils className="w-5 h-5" /> },
       { name: 'Indian-Sub', icon: <Globe className="w-5 h-5" /> },
       { name: 'Central Asian', icon: <Leaf className="w-5 h-5" /> }, // Placeholder icon
       { name: 'European', icon: <ChefHat className="w-5 h-5" /> },
       { name: 'Inter-Continental', icon: <ChefHat className="w-5 h-5" /> },
     ];
+
+    let cuisines = defaultCuisines;
+
+    if (options && options.length > 0) {
+      cuisines = options.map((name) => {
+        const defaultMatch = defaultCuisines.find(c => c.name === name);
+        return {
+          name,
+          icon: defaultMatch ? defaultMatch.icon : <Globe className="w-5 h-5" />
+        };
+      });
+    } else {
+      const notFeasible = (collectedData as any)?._cuisine_not_feasible;
+      if (notFeasible?.alternatives && Array.isArray(notFeasible.alternatives) && notFeasible.alternatives.length > 0) {
+        cuisines = notFeasible.alternatives.map((name: string) => ({
+          name: name,
+          icon: <Globe className="w-5 h-5" />
+        }));
+      }
+    }
 
     return (
       <div className="flex gap-2 overflow-x-auto pb-2 mt-2 hide-scrollbar snap-x">
@@ -565,7 +603,7 @@ export default function RecipeConfigurationChat() {
               ) : null}
 
               {/* Render Widgets inside the bubble flow */}
-              {msg.type === 'cuisine-selector' && <CuisineSelector />}
+              {msg.type === 'cuisine-selector' && <CuisineSelector options={(msg as any).cuisineOptions} />}
               {msg.type === 'meal-type-selector' && <MealTypeSelector />}
               {msg.type === 'ingredient-qty-selector' && (
                 <QuantitySelector
@@ -606,7 +644,7 @@ export default function RecipeConfigurationChat() {
       </div>
 
       {/* Sticky Input Area */}
-      <div className="pl-5 pr-5 relative z-10 pb-2">
+      <div className="pl-4 pr-2 relative z-10 pb-2">
         <div className="flex items-center gap-2 bg-brand-beige p-1.5 rounded-2xl border border-brand-dark ring-1 ring-white/30 focus-within:ring-1 focus-within:ring-[#A2B886] focus-within:border-transparent transition-all">
           <input
             type="text"
