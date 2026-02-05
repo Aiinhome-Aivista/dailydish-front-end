@@ -139,13 +139,6 @@ const QuantitySelector = ({ initialIngredients, onConfirm }: { initialIngredient
     setIngredients(newIngredients);
   };
 
-  // Sync state with props if they change (e.g. late data arrival)
-  useEffect(() => {
-    if (initialIngredients && initialIngredients.length > 0) {
-      setIngredients(initialIngredients.map(i => ({ ...i, unit: i.unit || 'gm' })));
-    }
-  }, [initialIngredients]);
-
   const units = ['gm', 'kg', 'cup', 'tbsp', 'tsp', 'pieces'];
 
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -288,12 +281,14 @@ export default function RecipeConfigurationChat() {
         }
 
 
-        if (botResponse.toLowerCase().includes("cuisine") && !botResponse.toLowerCase().includes("cooking plan")) {
+        if (botResponse.toLowerCase().includes("cooking plan") || botResponse.toLowerCase().includes("confirm")) {
+          botMsg.type = 'final-action';
+        } else if (response.collected_data?.ingredients?.some((i: any) => i.unclear)) {
+          botMsg.type = 'ingredient-qty-selector';
+        } else if (botResponse.toLowerCase().includes("cuisine") && !botResponse.toLowerCase().includes("cooking plan")) {
           botMsg.type = 'cuisine-selector';
         } else if (botResponse.toLowerCase().includes("daily meal") && botResponse.toLowerCase().includes("special occasion")) {
           botMsg.type = 'meal-type-selector';
-        } else if (botResponse.toLowerCase().includes("cooking plan") || botResponse.toLowerCase().includes("confirm")) {
-          botMsg.type = 'final-action';
         }
 
         addMessage(botMsg);
@@ -512,7 +507,7 @@ export default function RecipeConfigurationChat() {
     <div className="flex flex-col w-full text-[#2C3E14] h-[calc(97vh-9rem)] relative overflow-hidden">
 
       {/* Header */}
-      <div className="flex items-center gap-3 pb-1 border-b border-[#43533414] relative z-10 px-4">
+      <div className="flex items-center gap-3 pb-1 border-b border-[#43533414] relative z-10">
 
         <img src={CookerIcon} alt="" className='w-9 h-9' />
 
@@ -537,7 +532,7 @@ export default function RecipeConfigurationChat() {
 
 
       {/* Chat Stream */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-6 hide-scrollbar relative z-10" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+      <div className="flex-1 overflow-y-auto space-y-6 hide-scrollbar relative z-10 mt-4" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         <style>
           {`
             .hide-scrollbar::-webkit-scrollbar {
