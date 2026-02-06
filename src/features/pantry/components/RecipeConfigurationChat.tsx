@@ -500,25 +500,15 @@ export default function RecipeConfigurationChat() {
       { name: 'Inter-Continental', icon: <ChefHat className="w-5 h-5" /> },
     ];
 
-    let cuisines = defaultCuisines;
-
-    if (options && options.length > 0) {
-      cuisines = options.map((name) => {
-        const defaultMatch = defaultCuisines.find(c => c.name === name);
-        return {
-          name,
-          icon: defaultMatch ? defaultMatch.icon : <Globe className="w-5 h-5" />
-        };
-      });
-    } else {
-      const notFeasible = (collectedData as any)?._cuisine_not_feasible;
-      if (notFeasible?.alternatives && Array.isArray(notFeasible.alternatives) && notFeasible.alternatives.length > 0) {
-        cuisines = notFeasible.alternatives.map((name: string) => ({
-          name: name,
-          icon: <Globe className="w-5 h-5" />
-        }));
-      }
-    }
+    const cuisines = (options && options.length > 0)
+      ? options.map((name) => {
+          const defaultMatch = defaultCuisines.find(c => c.name === name);
+          return {
+            name,
+            icon: defaultMatch ? defaultMatch.icon : <Globe className="w-5 h-5" />
+          };
+        })
+      : defaultCuisines;
 
     return (
       <div className="flex gap-2 overflow-x-auto pb-2 mt-2 hide-scrollbar snap-x">
@@ -579,7 +569,7 @@ export default function RecipeConfigurationChat() {
           `}
         </style>
         {messages.map((msg) => (
-          <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up items-end gap-2`}>
+          <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up items-center gap-2`}>
             {msg.sender === 'bot' && (
               <div className="rounded-full  flex items-center justify-center relative overflow-hidden bg-[#435334B2] shadow-lg w-15 h-15" >
                 <img

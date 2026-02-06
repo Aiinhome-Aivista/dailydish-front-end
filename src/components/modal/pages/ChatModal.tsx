@@ -241,25 +241,15 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
             { name: 'Inter-Continental', icon: <ChefHat className="w-5 h-5" /> },
         ];
 
-        let cuisines = defaultCuisines;
-
-        if (options && options.length > 0) {
-            cuisines = options.map((name) => {
+        const cuisines = (options && options.length > 0)
+            ? options.map((name) => {
                 const defaultMatch = defaultCuisines.find(c => c.name === name);
                 return {
                     name,
                     icon: defaultMatch ? defaultMatch.icon : <Globe className="w-5 h-5" />
                 };
-            });
-        } else {
-            const notFeasible = (collectedData as any)?._cuisine_not_feasible;
-            if (notFeasible?.alternatives && Array.isArray(notFeasible.alternatives) && notFeasible.alternatives.length > 0) {
-                cuisines = notFeasible.alternatives.map((name: string) => ({
-                    name: name,
-                    icon: <Globe className="w-5 h-5" />
-                }));
-            }
-        }
+            })
+            : defaultCuisines;
 
         return (
             <div className="flex gap-2 overflow-x-auto pb-2 mt-2 hide-scrollbar snap-x">
@@ -479,35 +469,17 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
             `}
                     </style>
                     {messages.map((msg, index) => (
-                        <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up items-end gap-2`}>
+                        <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up items-center gap-2`}>
                             {msg.sender === 'bot' && (
-                                // <div className="relative rounded-full p-1 bg-[#E8EDDE] shadow-lg flex items-center justify-center -top-3">
-                                //     <img src={AnimatedChef} alt="Dr. Foodie" className="w-20 h-18 object-contain z-0" />
-                                // </div>
-
-                                <div className="rounded-full  flex items-center justify-center -top-3 relative overflow-hidden bg-[#435334B2] shadow-lg w-18 h-18" >
+                                <div className="rounded-full flex items-center justify-center relative overflow-hidden bg-[#435334B2] shadow-lg w-18 h-18 flex-shrink-0" >
                                     <img
                                         src={AnimatedChef}
                                         alt="Dr. Foodie"
                                         className="w-21 h-21 object-contain translate-y-2"
                                     />
                                 </div>
-
-
                             )}
 
-                            {/* Bot Avatar (only for bot) */}
-                            {/* {msg.sender === 'bot' && (
-                                <div className="w-8 h-8 rounded-full flex items-center justify-center mr-2 mt-1 flex-shrink-0 text-[#7D9C5B]">
-                                </div>
-                            )} */}
-
-                            {/* Bubble */}
-                            {/* <div className={`max-w-[85%] ${msg.sender === 'user'
-                                ? 'bg-[#CEDEBDB2] backdrop-blur-[40px] text-[#2C3E14] rounded-xl shadow-md'
-                                : 'bg-[#435334B2] backdrop-blur-[36px] text-[#F4F8F1] rounded-2xl shadow-sm border border-white/10'
-                                } p-4 text-sm leading-relaxed`}
-                            > */}
                             <div
                                 className={`max-w-[75%] wrap-break-word whitespace-pre-wrap ${msg.sender === 'user'
                                     ? 'bg-[#CEDEBDB2] backdrop-blur-2xl text-[#2C3E14] rounded-xl shadow-md'
