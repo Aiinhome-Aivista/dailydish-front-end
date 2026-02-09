@@ -14,3 +14,4 @@ export type RecipeState = {
     servings: number;
     mealType: string | null;
 };
+

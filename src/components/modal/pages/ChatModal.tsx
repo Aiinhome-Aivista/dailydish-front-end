@@ -468,10 +468,10 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
               }
             `}
                     </style>
-                    {messages.map((msg, index) => (
+                    {messages.map((msg) => (
                         <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up items-center gap-2`}>
                             {msg.sender === 'bot' && (
-                                <div className="rounded-full flex items-center justify-center relative overflow-hidden bg-[#435334B2] shadow-lg w-18 h-18 flex-shrink-0" >
+                                <div className="rounded-full flex items-center justify-center relative overflow-hidden bg-[#435334B2] shadow-lg w-18 h-18 shrink-0" >
                                     <img
                                         src={AnimatedChef}
                                         alt="Dr. Foodie"
