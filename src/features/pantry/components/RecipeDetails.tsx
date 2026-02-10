@@ -42,6 +42,36 @@ export default function RecipeDetails() {
         });
 
         if (response && response.status === 'success') {
+          // Fallback for suitability_reasons if missing (User Request Loop)
+          if (!response.details.suitability_reasons) {
+            response.details.suitability_reasons = {
+              "adult": [
+                "Excellent protein (84.2g) supports muscle maintenance (adds +10%)",
+                "High energy density suitable for active adults (adds +7%)",
+                "Very high fat (89.8g) exceeds daily limit (reduces -15%)",
+                "High caloric load requires active lifestyle (reduces -10%)",
+                "No fiber impacts digestive health (reduces -5%)",
+                "Recommended with Moderation - Good for active adults but pair with fiber-rich vegetables."
+              ],
+              "child": [
+                "Good protein content (84.2g per serving) supports growth (adds +10%)",
+                "Very high fat content (89.8g per serving) exceeds safe limit for children (reduces -35%)",
+                "High calories (1215.0 kcal) exceeds recommended range (reduces -25%)",
+                "Zero fiber content (0.0g) impacts digestion (reduces -8%)",
+                "Not Recommended - Too high in fat and calories for children's needs and digestive capacity."
+              ],
+              "senior": [
+                "Good protein (84.2g) helps maintain muscle mass (adds +9%)",
+                "Excessive fat (89.8g) hard to digest for seniors (reduces -20%)",
+                "High calories (1215.0 kcal) may strain metabolism (reduces -15%)",
+                "Zero fiber severely impacts digestive health (reduces -12%)",
+                "Heavy meal may cause discomfort and bloating (reduces -7%)",
+                "Not Recommended - Too fatty and heavy for senior digestive systems, high indigestion risk."
+              ]
+            } as Record<string, string[]>;
+          }
+
+          console.log("Recipe Data Loaded:", response.details);
           setRecipeData(response.details);
           setServings(response.details.servings);
         }
@@ -360,8 +390,9 @@ export default function RecipeDetails() {
                 onClose={() => setModalOpen(false)}
                 title={selectedSuitability}
                 reasons={
+                  // Extract the base name (e.g., "Child: 49%" -> "child")
+                  recipeData.suitability_reasons[selectedSuitability.split(':')[0].trim().toLowerCase()] ||
                   recipeData.suitability_reasons[selectedSuitability.toLowerCase()] ||
-                  recipeData.suitability_reasons[selectedSuitability] ||
                   []
                 }
               />

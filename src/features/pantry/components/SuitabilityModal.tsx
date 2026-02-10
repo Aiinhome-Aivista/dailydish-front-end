@@ -66,38 +66,48 @@ const SuitabilityModal: React.FC<SuitabilityModalProps> = ({
                 </div>
 
                 {/* Body */}
-                <div className="p-6 max-h-[60vh] overflow-y-auto">
+                <div className="p-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
                     {reasons && reasons.length > 0 ? (
-                        <ul className="space-y-3">
+                        <div className="space-y-4">
                             {reasons.map((reason, idx) => {
-                                // Simple logic to color code based on content if needed, e.g. "adds", "reduces"
                                 const isPositive = reason.includes("adds") || reason.includes("Good") || reason.includes("Excellent");
                                 const isNegative = reason.includes("reduces") || reason.includes("High fat") || reason.includes("Not Recommended");
 
-                                let iconColor = "text-brand-accent"; // default
-                                if (reason.toLowerCase().includes("not recommended")) iconColor = "text-red-500";
+                                // Unified styling for all cards - no orange, consistent brand colors
+                                const bgColor = "bg-[#F4F9F1]";
+                                const borderColor = "border-[#95B974]/30";
+                                const textColor = "text-[#4A5D23]";
+                                const iconColor = "text-[#7A8F63]"; // Consistent Green Accent for icons
+                                const iconBg = "bg-[#CEDEBD]"; // Consistent Green Light for icon bg
 
                                 return (
-                                    <li key={idx} className="flex gap-3 text-[#4A5D3B] text-sm leading-relaxed bg-white/50 p-3 rounded-xl border border-[#4A5D3B]/5">
-                                        <span className={`mt-0.5 shrink-0 ${iconColor}`}>•</span>
-                                        <span>{reason}</span>
-                                    </li>
+                                    <div key={idx} className={`relative flex gap-4 p-4 rounded-2xl border ${borderColor} ${bgColor} transition-transform hover:scale-[1.01] hover:shadow-sm`}>
+                                        <div className="shrink-0 pt-0.5">
+                                            <div className={`w-6 h-6 rounded-full ${iconBg} flex items-center justify-center ${iconColor}`}>
+                                                {isPositive ? (
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                ) : isNegative ? (
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                                ) : (
+                                                    <div className="w-2 h-2 rounded-full bg-current" />
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className={`text-sm font-medium leading-relaxed ${textColor}`}>
+                                                {reason}
+                                            </p>
+                                        </div>
+                                    </div>
                                 );
                             })}
-                        </ul>
+                        </div>
                     ) : (
-                        <p className="text-[#7A8F63] italic">No specific analysis details available.</p>
+                        <div className="flex flex-col items-center justify-center py-8 text-center opacity-60">
+                            <Info className="w-12 h-12 text-[#A4B592] mb-3" />
+                            <p className="text-[#7A8F63] font-medium">No specific analysis details available.</p>
+                        </div>
                     )}
-                </div>
-
-                {/* Footer */}
-                <div className="p-6 pt-2 flex justify-end">
-                    <button
-                        onClick={onClose}
-                        className="px-6 py-2 rounded-xl font-bold text-brand-beige bg-brand-accent hover:bg-[#687a54] transition-colors cursor-pointer"
-                    >
-                        Close
-                    </button>
                 </div>
             </div>
         </div>
