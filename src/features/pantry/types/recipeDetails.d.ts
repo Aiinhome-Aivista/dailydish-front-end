@@ -32,6 +32,7 @@ export interface RecipeDetailData {
     ingredients_analysis?: IngredientsAnalysis;
     ingredients_used?: IngredientAnalysisItem[]; // New field from API
     suitability: string[];
+    suitability_reasons?: Record<string, string[]>;
     time_breakdown: {
         cook_time: string;
         prep_time: string;

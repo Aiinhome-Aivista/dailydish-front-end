@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Check, ArrowLeft, Loader2, Heart } from 'lucide-react';
@@ -9,7 +8,7 @@ import { useToast } from '../../../shared/context/ToastContext';
 import { AxiosError } from 'axios';
 import type { RecipeDetailData, IngredientAnalysisItem } from '../types/recipeDetails';
 import DailyDishLoader from '../../../components/feedback/DailyDishLoader';
-
+import SuitabilityModal from './SuitabilityModal';
 
 export default function RecipeDetails() {
   const { showToast } = useToast();
@@ -21,6 +20,10 @@ export default function RecipeDetails() {
   const [updatingServings, setUpdatingServings] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [recipeData, setRecipeData] = useState<RecipeDetailData | null>(null);
+
+  const [selectedSuitability, setSelectedSuitability] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
   const dataFetchedRef = useRef(false);
 
   const { menu_name, cooking_time, image_url } = location.state || {};
@@ -336,15 +339,33 @@ export default function RecipeDetails() {
                 <h3 className="text-lg font-bold mb-3">Suitability</h3>
                 <div className="flex flex-wrap gap-2">
                   {recipeData.suitability.map((item, idx) => (
-                    <span key={idx} className={`${getSuitabilityColor(item)} text-brand-beige px-3 py-1 rounded-full text-sm font-bold shadow-sm`}>
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        setSelectedSuitability(item);
+                        setModalOpen(true);
+                      }}
+                      className={`${getSuitabilityColor(item)} text-brand-beige px-3 py-1 rounded-full text-sm font-bold shadow-sm hover:opacity-90 transition-opacity cursor-pointer text-left`}
+                    >
                       {item}
-                    </span>
+                    </button>
                   ))}
                 </div>
               </div>
             )}
 
-
+            {recipeData.suitability_reasons && selectedSuitability && (
+              <SuitabilityModal
+                isOpen={modalOpen}
+                onClose={() => setModalOpen(false)}
+                title={selectedSuitability}
+                reasons={
+                  recipeData.suitability_reasons[selectedSuitability.toLowerCase()] ||
+                  recipeData.suitability_reasons[selectedSuitability] ||
+                  []
+                }
+              />
+            )}
 
             {/* Preparation Steps */}
             {prepSteps.length > 0 && (
