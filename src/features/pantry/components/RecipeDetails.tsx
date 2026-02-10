@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Check, ArrowLeft, Loader2, Heart } from 'lucide-react';
 import defaultRecipeImage from '../../../assets/Recipe_default_image.webp';
@@ -21,12 +21,14 @@ export default function RecipeDetails() {
   const [updatingServings, setUpdatingServings] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [recipeData, setRecipeData] = useState<RecipeDetailData | null>(null);
+  const dataFetchedRef = useRef(false);
 
   const { menu_name, cooking_time, image_url } = location.state || {};
 
   useEffect(() => {
     const fetchRecipeDetails = async () => {
-      if (!menu_name) return;
+      if (!menu_name || dataFetchedRef.current) return;
+      dataFetchedRef.current = true;
 
       try {
         setLoading(true);
@@ -229,7 +231,11 @@ export default function RecipeDetails() {
                   </div>
                 </div>
 
-                <div className="space-y-6 mb-8">
+                <div className="space-y-2 mb-8">
+                  <div className="flex items-center justify-between pb-2 border-b border-[#43533414]">
+                    <span className="text-sm font-bold text-brand-dark pl-2">Actual ingredients</span>
+                    <span className="text-sm font-bold text-[#4A5D23]">Recommended</span>
+                  </div>
                   {allIngredients.map((ing, idx) => (
                     <div key={idx} className="flex items-center justify-between group">
                       <div className="flex items-center gap-3">
@@ -241,7 +247,7 @@ export default function RecipeDetails() {
                         </span>
                       </div>
                       {ing.model_qty && (
-                        <span className="text-sm font-medium opacity-70 whitespace-nowrap bg-[#E8EDDE] px-2 py-1 rounded text-[#4A5D23]">
+                        <span className="text-sm font-medium opacity-70 whitespace-nowrap bg-[#E8EDDE] px-2 py-1 rounded text-[#4A5D23] flex items-center text-center">
                           {ing.model_qty}
                         </span>
                       )}

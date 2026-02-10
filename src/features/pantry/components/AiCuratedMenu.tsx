@@ -1,4 +1,4 @@
-import React, { useState, useEffect, } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Heart, ChevronRight, Loader2 } from "lucide-react";
 
 import { useLocation, useNavigate } from "react-router-dom";
@@ -26,9 +26,11 @@ const AiMenuDashboard: React.FC = () => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [generationContext, setGenerationContext] = useState<string>("");
+  const dataFetchedRef = useRef(false);
 
   useEffect(() => {
     const init = async () => {
+      if (dataFetchedRef.current) return;
       let chatContext = location.state?.chatContext;
       const waitingForRecipes = location.state?.waitingForRecipes;
 
@@ -85,6 +87,7 @@ const AiMenuDashboard: React.FC = () => {
       const hasRecipes = location.state?.recipes && Array.isArray(location.state.recipes) && location.state.recipes.length > 0;
 
       if ((waitingForRecipes && chatContext) || (!hasRecipes && chatContext)) { // Fetch only if waiting or no recipes exist
+        dataFetchedRef.current = true;
         setIsLoading(true);
         try {
           const generatedRecipes = await fetchAiRecipes(chatContext);
@@ -143,7 +146,7 @@ const AiMenuDashboard: React.FC = () => {
       }
     };
     init();
-  }, [location.state]);
+  }, []);
 
   const handleSaveRecipe = async (e: React.MouseEvent, recipe: Recipe) => {
     e.stopPropagation();

@@ -230,148 +230,30 @@ export default function RecipeConfigurationChat() {
 
   // --- Logic Handlers ---
 
-  const handleSendMessage = async (customText?: string) => {
-    if (!inputValue.trim() && !customText) return;
+  /* Consolidated handleSendMessage to handle both input and direct text */
+  const handleSendMessage = async (text?: string) => {
+    const content = text || inputValue;
+    if (!content.trim()) return;
 
-    const userText = customText || inputValue;
-    const currentUserId = userId || user?.username || "guest_user"; // Fallback if no user
+    setInputValue('');
+
+    // Use 'content' instead of 'text' for the rest of the function
+    const currentUserId = userId || user?.username || "guest_user";
 
     // 1. Add User Message (UI)
-    const userMsg: Message = { id: Date.now().toString(), sender: 'user', content: userText };
-    addMessage(userMsg);
-    setInputValue('');
-    setIsTyping(true);
-    try {
-      const response = await sendChatMessage({
-        userId: currentUserId,
-        message: userText,
-        chatHistory: chatHistory,
-        collectedData: collectedData
-      });
-
-      if (response && response.status === 'success') {
-        const botResponse = response.message;
-
-        // Add Bot Message (UI)
-        const botMsg: Message = {
-          id: Date.now().toString() + '_bot',
-          sender: 'bot',
-          content: botResponse,
-          type: 'text' // Default to text
-        };
-
-        // Check for direct recipe generation in chat response
-        const respData = response.data as any;
-        if (respData && (respData.recipes || (respData.data && respData.data.recipes))) {
-          const recipes = respData.recipes || respData.data.recipes;
-          if (recipes && recipes.length > 0) {
-            navigate('/ai-menu', {
-              state: {
-                recipes,
-                chatContext: {
-                  user_id: currentUserId,
-                  message: userText,
-                  chat_history: chatHistory,
-                  collected_data: collectedData
-                }
-              }
-            });
-            return;
-          }
-        }
-
-        let cuisineOptions: string[] | undefined;
-
-        if (botResponse.toLowerCase().includes("cooking plan") || botResponse.toLowerCase().includes("confirm")) {
-          botMsg.type = 'final-action';
-        } else if (response.collected_data?.ingredients?.some((i: any) => i.unclear)) {
-          botMsg.type = 'ingredient-qty-selector';
-        } else if (botResponse.toLowerCase().includes("cuisine") && !botResponse.toLowerCase().includes("cooking plan")) {
-          botMsg.type = 'cuisine-selector';
-          const notFeasible = (response.collected_data as any)?._cuisine_not_feasible;
-          if (notFeasible?.alternatives && Array.isArray(notFeasible.alternatives) && notFeasible.alternatives.length > 0) {
-            cuisineOptions = notFeasible.alternatives;
-          }
-        } else if (botResponse.toLowerCase().includes("daily meal") && botResponse.toLowerCase().includes("special occasion")) {
-          botMsg.type = 'meal-type-selector';
-        }
-
-        if (cuisineOptions) {
-          (botMsg as any).cuisineOptions = cuisineOptions;
-        }
-
-        addMessage(botMsg);
-
-        // Update API State
-        updateCollectedData(response.collected_data);
-
-        // Update History with the exchange
-        addHistory(userText, botResponse);
-
-      } else {
-        // Handle error
-        addMessage({ id: Date.now().toString(), sender: 'bot', content: "Sorry, I'm having trouble connecting to the kitchen server.", type: 'text' });
-      }
-    } catch (error) {
-      console.error("Chat API Error", error);
-      addMessage({ id: Date.now().toString(), sender: 'bot', content: "Sorry, something went wrong.", type: 'text' });
-    } finally {
-      setIsTyping(false);
-    }
-  };
-
-  const handleCuisineSelect = (cuisine: string) => {
-    // Treat selection as a user message
-    triggerMessageSend(cuisine);
-    // Removed setRecipeState as recipeState is no longer used
-    // setRecipeState(prev => ({ ...prev, cuisine }));
-  };
-
-
-
-  const handleGenerateRecipe = async () => {
-    // Removed isGenerating check as state is removed
-    // Navigate immediately to AiCuratedMenu to handle the generation
-    // We treat this as sending "generate now"
-    const currentUserId = userId || user?.username || "guest_user";
-    navigate('/ai-menu', {
-      state: {
-        waitingForRecipes: true,
-        chatContext: {
-          user_id: currentUserId,
-          message: "generate now",
-          chat_history: chatHistory,
-          collected_data: collectedData
-        }
-      }
-    });
-  };
-
-  const handleReset = async () => {
-    setIsResetting(true);
-    // Add artificial delay for visual feedback
-    await new Promise(resolve => setTimeout(resolve, 800));
-    resetChat();
-    setIsResetting(false);
-  };
-
-  const triggerMessageSend = async (text: string) => {
-    // Re-implement simplified version for direct calls
-    if (!text) return;
-    const currentUserId = userId || user?.username || "guest_user";
-    const userMsg: Message = { id: Date.now().toString(), sender: 'user', content: text };
+    const userMsg: Message = { id: Date.now().toString(), sender: 'user', content: content };
     addMessage(userMsg);
     setIsTyping(true);
 
-    // If text is "generate now" or "confirm", we navigate immediately to show loader on result page
-    if (text.toLowerCase() === 'generate now' || text.toLowerCase() === 'confirm') {
+    // If text is "generate now" or "confirm", we navigate immediately (logic from previous triggerMessageSend)
+    if (content.toLowerCase() === 'generate now' || content.toLowerCase() === 'confirm') {
       navigate('/ai-menu', {
         state: {
           waitingForRecipes: true,
           chatContext: {
             user_id: currentUserId,
-            message: text,
-            chat_history: chatHistory, // Note: collected_data is usually appended by the backend or inferred
+            message: content,
+            chat_history: chatHistory,
             collected_data: collectedData
           }
         }
@@ -382,7 +264,7 @@ export default function RecipeConfigurationChat() {
     try {
       const response = await sendChatMessage({
         userId: currentUserId,
-        message: text,
+        message: content,
         chatHistory: chatHistory,
         collectedData: collectedData
       });
@@ -393,13 +275,14 @@ export default function RecipeConfigurationChat() {
         // Check for direct recipe generation in chat response
         const respData = response.data as any;
         const recipes = respData?.recipes || respData?.data?.recipes;
+
         if (recipes && recipes.length > 0) {
           navigate('/ai-menu', {
             state: {
               recipes,
               chatContext: {
                 user_id: currentUserId,
-                message: text,
+                message: content,
                 chat_history: chatHistory,
                 collected_data: collectedData
               }
@@ -437,17 +320,57 @@ export default function RecipeConfigurationChat() {
         }
 
         addMessage(botMsg);
+
+        // Update API State
         updateCollectedData(response.collected_data);
-        addHistory(text, botResponse);
+
+        // Update History with the exchange
+        addHistory(content, botResponse);
+
+      } else {
+        // Handle error
+        addMessage({ id: Date.now().toString(), sender: 'bot', content: "Sorry, I'm having trouble connecting to the kitchen server.", type: 'text' });
       }
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error("Chat API Error", error);
+      addMessage({ id: Date.now().toString(), sender: 'bot', content: "Sorry, something went wrong.", type: 'text' });
     } finally {
       setIsTyping(false);
     }
   };
 
-  // --- Interactive Widgets (Sub-components) ---
+  const handleCuisineSelect = (cuisine: string) => {
+    // Treat selection as a user message
+    handleSendMessage(cuisine);
+    // Removed setRecipeState as recipeState is no longer used
+    // setRecipeState(prev => ({ ...prev, cuisine }));
+  };
+
+
+
+  const handleGenerateRecipe = async () => {
+    const currentUserId = userId || user?.username || "guest_user";
+    navigate('/ai-menu', {
+      state: {
+        waitingForRecipes: true,
+        chatContext: {
+          user_id: currentUserId,
+          message: "generate now",
+          chat_history: chatHistory,
+          collected_data: collectedData
+        }
+      }
+    });
+  };
+
+  const handleReset = async () => {
+    setIsResetting(true);
+    // Add artificial delay for visual feedback
+    await new Promise(resolve => setTimeout(resolve, 800));
+    resetChat();
+    setIsResetting(false);
+  };
+
 
   const MealTypeSelector = () => {
     const mealTypes = [
@@ -467,8 +390,9 @@ export default function RecipeConfigurationChat() {
             <button
               key={type.name}
               // disabled={isCompleted} // Allow re-selection
+              // disabled={isCompleted} // Allow re-selection
               onClick={() => {
-                triggerMessageSend(type.name);
+                handleSendMessage(type.name);
                 setLocalMealType(type.name); // Immediate UI update
               }}
               className={`flex items-center gap-3 p-2 border rounded-lg transition-colors text-left flex-1
@@ -502,12 +426,12 @@ export default function RecipeConfigurationChat() {
 
     const cuisines = (options && options.length > 0)
       ? options.map((name) => {
-          const defaultMatch = defaultCuisines.find(c => c.name === name);
-          return {
-            name,
-            icon: defaultMatch ? defaultMatch.icon : <Globe className="w-5 h-5" />
-          };
-        })
+        const defaultMatch = defaultCuisines.find(c => c.name === name);
+        return {
+          name,
+          icon: defaultMatch ? defaultMatch.icon : <Globe className="w-5 h-5" />
+        };
+      })
       : defaultCuisines;
 
     return (
@@ -571,7 +495,7 @@ export default function RecipeConfigurationChat() {
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up items-center gap-2`}>
             {msg.sender === 'bot' && (
-              <div className="rounded-full  flex items-center justify-center relative overflow-hidden bg-[#435334B2] shadow-lg w-15 h-15" >
+              <div className="rounded-full  flex items-center justify-center relative overflow-hidden bg-[#435334B2] shadow-lg w-15 h-15 sticky top-0" >
                 <img
                   src={AnimatedChef}
                   alt="Dr. Foodie"

@@ -1,7 +1,8 @@
+// export const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 // export const BASE_URL = 'http://122.163.121.176:3021';
-export const BASE_URL = 'http://122.163.121.176:3029';          
+ export const BASE_URL = 'http://122.163.121.176:3029';          
 // export const BASE_URL = "http://157.173.221.226:3019";
-//  export const BASE_URL=' http://127.0.0.1:5000'; 
+// export const BASE_URL=' http://127.0.0.1:5000'; 
 
 
 export const API_ENDPOINTS = {
