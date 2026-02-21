@@ -74,12 +74,12 @@ function LoginModal({ isOpen, onClose, onSwitchToSignUp }: LoginModalProps) {
     <div className="fixed inset-0 flex justify-center items-center p-4 z-50">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-fadeIn"
         onClick={onClose}
       />
 
       {/* Modal */}
-      <div className='relative w-full max-w-md rounded-3xl border border-white/30 bg-white/10 p-8 shadow-2xl backdrop-blur-xl flex flex-col items-center gap-6'>
+      <div className='relative w-full max-w-md rounded-3xl border border-white/30 bg-white/10 p-8 shadow-2xl backdrop-blur-xl flex flex-col items-center gap-6 animate-zoomIn'>
         {/* Close Button */}
         <button
           onClick={onClose}

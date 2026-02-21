@@ -7,6 +7,7 @@ import LandingFooter from '../components/LandingFooter';
 import FirstSection from '../components/FirstSection';
 import LoginModal from '../../auth/components/LoginModal';
 import SignUpModal from '../../auth/components/SignUpModal';
+import Community from '../components/Community';
 
 function LandingPage() {
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -27,6 +28,27 @@ function LandingPage() {
     setShowSignUpModal(false);
   };
 
+  React.useEffect(() => {
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-visible');
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, {
+      threshold: 0.15,
+      rootMargin: '0px 0px -80px 0px'
+    });
+
+    // Observe all elements with scroll-animate class
+    const animatedElements = document.querySelectorAll('.scroll-animate, .scroll-animate-left, .scroll-animate-right, .scroll-animate-scale, .scroll-animate-fade');
+    animatedElements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="h-full w-full">
       <NavBar onLoginClick={openLoginModal} onSignUpClick={openSignUpModal} />
@@ -35,16 +57,17 @@ function LandingPage() {
         <LandingFeatures />
         <LandingLeftovers />
         <ReadyToCook />
+        <Community />
       </main>
       <LandingFooter />
 
       {/* Modals */}
-      <LoginModal 
+      <LoginModal
         isOpen={showLoginModal}
         onClose={closeAllModals}
         onSwitchToSignUp={openSignUpModal}
       />
-      <SignUpModal 
+      <SignUpModal
         isOpen={showSignUpModal}
         onClose={closeAllModals}
         onSwitchToLogin={openLoginModal}

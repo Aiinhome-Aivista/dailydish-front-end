@@ -59,13 +59,13 @@ function SignUpModal({ isOpen, onClose, onSwitchToLogin }: SignUpModalProps) {
   return (
     <div className="fixed inset-0 flex justify-center items-center p-4 z-50">
       {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+      <div
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-fadeIn"
         onClick={onClose}
       />
-      
+
       {/* Modal */}
-      <div className='relative w-full max-w-md rounded-3xl border border-white/30 bg-white/10 p-8 shadow-2xl backdrop-blur-xl flex flex-col items-center gap-6 max-h-[90vh] overflow-y-auto'>
+      <div className='relative w-full max-w-md rounded-3xl border border-white/30 bg-white/10 p-8 shadow-2xl backdrop-blur-xl flex flex-col items-center gap-6 max-h-[90vh] overflow-y-auto animate-zoomIn'>
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -172,8 +172,8 @@ function SignUpModal({ isOpen, onClose, onSwitchToLogin }: SignUpModalProps) {
             </button>
 
             <p className='text-white/70 text-sm text-center'>
-              Already have an account? <button 
-                type='button' 
+              Already have an account? <button
+                type='button'
                 className='text-white font-semibold hover:underline hover:text-white/90 cursor-pointer'
                 onClick={onSwitchToLogin}
               >

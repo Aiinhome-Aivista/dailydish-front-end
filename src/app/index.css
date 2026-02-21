@@ -7,6 +7,7 @@
   --color-brand-dark: #435334;
   --color-brand-accent: #6F9A4E;
   --color-brand-beige: #FAF1E4;
+  --color-brand-primary: #95B974;
 }
 
 
@@ -32,15 +33,16 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* =========================================
-   1. Scrollbar Hiding
-   ========================================= */
-/* Hide Scrollbar - Webkit */
-::-webkit-scrollbar {
-  display: none;
-  width: 0;
-  height: 0;
+/* Custom Scrollbar */
+/* ::-webkit-scrollbar {
+  width: 10px;
+  background-color: #d5d1cc;
 }
+
+::-webkit-scrollbar-thumb {
+  background-color: #6F9A4E;
+  border-radius: 4px;
+} */
 
 .p-toast-icon-close {
   display: none !important;
@@ -52,9 +54,133 @@ input::-ms-clear {
 }
 
 /* Hide Scrollbar - Firefox/IE/Edge */
-* {
+/* * {
   -ms-overflow-style: none;
-  /* IE and Edge */
+
   scrollbar-width: none;
-  /* Firefox */
+ 
+} */
+
+/* =========================================
+   2. Animations
+   ========================================= */
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slideDown {
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float 6s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
+/* Scroll Animation Classes */
+.scroll-animate {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scroll-animate.animate-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-animate-left {
+  opacity: 0;
+  transform: translateX(-80px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scroll-animate-left.animate-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.scroll-animate-right {
+  opacity: 0;
+  transform: translateX(80px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scroll-animate-right.animate-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.scroll-animate-scale {
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scroll-animate-scale.animate-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.scroll-animate-fade {
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}
+
+.scroll-animate-fade.animate-visible {
+  opacity: 1;
+}
+
+/* Stagger delays */
+.delay-1 {
+  transition-delay: 0.1s;
+}
+
+.delay-2 {
+  transition-delay: 0.2s;
+}
+
+.delay-3 {
+  transition-delay: 0.3s;
+}
+
+.delay-4 {
+  transition-delay: 0.4s;
+}
+
+.delay-5 {
+  transition-delay: 0.5s;
+}
+
+.delay-6 {
+  transition-delay: 0.6s;
 }

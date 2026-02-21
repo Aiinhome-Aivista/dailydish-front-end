@@ -1,17 +1,23 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { pantryService } from '../api/saveMenuService';
 import type { SavedMealItem } from '../types/saveMeal';
 import DailyDishLoader from '../../../components/feedback/DailyDishLoader';
-import { Check, ArrowLeft, ChevronRight } from 'lucide-react';
+import { Check, ArrowLeft, ArrowRight, Share2 } from 'lucide-react';
 import defaultRecipeImage from "../../../assets/Recipe_default_image.webp";
 
 import { useToast } from '../../../shared/context/ToastContext';
 import DeleteModal from '../../../components/modal/pages/DeleteModal';
 
+interface MealPlanContext {
+    currentDate: Date;
+    viewMode: 'week' | 'month';
+}
+
 const MealPlan = () => {
-    const navigate = useNavigate();
     const { showToast } = useToast();
+    const navigate = useNavigate();
+    const { currentDate, viewMode } = useOutletContext<MealPlanContext>();
     const [meals, setMeals] = useState<SavedMealItem[]>([]);
     const [loading, setLoading] = useState(false);
 
@@ -20,6 +26,7 @@ const MealPlan = () => {
     const [selectedMeal, setSelectedMeal] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [activeMeal, setActiveMeal] = useState<SavedMealItem | null>(null);
+    const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
     const confirmDelete = (menu_name: string) => {
         setSelectedMeal(menu_name);
@@ -69,16 +76,75 @@ const MealPlan = () => {
         fetchSavedMeal();
     }, []);
 
-    const getSuitabilityColor = (item: string) => {
-        const match = item.match(/(\d+)%/);
-        if (match) {
-            const value = parseInt(match[1]);
-            if (value <= 35) return "bg-red-400";
-            if (value <= 65) return "bg-orange-400";
-            if (value <= 100) return "bg-brand-accent";
-            return "bg-[#95B974]";
+    // Calendar Helpers
+    const getDaysInMonth = (date: Date) => {
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const days = new Date(year, month + 1, 0).getDate();
+        const firstDay = new Date(year, month, 1).getDay(); // 0 = Sunday
+        const daysArray = [];
+
+        // Adjust for Monday start (0 = Mon, 6 = Sun)
+        const startDay = firstDay === 0 ? 6 : firstDay - 1;
+
+        // Previous month days
+        const prevMonthDays = new Date(year, month, 0).getDate();
+        for (let i = startDay - 1; i >= 0; i--) {
+            daysArray.push({
+                date: new Date(year, month - 1, prevMonthDays - i),
+                isCurrentMonth: false
+            });
         }
-        return "bg-brand-accent";
+
+        // Current month days
+        for (let i = 1; i <= days; i++) {
+            daysArray.push({
+                date: new Date(year, month, i),
+                isCurrentMonth: true
+            });
+        }
+
+        // Next month days to fill grid (up to 35 or 42 cells)
+        const remainingCells = (7 - (daysArray.length % 7)) % 7;
+        for (let i = 1; i <= remainingCells; i++) {
+            daysArray.push({
+                date: new Date(year, month + 1, i),
+                isCurrentMonth: false
+            });
+        }
+
+        return daysArray;
+    };
+
+    const getWeekDays = (date: Date) => {
+        const current = new Date(date);
+        const day = current.getDay();
+        const diff = current.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
+        const monday = new Date(current.setDate(diff));
+        const week = [];
+
+        for (let i = 0; i < 7; i++) {
+            const nextDay = new Date(monday);
+            nextDay.setDate(monday.getDate() + i);
+            week.push(nextDay);
+        }
+        return week;
+    };
+
+
+    const isSameDay = (date1: Date, date2: Date) => {
+        return date1.getDate() === date2.getDate() &&
+            date1.getMonth() === date2.getMonth() &&
+            date1.getFullYear() === date2.getFullYear();
+    };
+
+    const getMealsForDate = (date: Date) => {
+        return meals.filter(meal => {
+            // Assuming saved_at is a string that can be parsed by Date
+            // Adjust if saved_at format is different
+            const mealDate = new Date(meal.saved_at);
+            return isSameDay(mealDate, date);
+        });
     };
 
     if (loading) {
@@ -86,32 +152,8 @@ const MealPlan = () => {
     }
 
     return (
-        <div className="h-full text-brand-dark overflow-y-auto pb-10 space-y-4">
-            {/* Header Section */}
-            <div className="w-full flex items-start gap-2">
-                <button
-                    onClick={() => {
-                        if (activeMeal) {
-                            setActiveMeal(null);
-                        } else {
-                            navigate("/ai-menu");
-                        }
-                    }}
-                    className="mt-1 hover:bg-black/5 rounded-full text-brand-dark transition-colors cursor-pointer"
-                >
-                    <ArrowLeft size={24} />
-                </button>
-                <div>
-                    <h1 className="text-2xl font-bold text-brand-dark leading-tight">
-                        {activeMeal ? 'Meal Details' : 'Your Meal Plan'}
-                    </h1>
-                    {!activeMeal && (
-                        <p className="text-sm text-brand-accent font-medium mt-1">
-                            {meals.length} Planned Meals
-                        </p>
-                    )}
-                </div>
-            </div>
+        <div className="h-full text-brand-dark overflow-y-auto pb-10 space-y-6">
+
 
             {activeMeal ? (
                 (() => {
@@ -132,13 +174,21 @@ const MealPlan = () => {
                     const prepSteps = meal.steps?.preparation || [];
 
                     return (
-                        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12">
+                        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12 px-2">
+                            <button
+                                onClick={() => setActiveMeal(null)}
+                                className="mb-4 flex items-center gap-2 hover:bg-black/5 rounded-lg px-2 py-1 w-fit transition-colors text-brand-dark"
+                            >
+                                <ArrowLeft size={20} />
+                                <span className="font-bold">Back to Plan</span>
+                            </button>
+
                             <div className="mb-6 flex justify-between items-start">
                                 <div>
-                                    <h2 className="text-2xl font-bold">{meal.menu_name}</h2>
-                                    <p className="text-sm text-brand-accent">Saved at: {mealItem.saved_at}</p>
+                                    <h2 className="text-3xl font-bold text-[#3e5035]">{meal.menu_name}</h2>
+                                    <p className="text-sm text-[#7A8F63] font-medium">Saved for: {new Date(mealItem.saved_at).toLocaleDateString()}</p>
                                 </div>
-                                {/* <button
+                                <button
                                     onClick={() => confirmDelete(meal.menu_name)}
                                     className="p-2 hover:bg-red-100 rounded-full transition-colors group/delete cursor-pointer"
                                     title="Delete Meal"
@@ -146,19 +196,19 @@ const MealPlan = () => {
                                     <span className="material-symbols-outlined text-red-400 group-hover/delete:text-red-600">
                                         delete
                                     </span>
-                                </button> */}
+                                </button>
                             </div>
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                 {/* Left Column */}
                                 <div className="flex flex-col gap-8">
                                     {/* Hero Image */}
-                                    <div className="relative h-60 md:h-90 rounded-3xl overflow-hidden group shadow-lg">
+                                    <div className="relative h-60 md:h-80 rounded-4xl overflow-hidden group">
                                         <div className="absolute inset-0 bg-slate-800 ">
                                             <img
                                                 src={defaultRecipeImage}
                                                 alt={meal.menu_name}
-                                                className="w-full h-full object-cover opacity-60"
+                                                className="w-full h-full object-cover opacity-70"
                                                 onError={(e) => {
                                                     e.currentTarget.src = defaultRecipeImage;
                                                 }}
@@ -166,41 +216,35 @@ const MealPlan = () => {
                                         </div>
 
                                         <div className="absolute bottom-0 left-0 p-8 w-full bg-linear-to-t from-black/80 to-transparent text-white">
-                                            <h2 className="text-3xl font-bold mb-2 text-brand-beige">{meal.menu_name}</h2>
-                                            <div className="flex gap-4 text-sm font-medium">
-                                                {meal.time_breakdown?.prep_time && <span className="flex items-center gap-1">{meal.time_breakdown.prep_time} prep</span>}
-                                                {meal.time_breakdown?.cook_time && <span className="flex items-center gap-1">{meal.time_breakdown.cook_time} cook</span>}
+                                            <div className="flex gap-4 text-sm font-bold mb-2">
+                                                {meal.time_breakdown?.prep_time && <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1">{meal.time_breakdown.prep_time} prep</span>}
+                                                {meal.time_breakdown?.cook_time && <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1">{meal.time_breakdown.cook_time} cook</span>}
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Ingredients */}
                                     <div className="h-fit">
-                                        <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit">
-                                            <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#43533414]">
-                                                <h3 className="text-xl font-bold">Ingredients <span className="text-sm font-medium text-brand-accent ml-2">(Suggested for {meal.servings} {meal.servings > 1 ? 'People' : 'Person'})</span></h3>
-                                                <div className="flex items-center bg-brand-light rounded-lg p-1">
+                                        <div className="bg-[#CEDEBD36] border border-[#7A8F63]/20 rounded-3xl p-8 h-fit">
+                                            <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#7A8F63]/20">
+                                                <h3 className="text-xl font-bold text-[#3e5035]">Ingredients</h3>
+                                                <div className="flex items-center bg-[#E8EDDE] rounded-lg p-1 text-[#3e5035]">
                                                     <span className="text-xs font-bold px-2">Servings:</span>
                                                     <span className="w-8 text-center font-bold px-2">{meal.servings}</span>
                                                 </div>
                                             </div>
 
-                                            <div className="space-y-6 mb-8">
+                                            <div className="space-y-4 mb-8">
                                                 {allIngredients.map((ing, idx) => (
-                                                    <div key={idx} className="flex items-center justify-between group">
+                                                    <div key={idx} className="flex items-center justify-between group py-2">
                                                         <div className="flex items-center gap-3">
                                                             <div className={`min-w-6 h-6 rounded-full flex items-center justify-center text-white ${ing.available ? 'bg-[#95B974]' : 'bg-orange-400'}`}>
                                                                 <Check size={14} strokeWidth={4} />
                                                             </div>
-                                                            <span className="font-bold text-sm lg:text-base">
+                                                            <span className="font-bold text-sm lg:text-base text-[#3e5035]">
                                                                 {ing.name} <span className="text-[#7A8F63] font-normal">({ing.qty})</span>
                                                             </span>
                                                         </div>
-                                                        {ing.model_qty && (
-                                                            <span className="text-sm font-medium opacity-70 whitespace-nowrap bg-[#E8EDDE] px-2 py-1 rounded text-[#4A5D23]">
-                                                                {ing.model_qty}
-                                                            </span>
-                                                        )}
                                                     </div>
                                                 ))}
                                             </div>
@@ -212,197 +256,186 @@ const MealPlan = () => {
                                 <div className="flex flex-col gap-8">
                                     {/* Nutrition Dashboard */}
                                     {meal.nutrition && (
-                                        <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 flex flex-col justify-between">
-                                            <h3 className="text-xl font-bold mb-4">Nutrition Dashboard</h3>
+                                        <div className="bg-[#CEDEBD]/30 border border-[#7A8F63]/20 rounded-3xl p-8">
+                                            <h3 className="text-xl font-bold mb-6 text-[#3e5035]">Nutrition Dashboard</h3>
 
                                             <div className="grid grid-cols-2 gap-4 mb-8">
-                                                <div className="bg-[#CEDEBD36] rounded-2xl p-6 text-center">
-                                                    <div className="text-xs font-bold text-brand-accent mb-1">CALORIES</div>
-                                                    <div className="text-3xl font-extrabold text-brand-accent">{meal.nutrition.total_calories?.replace(' kcal', '')}</div>
-                                                    <div className="text-xs text-brand-accent">Per Serving</div>
+                                                <div className="bg-[#E8EDDE] rounded-2xl p-6 text-center">
+                                                    <div className="text-xs font-bold text-[#7A8F63] mb-1 uppercase tracking-wider">Calories</div>
+                                                    <div className="text-3xl font-extrabold text-[#3e5035]">{meal.nutrition.total_calories?.replace(' kcal', '')}</div>
+                                                    <div className="text-xs text-[#7A8F63] mt-1">kcal</div>
                                                 </div>
-                                                <div className="bg-[#CEDEBD36] rounded-2xl p-6 text-center">
-                                                    <div className="text-xs font-bold text-brand-accent mb-1">FIBER</div>
-                                                    <div className="text-3xl font-extrabold text-brand-accent">{meal.nutrition.fiber}</div>
+                                                <div className="bg-[#E8EDDE] rounded-2xl p-6 text-center">
+                                                    <div className="text-xs font-bold text-[#7A8F63] mb-1 uppercase tracking-wider">Fiber</div>
+                                                    <div className="text-3xl font-extrabold text-[#3e5035]">{meal.nutrition.fiber}</div>
+                                                    <div className="text-xs text-[#7A8F63] mt-1">g</div>
                                                 </div>
                                             </div>
 
-                                            <div className="space-y-4 text-sm font-bold">
-                                                <div>
-                                                    <div className="flex justify-between mb-1">
-                                                        <span>Protein</span>
-                                                        <span>{meal.nutrition.protein}</span>
+                                            <div className="space-y-6">
+                                                {[
+                                                    { label: 'Protein', value: meal.nutrition.protein, color: 'bg-[#95B974]', width: '30%' },
+                                                    { label: 'Carbohydrates', value: meal.nutrition.carbohydrates, color: 'bg-[#EoC9A6]', width: '65%' }, // Adjusted color placeholder
+                                                    { label: 'Fats', value: meal.nutrition.fat, color: 'bg-[#F2D0A9]', width: '20%' }
+                                                ].map((nutrient, i) => (
+                                                    <div key={i}>
+                                                        <div className="flex justify-between mb-2 text-sm font-bold text-[#3e5035]">
+                                                            <span>{nutrient.label}</span>
+                                                            <span>{nutrient.value}</span>
+                                                        </div>
+                                                        <div className="h-3 bg-[#E8EDDE] rounded-full overflow-hidden">
+                                                            <div className={`h-full ${nutrient.color === 'bg-[#EoC9A6]' ? 'bg-orange-300' : nutrient.color} w-full`} style={{ width: nutrient.width }}></div>
+                                                        </div>
                                                     </div>
-                                                    <div className="h-3 bg-[#CEDEBD36] rounded-full overflow-hidden">
-                                                        <div className="h-full bg-brand-accent w-[30%]"></div>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div className="flex justify-between mb-1">
-                                                        <span>Carbohydrates</span>
-                                                        <span>{meal.nutrition.carbohydrates}</span>
-                                                    </div>
-                                                    <div className="h-3 bg-[#CEDEBD36] rounded-full overflow-hidden">
-                                                        <div className="h-full bg-brand-accent w-[65%]"></div>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div className="flex justify-between mb-1">
-                                                        <span>Fats</span>
-                                                        <span>{meal.nutrition.fat}</span>
-                                                    </div>
-                                                    <div className="h-3 bg-[#CEDEBD36] rounded-full overflow-hidden">
-                                                        <div className="h-full bg-brand-accent w-[20%]"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Suitability */}
-                                    {meal.suitability && meal.suitability.length > 0 && (
-                                        <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-6">
-                                            <h3 className="text-lg font-bold mb-3">Suitability</h3>
-                                            <div className="flex flex-wrap gap-2">
-                                                {meal.suitability.map((item: string, idx: number) => (
-                                                    <span key={idx} className={`${getSuitabilityColor(item)} text-brand-beige px-3 py-1 rounded-full text-sm font-bold shadow-sm`}>
-                                                        {item}
-                                                    </span>
                                                 ))}
                                             </div>
                                         </div>
                                     )}
-                                    {/* Preparation Steps */}
-                                    {prepSteps.length > 0 && (
-                                        <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit">
-                                            <h3 className="text-xl font-bold pb-4">Preparation Steps</h3>
+
+                                    {/* Instructions */}
+                                    <div className="bg-[#CEDEBD]/30 border border-[#7A8F63]/20 rounded-3xl p-8">
+                                        <h3 className="text-xl font-bold mb-6 text-[#3e5035]">Instructions</h3>
+
+                                        {prepSteps.length > 0 && (
+                                            <div className="mb-8">
+                                                <h4 className="text-lg font-bold text-[#7A8F63] mb-4">Preparation</h4>
+                                                <div className="space-y-4">
+                                                    {prepSteps.map((step: string, idx: number) => (
+                                                        <div key={idx} className="flex gap-4">
+                                                            <div className="shrink-0 w-8 h-8 rounded-full bg-[#B5C99A] text-[#3e5035] flex items-center justify-center font-bold text-sm">
+                                                                {idx + 1}
+                                                            </div>
+                                                            <p className="text-sm leading-relaxed text-[#3e5035] pt-1">{step}</p>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        <div>
+                                            <h4 className="text-lg font-bold text-[#7A8F63] mb-4">Cooking</h4>
                                             <div className="space-y-4">
-                                                {prepSteps.map((step: string, idx: number) => (
+                                                {cookingSteps.map((step: string, idx: number) => (
                                                     <div key={idx} className="flex gap-4">
-                                                        <div className="shrink-0 w-8 h-8 rounded-full bg-brand-accent text-brand-beige flex items-center justify-center font-bold text-sm">
+                                                        <div className="shrink-0 w-8 h-8 rounded-full bg-[#7A8F63] text-white flex items-center justify-center font-bold text-sm">
                                                             {idx + 1}
                                                         </div>
-                                                        <div>
-                                                            <p className="text-sm leading-relaxed">{step}</p>
-                                                        </div>
+                                                        <p className="text-sm leading-relaxed text-[#3e5035] pt-1">{step}</p>
                                                     </div>
                                                 ))}
                                             </div>
                                         </div>
-                                    )}
-
-                                    {/* Cooking Steps */}
-                                    <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit">
-                                        <h3 className="text-xl font-bold pb-4">Cooking Steps</h3>
-                                        <div className="space-y-4">
-                                            {cookingSteps.map((step: string, idx: number) => (
-                                                <div key={idx} className="flex gap-4">
-                                                    <div className="shrink-0 w-8 h-8 rounded-full bg-[#4A5D3B] text-brand-beige flex items-center justify-center font-bold text-sm">
-                                                        {idx + 1}
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-sm leading-relaxed">{step}</p>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
                     );
                 })()
-            ) : meals.length > 0 ? (
-                <div className="max-w-7xl  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {meals.map((mealItem) => {
-                        const meal = mealItem.details;
-                        return (
-                            <div
-                                key={mealItem.id}
-                                onClick={() => setActiveMeal(mealItem)}
-                                className="group relative flex flex-col p-4 rounded-4xl cursor-pointer transition-all duration-300 bg-[#CEDEBDB2] backdrop-blur-xl border border-white/30 hover:shadow-xl hover:scale-[1.01]"
-                            >
-                                {/* Image Container */}
-                                <div className="h-40 w-full mb-5 overflow-hidden rounded-2xl">
-                                    <img
-                                        src={defaultRecipeImage}
-                                        loading="lazy"
-                                        alt={meal.menu_name}
-                                        className="w-full h-full object-cover"
-                                        onError={(e) => {
-                                            e.currentTarget.src = defaultRecipeImage;
-                                        }}
-                                    />
-                                </div>
-
-                                {/* Content */}
-                                <div className="flex flex-col grow">
-                                    <h3 className="text-xl font-bold mb-2 text-[#3e5035]">
-                                        {meal.menu_name}
-                                    </h3>
-
-                                    <div className="text-sm leading-relaxed text-[#5e7054] mb-6 line-clamp-3">
-                                        <p className="text-xs font-medium mb-2">
-                                            Saved: {mealItem.saved_at}
-                                        </p>
-                                        {meal.suitability && meal.suitability.length > 0 && (
-                                            <div className="flex flex-wrap gap-1">
-                                                {meal.suitability.slice(0, 3).map((tag: string, idx: number) => (
-                                                    <span key={idx} className="text-[10px] px-2 py-1 bg-white/50 rounded-full text-[#3e5035] font-bold">
-                                                        {tag}
-                                                    </span>
-                                                ))}
-                                                {meal.suitability.length > 3 && (
-                                                    <span className="text-[10px] px-2 py-1 bg-white/50 rounded-full text-[#3e5035] font-bold">
-                                                        +{meal.suitability.length - 3}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Footer: Meta & Action */}
-                                    <div className="mt-auto flex items-center justify-between">
-                                        <div className="flex flex-row gap-2">
-                                            {meal.time_breakdown?.prep_time && (
-                                                <>
-                                                    <span className="text-xs font-bold text-[#3e5035]">
-                                                        {meal.time_breakdown.prep_time} prep
-                                                    </span>
-                                                    <span className="text-xs font-bold text-[#3e5035]">
-                                                        {meal.time_breakdown.cook_time} cook
-                                                    </span>
-                                                </>
-                                            )}
-                                        </div>
-                                        <div className="flex flex-col items-end">
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    confirmDelete(meal.menu_name);
-                                                }}
-                                                className=" rounded-full pr-8 cursor-pointer "
-                                                title="Delete Meal"
-                                            >
-                                                <span className="material-symbols-outlined text-sm text-brand-accent">
-                                                    delete
-                                                </span>
-                                            </button>
-                                            <div className="flex flex-row items-center gap-1 text-xs font-bold text-[#9dbd87] group-hover:text-[#7a9d63] transition-colors">
-                                                <span>View Plan</span>
-                                                <ChevronRight size={16} />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
             ) : (
-                <div className="flex justify-center items-center py-45 opacity-100">
-                    <p className="text-xl text-brand-dark font-bold">No saved meals found</p>
+                // Calendar Grid
+                <div className="w-full">
+                    {/* Days Header */}
+                    <div className="grid grid-cols-7 mb-4">
+                        {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
+                            <div key={day} className="text-center">
+                                <span className="text-brand-dark font-normal uppercase tracking-widest text-sm">{day}</span>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Grid */}
+                    <div className="grid grid-cols-7 gap-4 min-h-125">
+                        {(viewMode === 'week' ? getWeekDays(currentDate) : getDaysInMonth(currentDate)).map((dayObj, index) => {
+                            const date = viewMode === 'week' ? dayObj : (dayObj as any).date;
+                            const isCurrentMonth = viewMode === 'week' ? true : (dayObj as any).isCurrentMonth;
+                            const dayMeals = getMealsForDate(date);
+                            const isToday = isSameDay(date, new Date());
+
+                            if (!isCurrentMonth && viewMode === 'month') return <div key={index} className="opacity-0"></div>; // Or render faded
+
+                            return (
+                                <div key={index} className="flex flex-col min-h-37.5">
+                                    {/* Date Number */}
+                                    <div className="flex justify-center mb-2">
+                                        <span className={`text-xl font-bold ${isToday ? 'text-brand-accent scale-110' : 'text-brand-dark'}`}>
+                                            {date.getDate().toString().padStart(2, '0')}
+                                        </span>
+                                    </div>
+
+                                    {/* Meal Cards */}
+                                    <div className="flex flex-col gap-3">
+                                        {dayMeals.map((mealItem) => {
+                                            const meal = mealItem.details;
+                                            const ingredientsCount = (meal.ingredients_used?.length || 0) + (meal.ingredients_analysis?.current?.length || 0) + (meal.ingredients_analysis?.missing?.length || 0);
+
+                                            return (
+                                                <div
+                                                    key={mealItem.id}
+                                                    onClick={() => setSelectedCardId(mealItem.id === selectedCardId ? null : mealItem.id)}
+                                                    className={`rounded-3xl p-3 transition-all hover:scale-[1.02] group cursor-pointer border-2 ${selectedCardId === mealItem.id
+                                                        ? 'border-brand-accent bg-[#CEDEBD60] shadow-md'
+                                                        : 'border-transparent bg-[#CEDEBD36]'
+                                                        }`}
+                                                >
+                                                    <div className="flex items-start gap-3 mb-2">
+                                                        <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 mt-1">
+                                                            <img
+                                                                src={defaultRecipeImage}
+                                                                alt={meal.menu_name}
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                        </div>
+                                                        <div className="min-w-0">
+                                                            <h3 className="font-bold text-sm text-[#3e5035] leading-tight truncate w-full">{meal.menu_name}</h3>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="text-center mb-2">
+                                                        <span className="text-3xl font-extrabold text-[#3e5035] block leading-none">{ingredientsCount}</span>
+                                                        <span className="text-xs font-medium text-brand-dark">Ingredients</span>
+                                                    </div>
+
+                                                    <div className="flex items-center justify-between mt-auto pt-2">
+                                                        <span className="text-xs font-semibold text-brand-accent">
+                                                            {meal.time_breakdown?.cook_time || '30mins'}
+                                                        </span>
+                                                        <div className="flex items-center gap-2">
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    navigate('/share-masterpiece', { state: { meal: mealItem } });
+                                                                }}
+                                                                className="text-brand-accent hover:text-brand-dark transition-colors cursor-pointer"
+                                                                title="Share Masterpiece"
+                                                            >
+                                                                <Share2 size={16} />
+                                                            </button>
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    navigate('/recipe-details', {
+                                                                        state: {
+                                                                            menu_name: meal.menu_name,
+                                                                            cooking_time: meal.time_breakdown?.cook_time,
+                                                                            image_url: defaultRecipeImage
+                                                                        }
+                                                                    });
+                                                                }}
+                                                                className="text-brand-accent hover:text-brand-dark transition-colors cursor-pointer"
+                                                                title="View Details"
+                                                            >
+                                                                <ArrowRight size={17} />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
             )}
 

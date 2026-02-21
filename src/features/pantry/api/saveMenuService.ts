@@ -3,8 +3,24 @@ import { API_ENDPOINTS } from '../../../config/endpoints';
 import type { SavedMenuResponse, SaveRecipeRequest, SaveRecipeResponse } from '../types/saveMenu';
 import type { SaveMealRequest, SaveMealResponse, GetSavedMealResponse } from '../types/saveMeal';
 import type { RecipeUpdateServingsRequest, RecipeUpdateServingsResponse } from '../types/recipeDetails';
+import type { ShareToCommunityResponse } from '../types/shareMasterpiece';
 
 export const pantryService = {
+    shareToCommunity: async (formData: FormData) => {
+        try {
+            const response = await axiosApi<ShareToCommunityResponse>(API_ENDPOINTS.SHARETOCOMMUNITY, {
+                method: 'POST',
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            return response;
+        } catch (error) {
+            console.error('Error sharing to community:', error);
+            throw error;
+        }
+    },
     saveMenu: async (data: SaveRecipeRequest) => {
         try {
             const response = await axiosApi<SaveRecipeResponse>(API_ENDPOINTS.SAVEMENU, {

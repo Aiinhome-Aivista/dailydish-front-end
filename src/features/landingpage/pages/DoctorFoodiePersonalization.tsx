@@ -151,27 +151,27 @@ const ChefPersonalization = () => {
                 <h3 className="text-xl font-semibold mb-4">What the Dr. Foodie Learns From You</h3>
                 <ul className="space-y-2">
                   <li className="flex items-start">
-                    <span className="text-green-300 mr-2">✓</span>
+                    <span className="text-brand-accent mr-2">✓</span>
                     <span>Recipes you save and revisit</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-green-300 mr-2">✓</span>
+                    <span className="text-brand-accent mr-2">✓</span>
                     <span>Ratings and reviews you give</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-green-300 mr-2">✓</span>
+                    <span className="text-brand-accent mr-2">✓</span>
                     <span>Ingredients you substitute or avoid</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-green-300 mr-2">✓</span>
+                    <span className="text-brand-accent mr-2">✓</span>
                     <span>Cooking times and complexity preferences</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-green-300 mr-2">✓</span>
+                    <span className="text-brand-accent mr-2">✓</span>
                     <span>Dietary restrictions and preferences</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-green-300 mr-2">✓</span>
+                    <span className="text-brand-accent mr-2">✓</span>
                     <span>Meal times and portion sizes</span>
                   </li>
                 </ul>
@@ -180,19 +180,19 @@ const ChefPersonalization = () => {
                 <h3 className="text-xl font-semibold mb-4">How Recommendations Improve</h3>
                 <div className="space-y-4">
                   <div className="bg-white/10 rounded-lg p-4">
-                    <div className="font-semibold text-yellow-300">Week 1-2</div>
+                    <div className="font-semibold text-brand-accent">Week 1-2</div>
                     <div className="text-sm">Basic personalization based on initial setup</div>
                   </div>
                   <div className="bg-white/10 rounded-lg p-4">
-                    <div className="font-semibold text-yellow-300">Week 3-4</div>
+                    <div className="font-semibold text-brand-accent">Week 3-4</div>
                     <div className="text-sm">Improved suggestions based on your first recipes</div>
                   </div>
                   <div className="bg-white/10 rounded-lg p-4">
-                    <div className="font-semibold text-yellow-300">Month 2+</div>
+                    <div className="font-semibold text-brand-accent">Month 2+</div>
                     <div className="text-sm">Highly accurate recommendations matching your taste</div>
                   </div>
                   <div className="bg-white/10 rounded-lg p-4">
-                    <div className="font-semibold text-yellow-300">Month 6+</div>
+                    <div className="font-semibold text-brand-accent">Month 6+</div>
                     <div className="text-sm">Anticipates preferences and suggests new discoveries</div>
                   </div>
                 </div>

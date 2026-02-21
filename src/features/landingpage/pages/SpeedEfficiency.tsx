@@ -27,10 +27,10 @@ const SpeedEfficiency = () => {
 
         {/* Lightning Fast Discovery */}
         <section className="mb-16">
-          <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg p-8 text-white">
+          <div className="bg-gradient-to-r from-brand-primary to-brand-light rounded-lg p-8 text-brand-accent">
             <div className="text-center mb-8">
               <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4">
-                <span className="text-3xl">⚡</span>
+                <span className="text-3xl ">⚡</span>
               </div>
               <h2 className="text-3xl font-bold mb-4">Lightning-Fast Recipe Discovery</h2>
               <p className="text-lg opacity-90 max-w-2xl mx-auto">
@@ -243,7 +243,7 @@ const SpeedEfficiency = () => {
             <h2 className="text-3xl font-bold mb-8 text-center">Time Savings Comparison</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-xl font-semibold mb-4 text-yellow-300">Traditional Cooking</h3>
+                <h3 className="text-xl font-semibold mb-4 text-brand-accent">Traditional Cooking</h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center bg-white/10 rounded-lg p-3">
                     <span>Recipe Research</span>
@@ -261,14 +261,14 @@ const SpeedEfficiency = () => {
                     <span>Cooking</span>
                     <span className="font-bold">30-60 min</span>
                   </div>
-                  <div className="flex justify-between items-center bg-white/20 rounded-lg p-3 border-2 border-yellow-300">
+                  <div className="flex justify-between items-center bg-white/20 rounded-lg p-3 border-2 border-brand-accent">
                     <span className="font-semibold">Total Time</span>
-                    <span className="font-bold text-yellow-300">2.5-4 hours</span>
+                    <span className="font-bold text-brand-accent">2.5-4 hours</span>
                   </div>
                 </div>
               </div>
               <div>
-                <h3 className="text-xl font-semibold mb-4 text-green-300">With DailyDish</h3>
+                <h3 className="text-xl font-semibold mb-4 text-brand-accent">With DailyDish</h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center bg-white/10 rounded-lg p-3">
                     <span>Recipe Discovery</span>
@@ -286,9 +286,9 @@ const SpeedEfficiency = () => {
                     <span>Efficient Cooking</span>
                     <span className="font-bold">15-45 min</span>
                   </div>
-                  <div className="flex justify-between items-center bg-white/20 rounded-lg p-3 border-2 border-green-300">
+                  <div className="flex justify-between items-center bg-white/20 rounded-lg p-3 border-2 border-brand-primary">
                     <span className="font-semibold">Total Time</span>
-                    <span className="font-bold text-green-300">35-90 min</span>
+                    <span className="font-bold text-brand-dark">35-90 min</span>
                   </div>
                 </div>
               </div>

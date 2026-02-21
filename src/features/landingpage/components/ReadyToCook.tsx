@@ -1,11 +1,11 @@
 
 import { useNavigate } from 'react-router-dom';
 
-const ReadyToCook= () => {
+const ReadyToCook = () => {
     const navigate = useNavigate();
     return (
         <div className="py-24 px-6 md:px-12 bg-[#CEDEBD36]">
-            <div className="max-w-4xl mx-auto text-center">
+            <div className="max-w-4xl mx-auto text-center scroll-animate scroll-animate-scale">
                 <h2 className="text-4xl md:text-5xl font-bold text-brand-dark mb-6">
                     Ready to cook Smarter?
                 </h2>

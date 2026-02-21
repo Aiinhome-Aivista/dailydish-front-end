@@ -108,26 +108,26 @@ const SideBar = ({ isOpen, onClose }: SideBarProps) => {
               icon="kitchen"
               label="Meal Plan"
               to="/meal-plan"
-              isActive={currentPath === '/meal-plan'}
+              isActive={currentPath === '/meal-plan' || currentPath === '/share-masterpiece'}
               isCollapsed={isCollapsed}
             />
           </div>
 
           {/* Bottom Section */}
           <div className={`mt-65 space-y-2 p-4 ${isCollapsed ? 'items-center flex flex-col' : ''}`}>
-            <a href="#" className={`flex items-center gap-3 text-brand-dark rounded-xl hover:bg-brand-light/50 ${isCollapsed ? 'justify-center w-full p-2' : ''}`} title="How it works">
+            <a href="/How-it-Works" className={`flex items-center gap-3 text-brand-dark rounded-xl hover:bg-brand-light/50 ${isCollapsed ? 'justify-center w-full p-2' : ''}`} title="How it works">
               {isCollapsed && <span className="material-symbols-outlined">help</span>}
               {!isCollapsed && <span>How it works</span>}
             </a>
-            <a href="#" className={`flex items-center gap-3 text-brand-dark rounded-xl hover:bg-brand-light/50 ${isCollapsed ? 'justify-center w-full p-2' : ''}`} title="Pricing">
+            <a href="/pricing" className={`flex items-center gap-3 text-brand-dark rounded-xl hover:bg-brand-light/50 ${isCollapsed ? 'justify-center w-full p-2' : ''}`} title="Pricing">
               {isCollapsed && <span className="material-symbols-outlined">payments</span>}
               {!isCollapsed && <span>Pricing</span>}
             </a>
-            <a href="#" className={`flex items-center gap-3 text-brand-dark rounded-xl hover:bg-brand-light/50 ${isCollapsed ? 'justify-center w-full p-2' : ''}`} title="Explore recipes">
+            <a href="/explore-recipes" className={`flex items-center gap-3 text-brand-dark rounded-xl hover:bg-brand-light/50 ${isCollapsed ? 'justify-center w-full p-2' : ''}`} title="Explore recipes">
               {isCollapsed && <span className="material-symbols-outlined">explore</span>}
               {!isCollapsed && <span>Explore recipes</span>}
             </a>
-            <a href="#" className={`flex items-center gap-3 text-brand-dark rounded-xl hover:bg-brand-light/50 ${isCollapsed ? 'justify-center w-full p-2' : ''}`} title="Community">
+            <a href="/community" className={`flex items-center gap-3 text-brand-dark rounded-xl hover:bg-brand-light/50 ${isCollapsed ? 'justify-center w-full p-2' : ''}`} title="Community">
               {isCollapsed && <span className="material-symbols-outlined">group</span>}
               {!isCollapsed && <span>Community</span>}
             </a>

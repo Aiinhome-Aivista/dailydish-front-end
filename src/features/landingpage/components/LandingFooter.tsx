@@ -1,15 +1,15 @@
-import { Send } from 'lucide-react';
+// import { Send } from 'lucide-react';
 import cookerIcon from '../../../assets/cooker.svg';
 import { useNavigate } from 'react-router-dom';
 
 const LandingFooter = () => {
   const navigate = useNavigate();
   return (
-    <footer className="pt-15">
+    <footer className="pt-5 border-t border-brand-accent w-full">
       <div className="w-full">
-        <div className="grid md:grid-cols-4 gap-12 mb-8 px-6 md:px-12">
+        <div className="flex flex-col md:flex-row justify-between flex-wrap gap-12 mb-8 px-6 md:px-12">
           {/* Brand */}
-          <div className="col-span-1 md:col-span-1">
+          <div className="max-w-xs">
             <div className="flex items-center gap-2 mb-6">
               <img src={cookerIcon} alt="Bowl" className="w-8 h-8" />
               <span className="text-brand-dark font-bold text-lg">DailyDish</span>
@@ -23,8 +23,8 @@ const LandingFooter = () => {
           <div>
             <h4 className="font-bold text-brand-dark mb-4">Product</h4>
             <ul className="space-y-2 text-sm text-brand-dark cursor-pointer">
-              <li><a onClick={()=> navigate("/How-it-Works")} className="hover:text-brand-dark transition-colors">How it works</a></li>
-              <li><a href="#" className="hover:text-brand-dark transition-colors">Pricing</a></li>
+              <li><a onClick={() => navigate("/How-it-Works")} className="hover:text-brand-dark transition-colors">How it works</a></li>
+              {/* <li><a href="#" className="hover:text-brand-dark transition-colors">Pricing</a></li> */}
               <li><a href="#" className="hover:text-brand-dark transition-colors">Integrations</a></li>
             </ul>
           </div>
@@ -41,7 +41,7 @@ const LandingFooter = () => {
           </div>
 
           {/* Newsletter */}
-          <div>
+          {/* <div>
             <h4 className="font-bold text-brand-dark mb-4">Newsletter</h4>
             <p className="text-brand-dark text-sm mb-4">Weekly recipes and cooking tips</p>
             <div className="relative">
@@ -54,12 +54,12 @@ const LandingFooter = () => {
                 <Send size={14} />
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Copyright */}
-        <div className="text-center pt-8 border-t border-brand-accent w-full py-8">
-          <p className="text-[#43533466] text-xs font-bold">@2026 Aiinhome Technologies Pvt. Ltd. All rights reserved</p>
+        <div className="border-t border-brand-dark/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 py-8 px-6 md:px-12">
+          <p className="text-brand-dark/40 text-xs font-bold">© 2026 Aiinhome Technologies Pvt. Ltd. All rights reserved.</p>
         </div>
       </div>
     </footer>

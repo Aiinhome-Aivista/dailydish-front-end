@@ -434,12 +434,12 @@ export default function ChatModal({ isOpen, onClose, onGenerateRecipe }: ChatMod
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             {/* Backdrop */}
             <div
-                className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-fadeIn"
                 onClick={onClose}
             />
 
             {/* Modal */}
-            <div className="relative w-full max-w-2xl h-[80vh] bg-linear-to-b from-[#E8F1E0] to-[#F5F9ED] rounded-2xl shadow-2xl flex flex-col border border-white/30 overflow-hidden">
+            <div className="relative w-full max-w-2xl h-[80vh] bg-linear-to-b from-[#E8F1E0] to-[#F5F9ED] rounded-2xl shadow-2xl flex flex-col border border-white/30 overflow-hidden animate-zoomIn">
 
                 {/* Close Button */}
                 <button

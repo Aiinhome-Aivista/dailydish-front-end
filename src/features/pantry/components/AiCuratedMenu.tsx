@@ -11,6 +11,7 @@ import type { Recipe, GeneratedRecipe } from "../types/aiCuratedMenu";
 import { AxiosError } from "axios";
 import DailyDishLoader from "../../../components/feedback/DailyDishLoader";
 import { useAuth } from "../../auth/context/AuthContext";
+import { motion } from "framer-motion";
 
 
 
@@ -217,11 +218,12 @@ const AiMenuDashboard: React.FC = () => {
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {recipes.length > 0 ? (
               recipes.map((recipe) => (
-                <div
+                <motion.div
                   key={recipe.id}
+                  layoutId={`card-${recipe.title}`}
                   onClick={() => setSelectedId(recipe.id)}
                   className={`
-                group relative flex flex-col p-4 rounded-4xl cursor-pointer transition-all duration-300 bg-[#CEDEBDB2] backdrop-blur-xl border border-white/30
+                group relative flex flex-col p-4 rounded-4xl cursor-pointer transition-all duration-500 bg-[#CEDEBDB2] backdrop-blur-xl border border-white/30
                 ${selectedId === recipe.id
                       ? "ring-[3px] ring-brand-accent shadow-lg scale-[1.02]"
                       : "hover:shadow-xl hover:scale-[1.01]"
@@ -230,23 +232,29 @@ const AiMenuDashboard: React.FC = () => {
                 `}
                 >
                   {/* Image Container */}
-                  <div className="h-40 w-full mb-5 overflow-hidden rounded-2xl">
-                    <img
-
+                  <motion.div
+                    layoutId={`image-container-${recipe.title}`}
+                    className="h-40 w-full mb-5 overflow-hidden rounded-2xl"
+                  >
+                    <motion.img
+                      layoutId={`image-${recipe.title}`}
                       src={recipe.image}
                       loading="lazy"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       onError={(e) => {
                         e.currentTarget.src = defaultRecipeImage;
                       }}
                     />
-                  </div>
+                  </motion.div>
 
                   {/* Content */}
                   <div className="flex flex-col grow">
-                    <h3 className="text-xl font-bold mb-2 text-[#3e5035]">
+                    <motion.h3
+                      layoutId={`title-${recipe.title}`}
+                      className="text-xl font-bold mb-2 text-[#3e5035]"
+                    >
                       {recipe.title}
-                    </h3>
+                    </motion.h3>
 
                     <p className="text-sm leading-relaxed text-[#5e7054] mb-6 line-clamp-3">
                       {recipe.description}
@@ -290,7 +298,8 @@ const AiMenuDashboard: React.FC = () => {
                               menu_name: recipe.title,
                               cooking_time: recipe.time,
                               description: recipe.description,
-                              image_url: recipe.image
+                              image_url: recipe.image,
+                              recipeId: recipe.title // Using title as unique key for animation
                             }
                           });
                         }}
@@ -300,7 +309,7 @@ const AiMenuDashboard: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))
             ) : (
               <div className="col-span-full flex justify-center items-center py-36 opacity-100">

@@ -14,15 +14,17 @@ const HowItWorks = lazy(() => import('../features/landingpage/components/HowItWo
 const NutritionalScoring = lazy(() => import('../features/landingpage/pages/NutritionalScoring'));
 const AiPersonalization = lazy(() => import('../features/landingpage/pages/DoctorFoodiePersonalization'));
 const SpeedEfficiency = lazy(() => import('../features/landingpage/pages/SpeedEfficiency'));
-const Login = lazy(() => import('../features/auth/pages/Login'));
-const SignUp = lazy(() => import("../features/auth/pages/SignUp"));
+// const Login = lazy(() => import('../features/auth/pages/Login'));
+// const SignUp = lazy(() => import("../features/auth/pages/SignUp"));
 const SplashScreen = lazy(() => import('../features/splashscreen/pages/SplashScreen'));
 const RecipeConfigurationChat = lazy(() => import("../features/pantry/components/RecipeConfigurationChat"));
 const RecipeDetails = lazy(() => import("../features/pantry/components/RecipeDetails"));
 const AiCuratedMenu = lazy(() => import("../features/pantry/components/AiCuratedMenu"));
 const SavedRecipes = lazy(() => import("../features/pantry/pages/SavedRecipes"));
 const MealPlan = lazy(() => import("../features/pantry/pages/MealPlan"));
-
+const ShareMasterpiece = lazy(() => import("../features/pantry/pages/ShareMasterpiece"));
+const Community = lazy(() => import("../features/community/pages/Community"));
+const CommunityPostDetails = lazy(() => import("../features/community/pages/CommunityPostDetails"));
 
 const SplashToLanding = () => {
   const location = useLocation();
@@ -89,6 +91,9 @@ function AppRoutes() {
   return (
     <Suspense fallback={<DailyDishLoader />}>
       <Routes>
+        <Route path="community" element={<Community />} />
+        <Route path="community/:slug" element={<CommunityPostDetails />} />
+
         {/* --- PUBLIC ROUTES --- */}
         <Route element={<PublicRoute />}>
           <Route path="/" element={<SplashToLanding />} />
@@ -112,6 +117,7 @@ function AppRoutes() {
             <Route path="ai-menu" element={<AiCuratedMenu />} />
             <Route path="saved-recipes" element={<SavedRecipes />} />
             <Route path="meal-plan" element={<MealPlan />} />
+            <Route path="share-masterpiece" element={<ShareMasterpiece />} />
             {/* Add more protected routes here */}
           </Route>
         </Route>

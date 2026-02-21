@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Check, ArrowLeft, Loader2, Heart } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import defaultRecipeImage from '../../../assets/Recipe_default_image.webp';
 import { pantryService } from '../api/saveMenuService';
 import { getRecipeDetails } from '../api/recipeDetailsService';
@@ -155,7 +156,12 @@ export default function RecipeDetails() {
   return (
     <div className="w-full text-brand-dark min-h-full flex flex-col">
       {/* Header */}
-      <div className="mb-6 relative z-10 shrink-0">
+      <motion.div
+        initial={{ opacity: 0, y: -20, rotate: -5, scale: 0.9 }}
+        animate={{ opacity: 1, y: 0, rotate: 0, scale: 1 }}
+        transition={{ delay: 0.2, duration: 0.5, type: "spring" }}
+        className="mb-6 relative z-10 shrink-0"
+      >
         <button
           onClick={() => navigate(-1)}
           className="mb-4 flex items-center gap-2 text-brand-accent font-bold hover:text-brand-dark transition-colors cursor-pointer"
@@ -165,7 +171,7 @@ export default function RecipeDetails() {
         </button>
         <h1 className="text-2xl md:text-2xl font-bold">Recipe | {menu_name || recipeData?.menu_name}</h1>
         <p className="text-brand-accent font-medium text-sm">Delicious & Healthy Choice</p>
-      </div>
+      </motion.div>
 
       {/* Main Content Area */}
       {loading ? (
@@ -183,33 +189,57 @@ export default function RecipeDetails() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-8">
+        <motion.div
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-8"
+        >
           {/* Left Column */}
           <div className="flex flex-col gap-8">
             {/* Hero Image */}
-            <div className="relative h-60 md:h-90 rounded-3xl overflow-hidden group shadow-lg">
+            <motion.div
+              layoutId={`image-container-${menu_name}`}
+              className="relative h-60 md:h-90 rounded-3xl overflow-hidden group shadow-lg z-20"
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+            >
               <div className="absolute inset-0 bg-slate-800 ">
-                <img
+                <motion.img
+                  layoutId={`image-${menu_name}`}
                   src={defaultRecipeImage}
                   alt={recipeData.menu_name}
                   className="w-full h-full object-cover opacity-60"
-                  onError={(e) => {
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  onError={(e: any) => {
                     e.currentTarget.src = defaultRecipeImage;
                   }}
                 />
               </div>
 
               <div className="absolute bottom-0 left-0 p-8 w-full bg-linear-to-t from-black/80 to-transparent text-white">
-                <h2 className="text-3xl font-bold mb-2 text-brand-beige">{recipeData.menu_name}</h2>
-                <div className="flex gap-4 text-sm font-medium">
+                <motion.h2
+                  layoutId={`title-${menu_name}`}
+                  className="text-3xl font-bold mb-2 text-brand-beige"
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                >
+                  {recipeData.menu_name}
+                </motion.h2>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4, duration: 0.5 }}
+                  className="flex gap-4 text-sm font-medium"
+                >
                   <span className="flex items-center gap-1">{recipeData.time_breakdown?.prep_time} prep</span>
                   <span className="flex items-center gap-1">{recipeData.time_breakdown?.cook_time} cook</span>
-                </div>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Ingredients */}
-            <div className="h-fit">
+            <motion.div
+              initial={{ opacity: 0, y: 50, rotate: 3, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, rotate: 0, scale: 1 }}
+              transition={{ delay: 0.3, duration: 0.6, type: "spring" }}
+              className="h-fit"
+            >
               <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit backdrop-blur-xl">
                 <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#43533414]">
                   <h3 className="text-xl font-bold">Ingredients <span className="text-sm font-medium text-brand-accent ml-2">(Suggested for {servings} {servings > 1 ? 'People' : 'Person'})</span></h3>
@@ -277,83 +307,122 @@ export default function RecipeDetails() {
                   </>
                 )}
               </button>
-            </div>
+            </motion.div>
           </div>
 
           {/* Right Column */}
           <div className="flex flex-col gap-8">
             {/* Nutrition Dashboard */}
-            <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 flex flex-col justify-between backdrop-blur-xl ">
-              <h3 className="text-xl font-bold mb-4">Nutrition Dashboard</h3>
+            {/* Right Column Content - Wrapper for sequential transition */}
+            <div className="flex flex-col gap-8">
+              {/* Nutrition Dashboard */}
+              <motion.div
+                initial={{ opacity: 0, x: 50, rotate: -3, scale: 0.9 }}
+                animate={{ opacity: 1, x: 0, rotate: 0, scale: 1 }}
+                transition={{ delay: 0.4, duration: 0.6, type: "spring" }}
+                className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 flex flex-col justify-between backdrop-blur-xl "
+              >
+                <h3 className="text-xl font-bold mb-4">Nutrition Dashboard</h3>
 
-              <div className="grid grid-cols-2 gap-4 mb-8">
-                <div className="bg-[#CEDEBD36] rounded-2xl p-6 text-center">
-                  <div className="text-xs font-bold text-brand-accent mb-1">CALORIES</div>
-                  <div className="text-3xl font-extrabold text-brand-accent">{recipeData.nutrition?.total_calories?.replace(' kcal', '')}</div>
-                  <div className="text-xs text-brand-accent">Per Serving</div>
-                </div>
-                <div className="bg-[#CEDEBD36] rounded-2xl p-6 text-center">
-                  <div className="text-xs font-bold text-brand-accent mb-1">FIBER</div>
-                  <div className="text-3xl font-extrabold text-brand-accent">{recipeData.nutrition?.fiber}</div>
-                  <div className="text-xs text-brand-accent">{/* Daily Value not in API */}</div>
-                </div>
-              </div>
-
-              <div className="space-y-4 text-sm font-bold">
-                <div>
-                  <div className="flex justify-between mb-1">
-                    <span>Protein</span>
-                    <span>{recipeData.nutrition?.protein}</span>
+                <div className="grid grid-cols-2 gap-4 mb-8">
+                  <div className="bg-[#CEDEBD36] rounded-2xl p-6 text-center">
+                    <div className="text-xs font-bold text-brand-accent mb-1">CALORIES</div>
+                    <div className="text-3xl font-extrabold text-brand-accent">{recipeData.nutrition?.total_calories?.replace(' kcal', '')}</div>
+                    <div className="text-xs text-brand-accent">Per Serving</div>
                   </div>
-                  <div className="h-3 bg-[#CEDEBD36] rounded-full overflow-hidden">
-                    <div className="h-full bg-brand-accent w-[30%]"></div>
+                  <div className="bg-[#CEDEBD36] rounded-2xl p-6 text-center">
+                    <div className="text-xs font-bold text-brand-accent mb-1">FIBER</div>
+                    <div className="text-3xl font-extrabold text-brand-accent">{recipeData.nutrition?.fiber}</div>
+                    <div className="text-xs text-brand-accent">{/* Daily Value not in API */}</div>
                   </div>
                 </div>
-                <div>
-                  <div className="flex justify-between mb-1">
-                    <span>Carbohydrates</span>
-                    <span>{recipeData.nutrition?.carbohydrates}</span>
+
+                <div className="space-y-4 text-sm font-bold">
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span>Protein</span>
+                      <span>{recipeData.nutrition?.protein}</span>
+                    </div>
+                    <div className="h-3 bg-[#CEDEBD36] rounded-full overflow-hidden">
+                      <div className="h-full bg-brand-accent w-[30%]"></div>
+                    </div>
                   </div>
-                  <div className="h-3 bg-[#CEDEBD36] rounded-full overflow-hidden">
-                    <div className="h-full bg-brand-accent w-[65%]"></div>
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span>Carbohydrates</span>
+                      <span>{recipeData.nutrition?.carbohydrates}</span>
+                    </div>
+                    <div className="h-3 bg-[#CEDEBD36] rounded-full overflow-hidden">
+                      <div className="h-full bg-brand-accent w-[65%]"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span>Fats</span>
+                      <span>{recipeData.nutrition?.fat}</span>
+                    </div>
+                    <div className="h-3 bg-[#CEDEBD36] rounded-full overflow-hidden">
+                      <div className="h-full bg-brand-accent w-[20%]"></div>
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <div className="flex justify-between mb-1">
-                    <span>Fats</span>
-                    <span>{recipeData.nutrition?.fat}</span>
+              </motion.div>
+
+              {/* Suitability */}
+              {recipeData.suitability && recipeData.suitability.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, x: 50, rotate: 3, scale: 0.9 }}
+                  animate={{ opacity: 1, x: 0, rotate: 0, scale: 1 }}
+                  transition={{ delay: 0.5, duration: 0.6, type: "spring" }}
+                  className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-6 backdrop-blur-xl"
+                >
+                  <h3 className="text-lg font-bold mb-3">Suitability</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {recipeData.suitability.map((item, idx) => (
+                      <span key={idx} className={`${getSuitabilityColor(item)} text-brand-beige px-3 py-1 rounded-full text-sm font-bold shadow-sm`}>
+                        {item}
+                      </span>
+                    ))}
                   </div>
-                  <div className="h-3 bg-[#CEDEBD36] rounded-full overflow-hidden">
-                    <div className="h-full bg-brand-accent w-[20%]"></div>
+                </motion.div>
+              )}
+
+              {/* Preparation Steps */}
+              {prepSteps.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 50, rotate: -2, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, rotate: 0, scale: 1 }}
+                  transition={{ delay: 0.6, duration: 0.6, type: "spring" }}
+                  className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit backdrop-blur-xl"
+                >
+                  <h3 className="text-xl font-bold pb-4">Preparation Steps</h3>
+                  <div className="space-y-4">
+                    {prepSteps.map((step, idx) => (
+                      <div key={idx} className="flex gap-4">
+                        <div className="shrink-0 w-8 h-8 rounded-full bg-brand-accent text-brand-beige flex items-center justify-center font-bold text-sm">
+                          {idx + 1}
+                        </div>
+                        <div>
+                          <p className="text-sm leading-relaxed">{step}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
-              </div>
-            </div>
+                </motion.div>
+              )}
 
-            {/* Suitability */}
-            {recipeData.suitability && recipeData.suitability.length > 0 && (
-              <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-6 backdrop-blur-xl">
-                <h3 className="text-lg font-bold mb-3">Suitability</h3>
-                <div className="flex flex-wrap gap-2">
-                  {recipeData.suitability.map((item, idx) => (
-                    <span key={idx} className={`${getSuitabilityColor(item)} text-brand-beige px-3 py-1 rounded-full text-sm font-bold shadow-sm`}>
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-
-
-            {/* Preparation Steps */}
-            {prepSteps.length > 0 && (
-              <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit backdrop-blur-xl">
-                <h3 className="text-xl font-bold pb-4">Preparation Steps</h3>
+              {/* Cooking Steps */}
+              <motion.div
+                initial={{ opacity: 0, y: 50, rotate: 2, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, rotate: 0, scale: 1 }}
+                transition={{ delay: 0.7, duration: 0.6, type: "spring" }}
+                className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit backdrop-blur-xl"
+              >
+                <h3 className="text-xl font-bold pb-4">Cooking Steps</h3>
                 <div className="space-y-4">
-                  {prepSteps.map((step, idx) => (
+                  {cookingSteps.map((step, idx) => (
                     <div key={idx} className="flex gap-4">
-                      <div className="shrink-0 w-8 h-8 rounded-full bg-brand-accent text-brand-beige flex items-center justify-center font-bold text-sm">
+                      <div className="shrink-0 w-8 h-8 rounded-full bg-[#4A5D3B] text-brand-beige flex items-center justify-center font-bold text-sm">
                         {idx + 1}
                       </div>
                       <div>
@@ -362,28 +431,11 @@ export default function RecipeDetails() {
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
-
-            {/* Cooking Steps */}
-            <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 h-fit backdrop-blur-xl">
-              <h3 className="text-xl font-bold pb-4">Cooking Steps</h3>
-              <div className="space-y-4">
-                {cookingSteps.map((step, idx) => (
-                  <div key={idx} className="flex gap-4">
-                    <div className="shrink-0 w-8 h-8 rounded-full bg-[#4A5D3B] text-brand-beige flex items-center justify-center font-bold text-sm">
-                      {idx + 1}
-                    </div>
-                    <div>
-                      <p className="text-sm leading-relaxed">{step}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              </motion.div>
             </div>
 
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   );

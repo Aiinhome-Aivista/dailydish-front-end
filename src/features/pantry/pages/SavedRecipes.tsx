@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, ArrowLeft } from "lucide-react";
+import { motion } from "framer-motion";
 import { pantryService } from "../api/saveMenuService";
 import type { SavedMenuItem } from "../types/saveMenu";
 import defaultRecipeImage from '../../../assets/Recipe_default_image.webp';
@@ -78,7 +79,7 @@ const SavedRecipes = () => {
                 <button
                     onClick={() => navigate('/ai-menu')}
                     className="mt-1 -ml-1 hover:bg-black/5 rounded-full text-brand-dark transition-colors cursor-pointer"
-                   
+
                 >
                     <ArrowLeft size={24} />
                 </button>
@@ -96,36 +97,45 @@ const SavedRecipes = () => {
             <div className="max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {recipes.length > 0 ? (
                     recipes.map((recipe) => (
-                        <div
+                        <motion.div
                             key={recipe.id}
+                            layoutId={`card-${recipe.menu_name}`}
                             onClick={() => navigate('/recipe-details', {
                                 state: {
                                     menu_name: recipe.menu_name,
                                     cooking_time: recipe.cooking_time,
                                     description: recipe.description,
-                                    image_url: defaultRecipeImage
+                                    image_url: defaultRecipeImage,
+                                    recipeId: recipe.menu_name
                                 }
                             })}
-                            className="group relative flex flex-col p-4 rounded-4xl cursor-pointer transition-all duration-300 bg-[#CEDEBDB2] backdrop-blur-xl border border-white/30 hover:shadow-xl hover:scale-[1.01]"
+                            className="group relative flex flex-col p-4 rounded-4xl cursor-pointer transition-all duration-500 bg-[#CEDEBDB2] backdrop-blur-xl border border-white/30 hover:shadow-xl hover:scale-[1.01]"
                         >
                             {/* Image Container */}
-                            <div className="h-40 w-full mb-5 overflow-hidden rounded-2xl">
-                                <img
-                                    src={ defaultRecipeImage}
+                            <motion.div
+                                layoutId={`image-container-${recipe.menu_name}`}
+                                className="h-40 w-full mb-5 overflow-hidden rounded-2xl"
+                            >
+                                <motion.img
+                                    layoutId={`image-${recipe.menu_name}`}
+                                    src={defaultRecipeImage}
                                     loading="lazy"
                                     alt={recipe.menu_name}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                     onError={(e) => {
                                         e.currentTarget.src = defaultRecipeImage;
                                     }}
                                 />
-                            </div>
+                            </motion.div>
 
                             {/* Content */}
                             <div className="flex flex-col grow">
-                                <h3 className="text-xl font-bold mb-2 text-[#3e5035]">
+                                <motion.h3
+                                    layoutId={`title-${recipe.menu_name}`}
+                                    className="text-xl font-bold mb-2 text-[#3e5035]"
+                                >
                                     {recipe.menu_name}
-                                </h3>
+                                </motion.h3>
 
                                 <p className="text-sm leading-relaxed text-[#5e7054] mb-6 line-clamp-3">
                                     {recipe.description}
@@ -156,14 +166,14 @@ const SavedRecipes = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     ))
                 ) : (
-                  <div className="col-span-full flex justify-center items-center py-45 backdrop-opacity-100">
-  <p className="text-xl text-brand-dark font-bold ml-60">
-    No saved recipes found
-  </p>
-</div>
+                    <div className="col-span-full flex justify-center items-center py-45 backdrop-opacity-100">
+                        <p className="text-xl text-brand-dark font-bold ml-60">
+                            No saved recipes found
+                        </p>
+                    </div>
 
                 )}
             </div>
