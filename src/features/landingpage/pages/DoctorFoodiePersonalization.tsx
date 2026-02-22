@@ -1,20 +1,35 @@
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import NavBar from '../../../components/layout/NavBar';
-import LandingFooter from '../components/LandingFooter';
+import LandingFooter from '../../../components/layout/Footer';
+import PageTransitionOverlay from '../../../animations/pages/PageTransitionOverlay';
+import { motion } from 'framer-motion';
 
 const ChefPersonalization = () => {
   const navigate = useNavigate();
+   const [isTransitioning, setIsTransitioning] = useState(false);
+    const [isLeaving, setIsLeaving] = useState(false);
+  
+    const handleBack = () => {
+      setIsLeaving(true);
+      setIsTransitioning(true);
+      setTimeout(() => {
+        navigate('/', { state: { skipSplash: true } });
+      }, 2500);
+    };
 
   return (
     <div className="h-full w-full relative">
-      <NavBar />
-      <button
-        onClick={() => navigate('/', { state: { skipSplash: true } })}
-        className="absolute top-18 right-12 bg-brand-primary text-brand-dark px-4 py-2 rounded-lg font-semibold hover:bg-[#CEDEBD] transition-colors cursor-pointer flex items-center gap-2"
+            <PageTransitionOverlay isTransitioning={isTransitioning} />
+
+      <NavBar showBackButton={true} onBackClick={handleBack} />
+
+      <motion.div
+        initial={false}
+        animate={isLeaving ? { y: -60, opacity: 0 } : { y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+        className="flex flex-col"
       >
-        <span className="material-symbols-outlined">arrow_back</span>
-        Back
-      </button>
       <main className="pt-20 pb-20 px-6 md:px-12 max-w-6xl mx-auto min-h-[60vh]">
         {/* Hero Section */}
         <div className="text-center mb-16">
@@ -290,6 +305,7 @@ const ChefPersonalization = () => {
         </section>
       </main>
       <LandingFooter />
+      </motion.div>
     </div>
   );
 };

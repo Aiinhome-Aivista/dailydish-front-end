@@ -3,10 +3,10 @@ import NavBar from '../../../components/layout/NavBar';
 import LandingFeatures from '../components/Features';
 import LandingLeftovers from '../components/Leftovers';
 import ReadyToCook from '../components/ReadyToCook';
-import LandingFooter from '../components/LandingFooter';
+import LandingFooter from '../../../components/layout/Footer';
 import FirstSection from '../components/FirstSection';
-import LoginModal from '../../auth/components/LoginModal';
-import SignUpModal from '../../auth/components/SignUpModal';
+import LoginModal from '../../auth/pages/LoginModal';
+import SignUpModal from '../../auth/pages/SignUpModal';
 import Community from '../components/Community';
 
 function LandingPage() {

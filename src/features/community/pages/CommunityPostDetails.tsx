@@ -6,7 +6,7 @@ import type { CommunityPost } from '../types/community';
 import { BASE_URL } from '../../../config/endpoints';
 import cookerIcon from '../../../assets/cooker.svg';
 import defaultRecipeImage from '../../../assets/Recipe_default_image.webp';
-import LandingFooter from '../../landingpage/components/LandingFooter';
+import LandingFooter from '../../../components/layout/Footer';
 import DailyDishLoader from '../../../components/feedback/DailyDishLoader';
 import SocialShare from '../../../helper/SocialShare';
 

@@ -7,10 +7,10 @@ import Image1 from "../../../assets/1.svg";
 import Image2 from "../../../assets/2.svg";
 import Image3 from "../../../assets/3.svg";
 import { useNavigate } from "react-router-dom";
-import LogoLoop from "../../../animations/ui/LogoLoop";
+import LogoLoop from "../../../animations/pages/LogoLoop";
 import { motion } from "framer-motion";
-import BlurText from "../../../animations/ui/BlurText";
-import ShinyText from "../../../animations/ui/ShinyText";
+import BlurText from "../../../animations/pages/BlurText";
+import ShinyText from "../../../animations/pages/ShinyText";
 
 interface FirstSectionProps {
   onGetStarted?: () => void;

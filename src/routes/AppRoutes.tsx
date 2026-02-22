@@ -14,8 +14,6 @@ const HowItWorks = lazy(() => import('../features/landingpage/components/HowItWo
 const NutritionalScoring = lazy(() => import('../features/landingpage/pages/NutritionalScoring'));
 const AiPersonalization = lazy(() => import('../features/landingpage/pages/DoctorFoodiePersonalization'));
 const SpeedEfficiency = lazy(() => import('../features/landingpage/pages/SpeedEfficiency'));
-// const Login = lazy(() => import('../features/auth/pages/Login'));
-// const SignUp = lazy(() => import("../features/auth/pages/SignUp"));
 const SplashScreen = lazy(() => import('../features/splashscreen/pages/SplashScreen'));
 const RecipeConfigurationChat = lazy(() => import("../features/pantry/components/RecipeConfigurationChat"));
 const RecipeDetails = lazy(() => import("../features/pantry/components/RecipeDetails"));

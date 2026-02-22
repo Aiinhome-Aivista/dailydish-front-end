@@ -1,231 +1,245 @@
-import React from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../../../components/layout/NavBar';
-import LandingFooter from '../components/LandingFooter';
+import LandingFooter from '../../../components/layout/Footer';
 import Carousel from '../components/Carousel';
+import PageTransitionOverlay from '../../../animations/pages/PageTransitionOverlay';
+import { motion } from 'framer-motion';
 
 const NutritionalScoring = () => {
   const navigate = useNavigate();
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isLeaving, setIsLeaving] = useState(false);
+
+  const handleBack = () => {
+    setIsLeaving(true);
+    setIsTransitioning(true);
+    setTimeout(() => {
+      navigate('/', { state: { skipSplash: true } });
+    }, 2500);
+  };
 
   return (
-    <div className="h-full w-full relative">
-      <NavBar />
-      <button
-        onClick={() => navigate('/', { state: { skipSplash: true } })}
-        className="absolute top-18 right-12 bg-brand-primary text-brand-dark px-4 py-2 rounded-lg font-semibold hover:bg-[#CEDEBD] transition-colors cursor-pointer flex items-center gap-2"
+    <div className="h-full w-full relative bg-brand-beige">
+      <PageTransitionOverlay isTransitioning={isTransitioning} />
+
+      <NavBar showBackButton={true} onBackClick={handleBack} />
+
+      <motion.div
+        initial={false}
+        animate={isLeaving ? { y: -60, opacity: 0 } : { y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+        className="flex flex-col"
       >
-        <span className="material-symbols-outlined">arrow_back</span>Back
-      </button>
-      <main className="pt-20 pb-20 px-6 md:px-12 max-w-6xl mx-auto min-h-[60vh]">
-        {/* Hero Section */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-4xl font-bold text-brand-dark mb-6">Nutritional Scoring</h1>
-          <p className="text-md text-brand-dark leading-relaxed max-w-3xl mx-auto">
-            Every recipe comes with a dynamic Nutri-Score and full macro-nutrient breakdown (Proteins, Carbs, Fats).
-            Make informed decisions about your meals with comprehensive nutritional insights.
-          </p>
-        </div>
-
-        {/* What is Nutri-Score Section */}
-        <section className="mb-16">
-          <div className="">
-            <h2 className="text-3xl font-bold text-brand-dark mb-6">What is Nutri-Score?</h2>
-            <p className="text-lg text-brand-dark leading-relaxed mb-6">
-              Nutri-Score is a nutritional rating system that helps you understand the nutritional quality of food at a glance.
-              It uses a simple color-coded scale from A (dark green - best nutritional quality) to E (dark orange - poorest nutritional quality).
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-              <div className="text-center p-4 bg-green-600 text-white rounded-lg">
-                <div className="text-2xl font-bold">A</div>
-                <div className="text-sm">Excellent</div>
-              </div>
-              <div className="text-center p-4 bg-green-400 text-white rounded-lg">
-                <div className="text-2xl font-bold">B</div>
-                <div className="text-sm">Good</div>
-              </div>
-              <div className="text-center p-4 bg-yellow-400 text-white rounded-lg">
-                <div className="text-2xl font-bold">C</div>
-                <div className="text-sm">Average</div>
-              </div>
-              <div className="text-center p-4 bg-orange-400 text-white rounded-lg">
-                <div className="text-2xl font-bold">D</div>
-                <div className="text-sm">Poor</div>
-              </div>
-              <div className="text-center p-4 bg-red-500 text-white rounded-lg">
-                <div className="text-2xl font-bold">E</div>
-                <div className="text-sm">Bad</div>
-              </div>
-            </div>
-            <p className="text-base text-brand-dark/70">
-              The score is calculated based on positive nutrients (fiber, protein, fruits, vegetables, nuts) and negative nutrients
-              (energy, saturated fat, sugars, sodium) per 100g of food.
+        <main className="pt-20 pb-20 px-6 md:px-12 max-w-6xl mx-auto min-h-[60vh] flex-grow">
+          {/* Hero Section */}
+          <div className="text-center mb-16">
+            <h1 className="text-4xl md:text-4xl font-bold text-brand-dark mb-6">Nutritional Scoring</h1>
+            <p className="text-md text-brand-dark leading-relaxed max-w-3xl mx-auto">
+              Every recipe comes with a dynamic Nutri-Score and full macro-nutrient breakdown (Proteins, Carbs, Fats).
+              Make informed decisions about your meals with comprehensive nutritional insights.
             </p>
           </div>
-        </section>
 
-        {/* Macro-Nutrients Breakdown Section */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-brand-dark mb-8 text-center">Macro-Nutrient Breakdown</h2>
-          <Carousel>
-            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6 text-center h-full">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🥩</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Proteins</h3>
-              <p className=" mb-4 text-sm">
-                Essential for muscle repair, immune function, and overall body maintenance.
-                Sources include meat, fish, eggs, dairy, legumes, and nuts.
+          {/* What is Nutri-Score Section */}
+          <section className="mb-16">
+            <div className="">
+              <h2 className="text-3xl font-bold text-brand-dark mb-6">What is Nutri-Score?</h2>
+              <p className="text-lg text-brand-dark leading-relaxed mb-6">
+                Nutri-Score is a nutritional rating system that helps you understand the nutritional quality of food at a glance.
+                It uses a simple color-coded scale from A (dark green - best nutritional quality) to E (dark orange - poorest nutritional quality).
               </p>
-              <div className="text-sm font-medium">
-                Recommended: 10-35%
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+                <div className="text-center p-4 bg-green-600 text-white rounded-lg">
+                  <div className="text-2xl font-bold">A</div>
+                  <div className="text-sm">Excellent</div>
+                </div>
+                <div className="text-center p-4 bg-green-400 text-white rounded-lg">
+                  <div className="text-2xl font-bold">B</div>
+                  <div className="text-sm">Good</div>
+                </div>
+                <div className="text-center p-4 bg-yellow-400 text-white rounded-lg">
+                  <div className="text-2xl font-bold">C</div>
+                  <div className="text-sm">Average</div>
+                </div>
+                <div className="text-center p-4 bg-orange-400 text-white rounded-lg">
+                  <div className="text-2xl font-bold">D</div>
+                  <div className="text-sm">Poor</div>
+                </div>
+                <div className="text-center p-4 bg-red-500 text-white rounded-lg">
+                  <div className="text-2xl font-bold">E</div>
+                  <div className="text-sm">Bad</div>
+                </div>
+              </div>
+              <p className="text-base text-brand-dark/70">
+                The score is calculated based on positive nutrients (fiber, protein, fruits, vegetables, nuts) and negative nutrients
+                (energy, saturated fat, sugars, sodium) per 100g of food.
+              </p>
+            </div>
+          </section>
+
+          {/* Macro-Nutrients Breakdown Section */}
+          <section className="mb-16">
+            <h2 className="text-3xl font-bold text-brand-dark mb-8 text-center">Macro-Nutrient Breakdown</h2>
+            <Carousel>
+              <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6 text-center h-full">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🥩</span>
+                </div>
+                <h3 className="text-xl font-semibold mb-3">Proteins</h3>
+                <p className=" mb-4 text-sm">
+                  Essential for muscle repair, immune function, and overall body maintenance.
+                  Sources include meat, fish, eggs, dairy, legumes, and nuts.
+                </p>
+                <div className="text-sm font-medium">
+                  Recommended: 10-35%
+                </div>
+              </div>
+
+              <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg  p-6 text-center h-full">
+                <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🍞</span>
+                </div>
+                <h3 className="text-xl font-semibold  mb-3">Carbohydrates</h3>
+                <p className=" mb-4 text-sm">
+                  Primary energy source for the body and brain. Includes sugars, starches, and fiber.
+                  Found in grains, fruits, vegetables, and legumes.
+                </p>
+                <div className="text-sm  font-medium">
+                  Recommended: 45-65%
+                </div>
+              </div>
+
+              <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6 text-center h-full">
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🧈</span>
+                </div>
+                <h3 className="text-xl font-semibold  mb-3">Fats</h3>
+                <p className=" mb-4 text-sm">
+                  Important for hormone production, nutrient absorption, and cell membrane health.
+                  Includes saturated, unsaturated, and trans fats.
+                </p>
+                <div className="text-sm  font-medium">
+                  Recommended: 20-35%
+                </div>
+              </div>
+
+              <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6 text-center h-full">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🥦</span>
+                </div>
+                <h3 className="text-xl font-semibold  mb-3">Fiber</h3>
+                <p className=" mb-4 text-sm">
+                  Crucial for digestion and heart health. Helps maintain blood sugar levels and satiety.
+                  Abundant in fruits, vegetables, and whole grains.
+                </p>
+                <div className="text-sm  font-medium">
+                  Recommended: 25-30g/day
+                </div>
+              </div>
+
+              <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6 text-center h-full">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">💊</span>
+                </div>
+                <h3 className="text-xl font-semibold mb-3">Micronutrients</h3>
+                <p className=" mb-4 text-sm">
+                  Vitamins and minerals vital for immune system, energy production and bone health.
+                  Found in a varied, colorful diet.
+                </p>
+                <div className="text-sm  font-medium">
+                  Varies by nutrient
+                </div>
+              </div>
+            </Carousel>
+          </section>
+
+          {/* How It Helps Section */}
+          <section className="mb-16">
+            <div className="bg-gradient-to-r from-brand-primary to-brand-secondary rounded-lg p-8 text-brand-dark">
+              <h2 className="text-3xl font-bold mb-6 text-center">How Nutritional Scoring Helps You</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-xl font-semibold mb-3">Make Informed Choices</h3>
+                  <p className="mb-4">
+                    Quickly identify healthier options when comparing similar recipes or ingredients.
+                    The Nutri-Score provides an at-a-glance assessment of nutritional quality.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold mb-3">Balance Your Diet</h3>
+                  <p className="mb-4">
+                    Track your macro-nutrient intake to ensure you're getting the right balance
+                    of proteins, carbs, and fats for your lifestyle and health goals.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold mb-3">Meet Dietary Goals</h3>
+                  <p className="mb-4">
+                    Whether you're aiming for weight loss, muscle gain, or simply maintaining
+                    a healthy lifestyle, our detailed breakdowns help you stay on track.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold mb-3">Learn and Improve</h3>
+                  <p className="mb-4">
+                    Understand the nutritional composition of your meals and gradually
+                    improve your food choices over time.
+                  </p>
+                </div>
               </div>
             </div>
+          </section>
 
-            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg  p-6 text-center h-full">
-              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🍞</span>
-              </div>
-              <h3 className="text-xl font-semibold  mb-3">Carbohydrates</h3>
-              <p className=" mb-4 text-sm">
-                Primary energy source for the body and brain. Includes sugars, starches, and fiber.
-                Found in grains, fruits, vegetables, and legumes.
-              </p>
-              <div className="text-sm  font-medium">
-                Recommended: 45-65%
-              </div>
-            </div>
-
-            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6 text-center h-full">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🧈</span>
-              </div>
-              <h3 className="text-xl font-semibold  mb-3">Fats</h3>
-              <p className=" mb-4 text-sm">
-                Important for hormone production, nutrient absorption, and cell membrane health.
-                Includes saturated, unsaturated, and trans fats.
-              </p>
-              <div className="text-sm  font-medium">
-                Recommended: 20-35%
-              </div>
-            </div>
-
-            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6 text-center h-full">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🥦</span>
-              </div>
-              <h3 className="text-xl font-semibold  mb-3">Fiber</h3>
-              <p className=" mb-4 text-sm">
-                Crucial for digestion and heart health. Helps maintain blood sugar levels and satiety.
-                Abundant in fruits, vegetables, and whole grains.
-              </p>
-              <div className="text-sm  font-medium">
-                Recommended: 25-30g/day
-              </div>
-            </div>
-
-            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6 text-center h-full">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">💊</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Micronutrients</h3>
-              <p className=" mb-4 text-sm">
-                Vitamins and minerals vital for immune system, energy production and bone health.
-                Found in a varied, colorful diet.
-              </p>
-              <div className="text-sm  font-medium">
-                Varies by nutrient
-              </div>
-            </div>
-          </Carousel>
-        </section>
-
-        {/* How It Helps Section */}
-        <section className="mb-16">
-          <div className="bg-gradient-to-r from-brand-primary to-brand-secondary rounded-lg p-8 text-brand-dark">
-            <h2 className="text-3xl font-bold mb-6 text-center">How Nutritional Scoring Helps You</h2>
+          {/* Additional Features Section */}
+          <section className="mb-16">
+            <h2 className="text-3xl font-bold text-brand-dark mb-8 text-center">Additional Nutritional Features</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-xl font-semibold mb-3">Make Informed Choices</h3>
-                <p className="mb-4">
-                  Quickly identify healthier options when comparing similar recipes or ingredients.
-                  The Nutri-Score provides an at-a-glance assessment of nutritional quality.
+              <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6">
+                <h3 className="text-xl font-semibold  mb-4">Calorie Tracking</h3>
+                <p className="">
+                  Precise calorie calculations for each recipe, helping you manage your daily
+                  energy intake and maintain your target weight goals.
                 </p>
               </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-3">Balance Your Diet</h3>
-                <p className="mb-4">
-                  Track your macro-nutrient intake to ensure you're getting the right balance
-                  of proteins, carbs, and fats for your lifestyle and health goals.
+              <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6">
+                <h3 className="text-xl font-semibold  mb-4">Portion Control</h3>
+                <p className="">
+                  Nutritional information is provided per serving, making it easy to adjust
+                  portions and understand the impact on your overall nutrition.
                 </p>
               </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-3">Meet Dietary Goals</h3>
-                <p className="mb-4">
-                  Whether you're aiming for weight loss, muscle gain, or simply maintaining
-                  a healthy lifestyle, our detailed breakdowns help you stay on track.
+              <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6">
+                <h3 className="text-xl font-semibold  mb-4">Allergen Information</h3>
+                <p className="">
+                  Clear identification of common allergens and dietary restrictions,
+                  ensuring safe and suitable meal choices for everyone.
                 </p>
               </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-3">Learn and Improve</h3>
-                <p className="mb-4">
-                  Understand the nutritional composition of your meals and gradually
-                  improve your food choices over time.
+              <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6">
+                <h3 className="text-xl font-semibold  mb-4">Customizable Goals</h3>
+                <p className="">
+                  Set personal nutritional targets and receive recommendations
+                  tailored to your specific health and fitness objectives.
                 </p>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* Additional Features Section */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-brand-dark mb-8 text-center">Additional Nutritional Features</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6">
-              <h3 className="text-xl font-semibold  mb-4">Calorie Tracking</h3>
-              <p className="">
-                Precise calorie calculations for each recipe, helping you manage your daily
-                energy intake and maintain your target weight goals.
+          {/* Call to Action */}
+          <section className="text-center">
+            <div className=" text-brand-dark">
+              <h2 className="text-2xl font-bold mb-4">Start Making Healthier Choices Today</h2>
+              <p className="mb-6">
+                Join DailyDish and discover how easy it is to eat healthier with our comprehensive
+                nutritional scoring system guiding your every meal decision.
               </p>
+           
             </div>
-            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6">
-              <h3 className="text-xl font-semibold  mb-4">Portion Control</h3>
-              <p className="">
-                Nutritional information is provided per serving, making it easy to adjust
-                portions and understand the impact on your overall nutrition.
-              </p>
-            </div>
-            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6">
-              <h3 className="text-xl font-semibold  mb-4">Allergen Information</h3>
-              <p className="">
-                Clear identification of common allergens and dietary restrictions,
-                ensuring safe and suitable meal choices for everyone.
-              </p>
-            </div>
-            <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-2xl shadow-lg p-6">
-              <h3 className="text-xl font-semibold  mb-4">Customizable Goals</h3>
-              <p className="">
-                Set personal nutritional targets and receive recommendations
-                tailored to your specific health and fitness objectives.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Call to Action */}
-        <section className="text-center">
-          <div className="bg-brand-primary rounded-lg p-8 text-brand-dark">
-            <h2 className="text-2xl font-bold mb-4">Start Making Healthier Choices Today</h2>
-            <p className="mb-6">
-              Join DailyDish and discover how easy it is to eat healthier with our comprehensive
-              nutritional scoring system guiding your every meal decision.
-            </p>
-            <button className="text-brand-primary px-8 py-3 rounded-lg font-semibold cursor-pointer transition-colors" onClick={() => navigate('/login')}>
-              Get Started
-            </button>
-          </div>
-        </section>
-      </main>
-      <LandingFooter />
+          </section>
+        </main>
+        <LandingFooter />
+      </motion.div>
     </div>
   );
 };
