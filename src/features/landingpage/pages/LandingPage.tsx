@@ -56,7 +56,7 @@ function LandingPage() {
         <FirstSection onGetStarted={openLoginModal} />
         <LandingFeatures />
         <LandingLeftovers />
-        <ReadyToCook />
+        <ReadyToCook onSignUpClick={openSignUpModal} />
         <Community />
       </main>
       <LandingFooter />

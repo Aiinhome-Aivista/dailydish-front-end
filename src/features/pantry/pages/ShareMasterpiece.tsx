@@ -145,7 +145,7 @@ const ShareMasterpiece = () => {
                             [&::-moz-range-thumb]:shadow-md"
                     />
                 </div>
-                <div className="flex justify-between text-xs font-bold text-brand-dark px-0 mt-1">
+                <div className="flex justify-between text-xs font-bold text-brand-dark -mt-6">
                     <span>01</span>
                     <span>10</span>
                 </div>

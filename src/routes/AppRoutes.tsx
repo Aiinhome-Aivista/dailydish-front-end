@@ -23,6 +23,9 @@ const MealPlan = lazy(() => import("../features/pantry/pages/MealPlan"));
 const ShareMasterpiece = lazy(() => import("../features/pantry/pages/ShareMasterpiece"));
 const Community = lazy(() => import("../features/community/pages/Community"));
 const CommunityPostDetails = lazy(() => import("../features/community/pages/CommunityPostDetails"));
+const ContactUs = lazy(() => import("../support/ContactUs"));
+const PrivacyPolicy = lazy(() => import("../legal/PrivacyPolicy"));
+const HelpCenter = lazy(() => import("../support/HelpCenter"));
 
 const SplashToLanding = () => {
   const location = useLocation();
@@ -99,12 +102,16 @@ function AppRoutes() {
           {/* Login and SignUp pages kept as fallbacks */}
           <Route path="login" element={<SplashToLanding />} />
           <Route path="signup" element={<SplashToLanding />} />
-          <Route path="explore-recipes" element={<RecipesPage />} />
-          <Route path="How-it-Works" element={<HowItWorks />} />
-          <Route path="nutritional-scoring" element={<NutritionalScoring />} />
-          <Route path="ai-personalization" element={<AiPersonalization />} />
-          <Route path="speed-efficiency" element={<SpeedEfficiency />} />
         </Route>
+
+        <Route path="explore-recipes" element={<RecipesPage />} />
+        <Route path="How-it-Works" element={<HowItWorks />} />
+        <Route path="nutritional-scoring" element={<NutritionalScoring />} />
+        <Route path="ai-personalization" element={<AiPersonalization />} />
+        <Route path="speed-efficiency" element={<SpeedEfficiency />} />
+        <Route path="contact-us" element={<ContactUs />} />
+        <Route path="privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="help-center" element={<HelpCenter />} />
 
         {/* --- PROTECTED ROUTES --- */}
         <Route element={<PrivateRoute />}>

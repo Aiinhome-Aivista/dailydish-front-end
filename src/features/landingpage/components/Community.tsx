@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Star, Clock, Users, ArrowRight } from 'lucide-react';
+import { Star, StarHalf, Clock, Users, ArrowRight } from 'lucide-react';
 import { communityService } from '../../community/api/communityService';
 import type { CommunityPost } from '../../community/types/community';
 import { BASE_URL } from '../../../config/endpoints';
@@ -102,14 +102,23 @@ const Community = () => {
 
                                 {/* Rating */}
                                 <div className="flex items-center gap-1 mb-3">
-                                    {[...Array(5)].map((_, i) => (
-                                        <Star
-                                            key={i}
-                                            size={14}
-                                            className={`${i < Math.floor(post.rating) ? "text-brand-accent fill-brand-accent" : "text-gray-300"}`}
-                                        />
-                                    ))}
-                                    <span className="text-xs font-bold text-[#435334] ml-1">{post.rating}</span>
+                                    {[...Array(5)].map((_, i) => {
+                                        const starValue = i + 1;
+                                        const normalizedRating = post.rating / 2;
+                                        return (
+                                            <span key={i} className="relative">
+                                                <Star size={14} className="text-gray-300" />
+                                                {normalizedRating >= starValue ? (
+                                                    <Star size={14} className="text-brand-accent fill-brand-accent absolute inset-0" />
+                                                ) : normalizedRating >= starValue - 0.5 ? (
+                                                    <StarHalf size={14} className="text-brand-accent fill-brand-accent absolute inset-0" />
+                                                ) : null}
+                                            </span>
+                                        );
+                                    })}
+                                    <span className="text-xs font-bold text-[#435334] ml-1">
+                                        {(post.rating / 2).toFixed(1)}
+                                    </span>
                                 </div>
 
                                 {/* Story */}

@@ -60,7 +60,7 @@ const SideBar = ({ isOpen, onClose }: SideBarProps) => {
       {/* Sidebar Container */}
       <aside
         className={`
-          fixed top-0 left-0 z-50 h-full bg-brand-beige border-r border-[#95B974]
+          fixed top-0 left-0 z-50 h-full bg-brand-beige border-r border-brand-primary
           transition-all duration-300 ease-in-out flex flex-col
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
           ${isCollapsed ? 'w-20' : 'w-60'}
@@ -115,22 +115,22 @@ const SideBar = ({ isOpen, onClose }: SideBarProps) => {
 
           {/* Bottom Section */}
           <div className={`mt-65 space-y-2 p-4 ${isCollapsed ? 'items-center flex flex-col' : ''}`}>
-            <a href="/How-it-Works" className={`flex items-center gap-3 text-brand-dark rounded-xl hover:bg-brand-light/50 ${isCollapsed ? 'justify-center w-full p-2' : ''}`} title="How it works">
+            <Link to="/How-it-Works" className={`flex items-center gap-3 text-brand-dark rounded-xl hover:bg-brand-light/50 ${isCollapsed ? 'justify-center w-full p-2' : ''}`} title="How it works">
               {isCollapsed && <span className="material-symbols-outlined">help</span>}
               {!isCollapsed && <span>How it works</span>}
-            </a>
-            <a href="/pricing" className={`flex items-center gap-3 text-brand-dark rounded-xl hover:bg-brand-light/50 ${isCollapsed ? 'justify-center w-full p-2' : ''}`} title="Pricing">
+            </Link>
+            {/* <a href="/pricing" className={`flex items-center gap-3 text-brand-dark rounded-xl hover:bg-brand-light/50 ${isCollapsed ? 'justify-center w-full p-2' : ''}`} title="Pricing">
               {isCollapsed && <span className="material-symbols-outlined">payments</span>}
               {!isCollapsed && <span>Pricing</span>}
-            </a>
-            <a href="/explore-recipes" className={`flex items-center gap-3 text-brand-dark rounded-xl hover:bg-brand-light/50 ${isCollapsed ? 'justify-center w-full p-2' : ''}`} title="Explore recipes">
+            </a> */}
+            <Link to="/explore-recipes" className={`flex items-center gap-3 text-brand-dark rounded-xl hover:bg-brand-light/50 ${isCollapsed ? 'justify-center w-full p-2' : ''}`} title="Explore recipes">
               {isCollapsed && <span className="material-symbols-outlined">explore</span>}
               {!isCollapsed && <span>Explore recipes</span>}
-            </a>
-            <a href="/community" className={`flex items-center gap-3 text-brand-dark rounded-xl hover:bg-brand-light/50 ${isCollapsed ? 'justify-center w-full p-2' : ''}`} title="Community">
+            </Link>
+            <Link to="/community" className={`flex items-center gap-3 text-brand-dark rounded-xl hover:bg-brand-light/50 ${isCollapsed ? 'justify-center w-full p-2' : ''}`} title="Community">
               {isCollapsed && <span className="material-symbols-outlined">group</span>}
               {!isCollapsed && <span>Community</span>}
-            </a>
+            </Link>
           </div>
         </div>
       </aside>

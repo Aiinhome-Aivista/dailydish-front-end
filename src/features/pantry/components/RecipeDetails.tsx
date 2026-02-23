@@ -17,14 +17,13 @@ export default function RecipeDetails() {
   const [servings, setServings] = useState(4);
   const location = useLocation();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const { menu_name, cooking_time, image_url, details } = location.state || {};
+  const [recipeData, setRecipeData] = useState<RecipeDetailData | null>(details || null);
+  const [loading, setLoading] = useState(!details);
   const [saving, setSaving] = useState(false);
   const [updatingServings, setUpdatingServings] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const [recipeData, setRecipeData] = useState<RecipeDetailData | null>(null);
-  const dataFetchedRef = useRef(false);
-
-  const { menu_name, cooking_time, image_url } = location.state || {};
+  const dataFetchedRef = useRef(!!details);
 
   useEffect(() => {
     const fetchRecipeDetails = async () => {
@@ -51,7 +50,7 @@ export default function RecipeDetails() {
     };
 
     fetchRecipeDetails();
-  }, [menu_name, cooking_time]);
+  }, [menu_name, cooking_time, details]);
 
   const handleSaveRecipe = async () => {
     if (!recipeData || !menu_name) return;

@@ -336,7 +336,7 @@ const MealPlan = () => {
                 <div className="w-full">
                     {/* Days Header */}
                     <div className="grid grid-cols-7 mb-4">
-                        {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
+                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
                             <div key={day} className="text-center">
                                 <span className="text-brand-dark font-normal uppercase tracking-widest text-sm">{day}</span>
                             </div>
@@ -417,7 +417,8 @@ const MealPlan = () => {
                                                                         state: {
                                                                             menu_name: meal.menu_name,
                                                                             cooking_time: meal.time_breakdown?.cook_time,
-                                                                            image_url: defaultRecipeImage
+                                                                            image_url: defaultRecipeImage,
+                                                                            details: meal
                                                                         }
                                                                     });
                                                                 }}

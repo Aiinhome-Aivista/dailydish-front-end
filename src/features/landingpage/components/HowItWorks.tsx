@@ -4,11 +4,30 @@ import { useNavigate } from 'react-router-dom'
 import Footer from '../../../components/layout/Footer';
 import PageTransitionOverlay from '../../../animations/pages/PageTransitionOverlay';
 import { motion } from 'framer-motion';
+import LoginModal from '../../auth/pages/LoginModal';
+import SignUpModal from '../../auth/pages/SignUpModal';
 
 function HowItWorks() {
   const navigate = useNavigate();
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isLeaving, setIsLeaving] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showSignUpModal, setShowSignUpModal] = useState(false);
+
+  const openLoginModal = () => {
+    setShowSignUpModal(false);
+    setShowLoginModal(true);
+  };
+
+  const openSignUpModal = () => {
+    setShowLoginModal(false);
+    setShowSignUpModal(true);
+  };
+
+  const closeAllModals = () => {
+    setShowLoginModal(false);
+    setShowSignUpModal(false);
+  };
 
   const handleBack = () => {
     setIsLeaving(true);
@@ -22,7 +41,12 @@ function HowItWorks() {
     <div className="min-h-screen bg-brand-beige relative overflow-hidden">
       <PageTransitionOverlay isTransitioning={isTransitioning} />
 
-      <NavBar showBackButton={true} onBackClick={handleBack} />
+      <NavBar
+        showBackButton={true}
+        onBackClick={handleBack}
+        onLoginClick={openLoginModal}
+        onSignUpClick={openSignUpModal}
+      />
 
       <motion.div
         initial={false}
@@ -196,7 +220,7 @@ function HowItWorks() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
                   className="bg-brand-dark text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-[#2a3a24] transition-colors duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 cursor-pointer"
-                  onClick={() => navigate("/signup")}
+                  onClick={openSignUpModal}
                 >
                   Get Started Free
                 </button>
@@ -213,6 +237,18 @@ function HowItWorks() {
         </div>
         <Footer />
       </motion.div>
+
+      {/* Modals */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={closeAllModals}
+        onSwitchToSignUp={openSignUpModal}
+      />
+      <SignUpModal
+        isOpen={showSignUpModal}
+        onClose={closeAllModals}
+        onSwitchToLogin={openLoginModal}
+      />
     </div>
   )
 }

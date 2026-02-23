@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Star, Clock, Users, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Search, Star, StarHalf, Clock, Users, ArrowRight, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { communityService } from '../api/communityService';
 import type { CommunityPost } from '../types/community';
@@ -10,6 +10,7 @@ import defaultRecipeImage from '../../../assets/Recipe_default_image.webp';
 import LandingFooter from '../../../components/layout/Footer';
 import DailyDishLoader from '../../../components/feedback/DailyDishLoader';
 import PageTransitionOverlay from '../../../animations/pages/PageTransitionOverlay';
+import { useAuth } from '../../../features/auth/context/AuthContext';
 
 const Community = () => {
     const navigate = useNavigate();
@@ -19,6 +20,7 @@ const Community = () => {
     const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
+    const { user, isLoggedIn } = useAuth();
     const itemsPerPage = 9;
 
     const createSlug = (name: string) => {
@@ -76,7 +78,7 @@ const Community = () => {
         setIsTransitioning(true);
         setTimeout(() => {
             navigate('/', { state: { skipSplash: true } });
-        }, 2500); // Wait for the staggered panel transition
+        }, 2500); 
     };
 
     // Fail-safe variants
@@ -115,20 +117,32 @@ const Community = () => {
                         <img src={cookerIcon} alt="DailyDish Logo" className="w-8 h-8" />
                         <span className="text-brand-dark font-bold text-xl italic">DailyDish</span>
                     </div>
-                    <motion.button
-                        onClick={handleBack}
-                        className="p-2 text-brand-dark rounded-full transition-colors cursor-pointer flex items-center justify-center"
-                        initial={{ x: 30, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        whileHover={{ scale: 1.15, backgroundColor: "rgba(67, 83, 52, 0.15)" }}
-                        whileTap={{ scale: 0.85, rotate: -10 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                    >
-                        <ArrowLeft size={24} />
-                    </motion.button>
+                    <div className="flex items-center gap-4">
+                        {isLoggedIn && (
+                            <button className="hidden md:flex group items-center h-12 bg-brand-accent hover:bg-brand-dark rounded-full transition-all duration-500 ease-in-out max-w-12 hover:max-w-50 cursor-pointer overflow-hidden shadow-sm hover:shadow-md">
+                                <div className="w-12 h-12 flex items-center justify-center shrink-0">
+                                    <span className="material-symbols-outlined text-[24px] text-brand-dark group-hover:text-white transition-colors duration-300">face</span>
+                                </div>
+                                <span className="text-white font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pr-4">
+                                    {user?.username || "User"}
+                                </span>
+                            </button>
+                        )}
+                        <motion.button
+                            onClick={handleBack}
+                            className="p-2 text-brand-dark rounded-full transition-colors cursor-pointer flex items-center justify-center"
+                            initial={{ x: 30, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            whileHover={{ scale: 1.15, backgroundColor: "rgba(67, 83, 52, 0.15)" }}
+                            whileTap={{ scale: 0.85, rotate: -10 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                        >
+                            <ArrowLeft size={24} />
+                        </motion.button>
+                    </div>
                 </header>
 
-                <main className="max-w-7xl mx-auto px-6 py-12 min-h-[60vh] flex-grow">
+                <main className="max-w-7xl mx-auto px-6 py-12 min-h-[60vh] grow">
                     {/* Title Section */}
                     <div className="flex flex-col md:flex-row justify-between items-start mb-14">
                         <motion.div
@@ -222,14 +236,23 @@ const Community = () => {
 
                                             {/* Rating */}
                                             <div className="flex items-center gap-1 mb-3">
-                                                {[...Array(5)].map((_, i) => (
-                                                    <Star
-                                                        key={i}
-                                                        size={14}
-                                                        className={`${i < Math.floor(post.rating) ? "text-brand-accent fill-brand-accent" : "text-gray-300"}`}
-                                                    />
-                                                ))}
-                                                <span className="text-xs font-bold text-brand-dark ml-1">{post.rating.toString().padStart(2, '0')}</span>
+                                                {[...Array(5)].map((_, i) => {
+                                                    const starValue = i + 1;
+                                                    const normalizedRating = post.rating / 2;
+                                                    return (
+                                                        <span key={i} className="relative">
+                                                            <Star size={14} className="text-gray-300" />
+                                                            {normalizedRating >= starValue ? (
+                                                                <Star size={14} className="text-brand-accent fill-brand-accent absolute inset-0" />
+                                                            ) : normalizedRating >= starValue - 0.5 ? (
+                                                                <StarHalf size={14} className="text-brand-accent fill-brand-accent absolute inset-0" />
+                                                            ) : null}
+                                                        </span>
+                                                    );
+                                                })}
+                                                <span className="text-xs font-bold text-brand-dark ml-1">
+                                                    {(post.rating / 2).toFixed(1)}
+                                                </span>
                                             </div>
 
                                             {/* Content */}

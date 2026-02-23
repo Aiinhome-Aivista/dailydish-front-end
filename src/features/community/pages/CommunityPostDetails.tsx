@@ -37,6 +37,7 @@ const CommunityPostDetails = () => {
                         document.title = `${foundPost.menu_name} - Community Creations | DailyDish`;
                         const metaDesc = document.querySelector('meta[name="description"]');
                         if (metaDesc) {
+                            metaDesc.setAttribute('data-original-content', metaDesc.getAttribute('content') || '');
                             metaDesc.setAttribute('content', foundPost.comment || `Discover how to make ${foundPost.menu_name} on DailyDish.`);
                         }
                     } else {
@@ -52,6 +53,22 @@ const CommunityPostDetails = () => {
 
         fetchData();
         window.scrollTo(0, 0);
+
+        // Cleanup function to reset SEO tags when leaving the page
+        return () => {
+            document.title = "DailyDish";
+            const metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc) {
+                const originalContent = metaDesc.getAttribute('data-original-content');
+                if (originalContent) {
+                    metaDesc.setAttribute('content', originalContent);
+                    metaDesc.removeAttribute('data-original-content');
+                } else {
+                    // Fallback to a default description if no original was stored
+                    metaDesc.setAttribute('content', 'DailyDish - Your ultimate culinary companion.');
+                }
+            }
+        };
     }, [slug]);
 
     const getImageUrl = (url: string) => {
@@ -105,7 +122,7 @@ const CommunityPostDetails = () => {
                                 <p className='text-sm text-brand-dark'>Shared By :</p>
                                 <p className="text-sm font-medium text-brand-accent">{post.shared_by}</p>
                             </div>
-                            <p className="text-[10px] text-[#7A8F63] uppercase tracking-widest text-right">
+                            <p className="text-[10px] text-brand-primary uppercase tracking-widest  text-left">
                                 {new Date(post.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                             </p>
                         </div>
@@ -115,7 +132,7 @@ const CommunityPostDetails = () => {
                                 <p className='text-sm text-brand-dark'>Shared By:</p>
                                 <p className="text-sm font-medium text-brand-accent">{post.shared_by}</p>
                             </div>
-                            <p className="text-[10px] text-[#7A8F63] uppercase tracking-widest mt-0.5">
+                            <p className="text-[10px] text-brand-primary uppercase tracking-widest mt-0.5">
                                 {new Date(post.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                             </p>
                         </div>
