@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Mail, Lock, Eye, EyeOff, X, RefreshCw } from 'lucide-react';
 import logo from '../../../assets/icons/Recipe logo.svg';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../../../shared/context/ToastContext';
@@ -7,6 +7,8 @@ import { useToast } from '../../../shared/context/ToastContext';
 import { useNavigate } from 'react-router-dom';
 import { generateRecipes } from '../../pantry/api/recipeConfigurationService';
 import type { RecipeGenerationRequest } from '../../pantry/types/recipeConfigurationChat';
+import { authService } from '../api/authService';
+import type { CaptchaResponse } from '../types/captcha';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -20,14 +22,43 @@ function LoginModal({ isOpen, onClose, onSwitchToSignUp }: LoginModalProps) {
   const { login, isLoading, error } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [captcha, setCaptcha] = useState('');
+  const [captchaData, setCaptchaData] = useState<CaptchaResponse | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
+  const [isRefreshingCaptcha, setIsRefreshingCaptcha] = useState(false);
+
+  const fetchCaptcha = async () => {
+    setIsRefreshingCaptcha(true);
+    try {
+      const data = await authService.getCaptcha();
+      if (data) {
+        setCaptchaData(data);
+        setCaptcha('');
+      }
+    } catch (err) {
+      console.error('Failed to fetch captcha:', err);
+    } finally {
+      setIsRefreshingCaptcha(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchCaptcha();
+    }
+  }, [isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLocalError(null);
     try {
-      await login({ email, password });
+      await login({
+        email,
+        password,
+        captcha,
+        captcha_id: captchaData?.captcha_id
+      });
       showToast('success', 'Success', 'Login Successful!');
 
       const pendingData = localStorage.getItem('pending_recipe_data');
@@ -64,6 +95,8 @@ function LoginModal({ isOpen, onClose, onSwitchToSignUp }: LoginModalProps) {
         onClose();
       }
     } catch (err) {
+      // Refresh captcha on error
+      fetchCaptcha();
       // Error is handled by the auth context
     }
   };
@@ -133,6 +166,52 @@ function LoginModal({ isOpen, onClose, onSwitchToSignUp }: LoginModalProps) {
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
+          </div>
+
+          {/* Captcha Section */}
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              <div className="flex-1 bg-white/20 rounded-xl p-2 flex items-center justify-center min-h-12 overflow-hidden">
+                {captchaData ? (() => {
+                  const image = captchaData.captcha_image || (captchaData as any).image;
+                  if (image) {
+                    const src = image.startsWith('http') || image.startsWith('data:image')
+                      ? image
+                      : `data:image/png;base64,${image}`;
+                    return <img src={src} alt="Captcha" className="max-h-full invert" />;
+                  }
+                  if ((captchaData as any).captcha) {
+                    return (
+                      <div className="text-white font-mono text-xl tracking-[0.4em] font-bold select-none  px-4 py-1 rounded-lg">
+                        {(captchaData as any).captcha}
+                      </div>
+                    );
+                  }
+                  return <span className="text-white/40 text-xs">Invalid data</span>;
+                })() : (
+                  <div className="w-full h-8 bg-white/10 animate-pulse rounded" />
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={fetchCaptcha}
+                disabled={isRefreshingCaptcha}
+                className="p-3 bg-white/20 hover:bg-white/30 text-white rounded-xl transition-all active:scale-[0.95] disabled:opacity-50"
+                title="Refresh Captcha"
+              >
+                <RefreshCw size={20} className={isRefreshingCaptcha ? 'animate-spin' : ''} />
+              </button>
+            </div>
+            <div className="relative group">
+              <input
+                type="text"
+                placeholder="Enter Captcha"
+                required
+                value={captcha}
+                onChange={(e) => setCaptcha(e.target.value)}
+                className="w-full bg-white/5 border border-white/30 rounded-xl py-3.5 px-4 text-white placeholder-white/50 focus:outline-none focus:border-white/80 focus:bg-white/10 transition-all text-center tracking-widest font-mono uppercase"
+              />
+            </div>
           </div>
 
           {/* Actions */}

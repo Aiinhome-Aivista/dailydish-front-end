@@ -24,7 +24,7 @@ const NavItem = ({
     to={to}
     className={`relative group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-bold text-sm ${isActive
       ? 'bg-[#CEDEBD36] text-brand-accent border border-brand-light'
-      : 'text-[#95B974] hover:bg-brand-light/50 hover:text-brand-dark '
+      : 'text-brand-primary hover:bg-brand-light/50 hover:text-brand-dark '
       } ${isCollapsed ? 'justify-center px-2' : ''}`}
   >
     <span className="material-symbols-outlined text-[24px]">{icon}</span>
@@ -71,13 +71,13 @@ const SideBar = ({ isOpen, onClose }: SideBarProps) => {
         <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} px-4 h-20 bg-[#CEDEBD] shrink-0 transition-all`}>
           <div className="flex items-center gap-3">
             <img src={Logo} alt="DailyDish Logo" className="w-10 h-10 object-contain" />
-            {!isCollapsed && <h1 className="text-[#435334] text-xl font-bold whitespace-nowrap overflow-hidden">DailyDish</h1>}
+            {!isCollapsed && <h1 className="text-brand-dark text-xl font-bold whitespace-nowrap overflow-hidden">DailyDish</h1>}
           </div>
 
           {/* Desktop Toggle Button */}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className={`hidden md:block p-1  transition-colors text-[#435334] ${isCollapsed ? 'absolute -right-2  text-brand-dark top-8  cursor-pointer' : ''}`}
+            className={`hidden md:block p-1  transition-colors text-brand-dark ${isCollapsed ? 'absolute -right-2  text-brand-dark top-8  cursor-pointer' : ''}`}
             title={isCollapsed ? "Expand" : "Collapse"}
           >
             <span className="material-symbols-outlined text-sm block cursor-pointer text-brand-accent">
@@ -127,7 +127,7 @@ const SideBar = ({ isOpen, onClose }: SideBarProps) => {
               {isCollapsed && <span className="material-symbols-outlined">explore</span>}
               {!isCollapsed && <span>Explore recipes</span>}
             </Link>
-            <Link to="/community" className={`flex items-center gap-3 text-brand-dark rounded-xl hover:bg-brand-light/50 ${isCollapsed ? 'justify-center w-full p-2' : ''}`} title="Community">
+            <Link to="/blog" className={`flex items-center gap-3 text-brand-dark rounded-xl hover:bg-brand-light/50 ${isCollapsed ? 'justify-center w-full p-2' : ''}`} title="Community">
               {isCollapsed && <span className="material-symbols-outlined">group</span>}
               {!isCollapsed && <span>Community</span>}
             </Link>

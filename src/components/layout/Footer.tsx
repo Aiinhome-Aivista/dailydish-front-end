@@ -59,7 +59,7 @@ const LandingFooter = () => {
 
         {/* Copyright */}
         <div className="border-t border-brand-dark/20 pt-8  md:flex-row justify-center items-center gap-4 py-8 px-6 md:px-12">
-          <p className="text-brand-dark/40 text-xs font-bold justify-center flex">@2026 Aiinhome Technologies Pvt. Ltd. All rights reserved</p>
+          <p className="text-brand-dark/40 text-xs font-bold justify-center flex">@2026 DailyDish Inc. All rights reserved</p>
         </div>
       </div>
     </footer>

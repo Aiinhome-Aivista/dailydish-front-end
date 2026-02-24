@@ -1,20 +1,22 @@
 import { useState } from 'react';
-import { Menu, X, ArrowLeft } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import cookerIcon from '../../assets/cooker.svg';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import LogoLoop from '../../animations/pages/LogoLoop';
+import PageTransitionOverlay from '../../animations/pages/PageTransitionOverlay';
 
 interface NavBarProps {
     onLoginClick?: () => void;
     onSignUpClick?: () => void;
-    showBackButton?: boolean;
-    onBackClick?: () => void;
+
 }
 
 
-const NavBar = ({ onLoginClick, onSignUpClick, showBackButton, onBackClick }: NavBarProps) => {
+const NavBar = ({ onLoginClick, onSignUpClick }: NavBarProps) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isTransitioning, setIsTransitioning] = useState(false);
+    const [transitionDirection, setTransitionDirection] = useState<'top' | 'bottom'>('bottom');
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -34,73 +36,83 @@ const NavBar = ({ onLoginClick, onSignUpClick, showBackButton, onBackClick }: Na
         }
     };
 
+    const handleLogoClick = () => {
+        setIsTransitioning(true);
+        setTimeout(() => {
+            navigate("/", { state: { skipSplash: true } });
+            setIsTransitioning(false);
+        }, 2500);
+    };
+
+    const handleNavigation = (path: string, direction: 'top' | 'bottom' = 'bottom') => {
+        setTransitionDirection(direction);
+        setIsTransitioning(true);
+        setTimeout(() => {
+            navigate(path);
+            setIsTransitioning(false);
+        }, 2500);
+    };
+
     return (
-        <nav className="w-full py-3 px-5 md:px-12 flex justify-between items-center bg-[#CEDEBD] relative z-50 sticky top-0">
-            {/* Logo */}
-            <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
-                <LogoLoop
-                    items={[cookerIcon]}
-                    speed={0}
-                    logoHeight={32}
-                    width="auto"
-                    renderItem={(item) => (
-                        <motion.img
-                            src={item as string}
-                            alt="DailyDish Logo"
-                            className="w-8 h-8"
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                        />
-                    )}
-                />
-                <span className="text-brand-dark font-bold text-xl">DailyDish</span>
-            </div>
+        <>
+            <PageTransitionOverlay isTransitioning={isTransitioning} direction={transitionDirection} />
+            <nav className="w-full py-3 px-5 md:px-12 flex justify-between items-center bg-[#CEDEBD] relative z-50 sticky top-0 shadow-[0_4px_9px_5px_rgba(0,0,0,0.05)]">
+                {/* Logo */}
+                <div className="flex items-center gap-2 cursor-pointer" onClick={handleLogoClick}>
+                    <LogoLoop
+                        items={[cookerIcon]}
+                        speed={0}
+                        logoHeight={32}
+                        width="auto"
+                        renderItem={(item) => (
+                            <motion.img
+                                src={item as string}
+                                alt="DailyDish Logo"
+                                className="w-8 h-8"
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                            />
 
-            {/* Desktop Menu */}
-            <div className="hidden md:flex gap-8 text-brand-dark font-bold text-sm items-center">
-                <motion.button
-                    onClick={() => navigate("/How-it-Works")}
-                    className={`hover:text-brand-accent transition-colors cursor-pointer ${location.pathname === '/How-it-Works' ? 'text-brand-accent font-bold' : ''}`}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                >
-                    How it Works
-                </motion.button>
-                <motion.button
-                    onClick={() => navigate("/explore-recipes")}
-                    className={`hover:text-brand-accent transition-colors cursor-pointer ${location.pathname === '/explore-recipes' ? 'text-brand-accent font-bold' : ''}`}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                >
-                    Explore Recipes
-                </motion.button>
-                <motion.button
-                    onClick={() => navigate("/community")}
-                    className={`hover:text-brand-accent transition-colors cursor-pointer ${location.pathname === '/community' ? 'text-brand-accent font-bold' : ''}`}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                >
-                    Community
-                </motion.button>
-            </div>
+                        )}
+                    />
+                    <span className="text-brand-dark font-bold text-xl">DailyDish</span>
+                </div>
 
-            {/* Actions */}
-            <div className="hidden md:flex items-center gap-4">
-                {showBackButton ? (
+                {/* Desktop Menu */}
+                <div className="hidden md:flex gap-8 text-brand-dark font-bold text-sm items-center">
                     <motion.button
-                        onClick={onBackClick}
-                        className="p-2 text-brand-dark rounded-full transition-colors cursor-pointer flex items-center justify-center"
-                        whileHover={{ scale: 1.15, backgroundColor: "rgba(67, 83, 52, 0.15)" }}
-                        whileTap={{ scale: 0.85, rotate: -10 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                        onClick={() => handleNavigation("/How-it-Works", 'top')}
+                        className={`hover:text-brand-accent transition-colors cursor-pointer ${location.pathname === '/How-it-Works' ? 'text-brand-accent font-bold' : ''}`}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 10 }}
                     >
-                        <ArrowLeft size={24} />
+                        How it Works
                     </motion.button>
-                ) : (
+                    <motion.button
+                        onClick={() => handleNavigation("/explore-recipes", 'top')}
+                        className={`hover:text-brand-accent transition-colors cursor-pointer ${location.pathname === '/explore-recipes' ? 'text-brand-accent font-bold' : ''}`}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                    >
+                        Explore Recipes
+                    </motion.button>
+                    <motion.button
+                        onClick={() => handleNavigation("/blog", 'top')}
+                        className={`hover:text-brand-accent transition-colors cursor-pointer ${location.pathname === '/blog' ? 'text-brand-accent font-bold' : ''}`}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                    >
+                        Community
+                    </motion.button>
+                </div>
+
+                {/* Actions */}
+                <div className="hidden md:flex items-center gap-4">
+
                     <>
                         <motion.button
                             className="px-5 py-2 text-brand-dark font-semibold hover:opacity-80 transition-opacity cursor-pointer"
@@ -121,35 +133,26 @@ const NavBar = ({ onLoginClick, onSignUpClick, showBackButton, onBackClick }: Na
                             Sign Up Free
                         </motion.button>
                     </>
-                )}
-            </div>
 
-            {/* Mobile Menu Button */}
-            <button
-                className="md:hidden text-brand-dark"
-                onClick={() => setIsOpen(!isOpen)}
-            >
-                {isOpen ? <X /> : <Menu />}
-            </button>
+                </div>
 
-            {/* Mobile Menu Overlay */}
-            {isOpen && (
-                <div className="absolute top-16 left-0 w-full bg-brand-light shadow-lg flex flex-col items-center py-6 gap-6 md:hidden">
-                    <button className={`text-brand-dark font-medium cursor-pointer ${location.pathname === '/How-it-Works' ? 'text-brand-accent font-bold' : ''}`} onClick={() => { setIsOpen(false); navigate("/How-it-Works"); }}>How it Works</button>
-                    <a href="#" className="text-brand-dark font-medium cursor-pointer" onClick={() => setIsOpen(false)}>Pricing</a>
-                    <button className={`text-brand-dark font-medium cursor-pointer ${location.pathname === '/explore-recipes' ? 'text-brand-accent font-bold' : ''}`} onClick={() => { setIsOpen(false); navigate("/explore-recipes"); }}>Explore Recipes</button>
-                    <button className={`text-brand-dark font-medium cursor-pointer ${location.pathname === '/community' ? 'text-brand-accent font-bold' : ''}`} onClick={() => { setIsOpen(false); navigate("/community"); }}>Community</button>
-                    <hr className="w-1/2 border-brand-dark opacity-20" />
-                    {showBackButton ? (
-                        <motion.button
-                            className="text-brand-dark font-semibold cursor-pointer flex items-center gap-2"
-                            onClick={() => { setIsOpen(false); onBackClick?.(); }}
-                            whileTap={{ scale: 0.95 }}
-                        >
-                            <ArrowLeft size={20} />
-                            Back
-                        </motion.button>
-                    ) : (
+                {/* Mobile Menu Button */}
+                <button
+                    className="md:hidden text-brand-dark"
+                    onClick={() => setIsOpen(!isOpen)}
+                >
+                    {isOpen ? <X /> : <Menu />}
+                </button>
+
+                {/* Mobile Menu Overlay */}
+                {isOpen && (
+                    <div className="absolute top-16 left-0 w-full bg-brand-light shadow-lg flex flex-col items-center py-6 gap-6 md:hidden">
+                        <button className={`text-brand-dark font-medium cursor-pointer ${location.pathname === '/How-it-Works' ? 'text-brand-accent font-bold' : ''}`} onClick={() => { setIsOpen(false); handleNavigation("/How-it-Works", 'top'); }}>How it Works</button>
+                        <a href="#" className="text-brand-dark font-medium cursor-pointer" onClick={() => setIsOpen(false)}>Pricing</a>
+                        <button className={`text-brand-dark font-medium cursor-pointer ${location.pathname === '/explore-recipes' ? 'text-brand-accent font-bold' : ''}`} onClick={() => { setIsOpen(false); handleNavigation("/explore-recipes", 'top'); }}>Explore Recipes</button>
+                        <button className={`text-brand-dark font-medium cursor-pointer ${location.pathname === '/blog' || location.pathname.startsWith('/community') ? 'text-brand-accent font-bold' : ''}`} onClick={() => { setIsOpen(false); handleNavigation("/blog", 'top'); }}>Community</button>
+                        <hr className="w-1/2 border-brand-dark opacity-20" />
+
                         <>
                             <motion.button
                                 className="text-brand-dark font-semibold cursor-pointer"
@@ -166,10 +169,11 @@ const NavBar = ({ onLoginClick, onSignUpClick, showBackButton, onBackClick }: Na
                                 Sign Up Free
                             </motion.button>
                         </>
-                    )}
-                </div>
-            )}
-        </nav>
+
+                    </div>
+                )}
+            </nav>
+        </>
     );
 };
 

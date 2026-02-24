@@ -1,18 +1,13 @@
 import { useState } from 'react'
 import NavBar from '../../../components/layout/NavBar'
-import { useNavigate } from 'react-router-dom'
 import Footer from '../../../components/layout/Footer';
-import PageTransitionOverlay from '../../../animations/pages/PageTransitionOverlay';
 import { motion } from 'framer-motion';
 import LoginModal from '../../auth/pages/LoginModal';
 import SignUpModal from '../../auth/pages/SignUpModal';
 import AnimatedChef from '../../../assets/animated_chef-removebg-preview.png';
-import { Utensils, Globe, Leaf, ChefHat, Sparkles } from 'lucide-react';
+import { Utensils, Globe, Leaf, ChefHat, Sparkles, Flame, Timer, Package } from 'lucide-react';
 
 function ExploreRecipes() {
-  const navigate = useNavigate();
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [isLeaving, setIsLeaving] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
 
@@ -31,13 +26,7 @@ function ExploreRecipes() {
     setShowSignUpModal(false);
   };
 
-  const handleBack = () => {
-    setIsLeaving(true);
-    setIsTransitioning(true);
-    setTimeout(() => {
-      navigate('/', { state: { skipSplash: true } });
-    }, 2500);
-  };
+
 
   // Specific cuisines for the marquee/carousel
   const cuisines = [
@@ -56,26 +45,48 @@ function ExploreRecipes() {
   ];
 
   const collections = [
-    { title: 'The Spice Route', desc: 'Explore fiery flavors from around the world.', color: 'bg-orange-500/10' },
-    { title: '15-Min Wonders', desc: 'Gourmet results even when you are in a rush.', color: 'bg-blue-500/10' },
-    { title: 'Pantry Stars', desc: 'Incredible meals from the simplest ingredients.', color: 'bg-yellow-500/10' },
+    {
+      title: 'The Spice Route',
+      desc: 'Explore fiery flavors from around the world.',
+      color: 'bg-orange-500/10',
+      icon: Flame,
+      gradientId: 'spice-gradient',
+      colors: ['#ef4444', '#f97316'],
+      glow: 'bg-orange-500/30'
+    },
+    {
+      title: '15-Min Wonders',
+      desc: 'Gourmet results even when you are in a rush.',
+      color: 'bg-blue-400/10',
+      icon: Timer,
+      gradientId: 'timer-gradient',
+      colors: ['#60a5fa', '#22d3ee'],
+      glow: 'bg-blue-500/30'
+    },
+    {
+      title: 'Pantry Stars',
+      desc: 'Incredible meals from the simplest ingredients.',
+      color: 'bg-yellow-500/10',
+      icon: Package,
+      gradientId: 'pantry-gradient',
+      colors: ['#f59e0b', '#fbbf24'],
+      glow: 'bg-yellow-500/30'
+    },
   ];
 
   return (
     <div className="min-h-screen bg-brand-beige relative overflow-hidden">
-      <PageTransitionOverlay isTransitioning={isTransitioning} />
 
       <NavBar
-        showBackButton={true}
-        onBackClick={handleBack}
+
         onLoginClick={openLoginModal}
         onSignUpClick={openSignUpModal}
       />
 
       <motion.div
-        initial={false}
-        animate={isLeaving ? { y: -60, opacity: 0 } : { y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
         className="flex flex-col pt-20"
       >
         <div className="flex flex-col items-center">
@@ -174,7 +185,18 @@ function ExploreRecipes() {
               {collections.map((col, i) => (
                 <div key={i} className={`group ${col.color} p-10 rounded-[3rem] border border-brand-dark/5 hover:border-brand-accent/30 transition-all duration-500 cursor-pointer overflow-hidden relative shadow-sm`}>
                   <div className="absolute top-0 right-0 p-8 transform group-hover:rotate-12 group-hover:scale-110 transition-transform duration-500 opacity-20 md:opacity-100">
-                    <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center text-3xl">✨</div>
+                    <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center relative">
+                      <div className={`absolute inset-0 blur-lg ${col.glow} rounded-full transform scale-75`} />
+                      <col.icon size={32} className="relative z-10" style={{ stroke: `url(#${col.gradientId})`, strokeWidth: 2.5 }} />
+                      <svg width="0" height="0" className="absolute">
+                        <defs>
+                          <linearGradient id={col.gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stopColor={col.colors[0]} />
+                            <stop offset="100%" stopColor={col.colors[1]} />
+                          </linearGradient>
+                        </defs>
+                      </svg>
+                    </div>
                   </div>
                   <h3 className="text-2xl font-black text-brand-dark mb-4 relative z-10">{col.title}</h3>
                   <p className="text-brand-dark/70 font-medium leading-relaxed mb-8 max-w-[85%] relative z-10">{col.desc}</p>
@@ -238,10 +260,10 @@ function ExploreRecipes() {
                   className="bg-brand-accent text-white px-14 py-6 rounded-full text-2xl font-black hover:scale-105 transition-all shadow-xl shadow-brand-accent/30 cursor-pointer active:scale-95"
                   onClick={openSignUpModal}
                 >
-                  Join DailyDish Free
+                  Join DailyDish For Free
                 </button>
 
-             
+
               </div>
 
               {/* Decorative blobs */}

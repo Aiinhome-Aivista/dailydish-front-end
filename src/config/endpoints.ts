@@ -20,4 +20,7 @@ export const API_ENDPOINTS = {
   CHATRECIPECONFIGURATION: `${BASE_URL}/doctor-foody/chat`,
   SHARETOCOMMUNITY: `${BASE_URL}/share-to-community`,
   GETCOMMUNITYFEED: `${BASE_URL}/get-community-feed`,
+  CAPTCHA: `${BASE_URL}/captcha`,
+  ADMINLOGIN: `${BASE_URL}/admin/login`,
+
 } as const;

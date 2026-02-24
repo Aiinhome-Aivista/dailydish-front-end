@@ -26,6 +26,8 @@ const CommunityPostDetails = lazy(() => import("../features/community/pages/Comm
 const ContactUs = lazy(() => import("../support/ContactUs"));
 const PrivacyPolicy = lazy(() => import("../legal/PrivacyPolicy"));
 const HelpCenter = lazy(() => import("../support/HelpCenter"));
+const AdminLogin = lazy(() => import("../features/admin/pages/AdminLogin"));
+const AdminDashboard = lazy(() => import("../features/admin/pages/AdminDashboard"));
 
 const SplashToLanding = () => {
   const location = useLocation();
@@ -92,7 +94,7 @@ function AppRoutes() {
   return (
     <Suspense fallback={<DailyDishLoader />}>
       <Routes>
-        <Route path="community" element={<Community />} />
+        <Route path="blog" element={<Community />} />
         <Route path="community/:slug" element={<CommunityPostDetails />} />
 
         {/* --- PUBLIC ROUTES --- */}
@@ -112,6 +114,8 @@ function AppRoutes() {
         <Route path="contact-us" element={<ContactUs />} />
         <Route path="privacy-policy" element={<PrivacyPolicy />} />
         <Route path="help-center" element={<HelpCenter />} />
+        <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
         {/* --- PROTECTED ROUTES --- */}
         <Route element={<PrivateRoute />}>
@@ -123,6 +127,9 @@ function AppRoutes() {
             <Route path="saved-recipes" element={<SavedRecipes />} />
             <Route path="meal-plan" element={<MealPlan />} />
             <Route path="share-masterpiece" element={<ShareMasterpiece />} />
+          
+
+
             {/* Add more protected routes here */}
           </Route>
         </Route>

@@ -4,6 +4,7 @@ import Logo from '../../assets/icons/Recipe logo.svg';
 
 interface PageTransitionOverlayProps {
   isTransitioning: boolean;
+  direction?: 'top' | 'bottom';
 }
 
 const AnimatedLogo = () => {
@@ -74,13 +75,13 @@ const AnimatedLogo = () => {
   );
 };
 
-const PageTransitionOverlay = ({ isTransitioning }: PageTransitionOverlayProps) => {
+const PageTransitionOverlay = ({ isTransitioning, direction = 'bottom' }: PageTransitionOverlayProps) => {
   // 5 panels for the staggered effect
   const panels = [0, 1, 2, 3, 4];
 
   // Animation variants for the panels
   const panelVariants: Variants = {
-    initial: { y: "100%" },
+    initial: { y: direction === 'bottom' ? "100%" : "-100%" },
     animate: (i: number) => ({
       y: 0,
       transition: {
@@ -90,7 +91,7 @@ const PageTransitionOverlay = ({ isTransitioning }: PageTransitionOverlayProps) 
       },
     }),
     exit: (i: number) => ({
-      y: "-100%",
+      y: direction === 'bottom' ? "-100%" : "100%",
       transition: {
         duration: 1.5,
         ease: [0.76, 0, 0.24, 1],

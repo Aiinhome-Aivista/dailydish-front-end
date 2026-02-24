@@ -1,6 +1,8 @@
 export interface LoginPayload {
     email: string;
     password?: string;
+    captcha?: string;
+    captcha_id?: string;
 }
 
 export interface LoginResponse {

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import Footer from '../../../components/layout/Footer';
 import PageTransitionOverlay from '../../../animations/pages/PageTransitionOverlay';
 import { motion } from 'framer-motion';
+import { ChefHat, CalendarDays, Users } from 'lucide-react';
 import LoginModal from '../../auth/pages/LoginModal';
 import SignUpModal from '../../auth/pages/SignUpModal';
 
@@ -42,14 +43,12 @@ function HowItWorks() {
       <PageTransitionOverlay isTransitioning={isTransitioning} />
 
       <NavBar
-        showBackButton={true}
-        onBackClick={handleBack}
         onLoginClick={openLoginModal}
         onSignUpClick={openSignUpModal}
       />
 
       <motion.div
-        initial={false}
+        initial={{ y: -50, opacity: 0 }}
         animate={isLeaving ? { y: -60, opacity: 0 } : { y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
         className="flex flex-col"
@@ -106,10 +105,24 @@ function HowItWorks() {
                 </p>
               </div>
               <div className="md:w-1/2">
-                <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-3xl p-8 shadow-2xl">
-                  <div className="text-center">
-                    <div className="text-4xl mb-4">⏲️</div>
-                    <h3 className="text-xl font-bold  mb-2">Cooking Guide</h3>
+                <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-3xl p-8 shadow-2xl relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="text-center relative z-10">
+                    <div className="mb-4 flex justify-center">
+                      <div className="relative">
+                        <div className="absolute inset-0 blur-xl bg-orange-500/30 rounded-full" />
+                        <ChefHat size={44} className="relative z-10" style={{ stroke: 'url(#chef-gradient)', strokeWidth: 2.5 }} />
+                        <svg width="0" height="0" className="absolute">
+                          <defs>
+                            <linearGradient id="chef-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                              <stop offset="0%" stopColor="#fbbf24" />
+                              <stop offset="100%" stopColor="#f59e0b" />
+                            </linearGradient>
+                          </defs>
+                        </svg>
+                      </div>
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">Cooking Guide</h3>
                     <p className="">Interactive cooking assistant with real-time guidance</p>
                   </div>
                 </div>
@@ -142,7 +155,7 @@ function HowItWorks() {
             {/* Step 4 */}
             <div className="flex flex-col md:flex-row items-center mb-20">
               <div className="md:w-1/2 mb-8 md:mb-0 md:pr-12">
-                <div className="text-6xl mb-6 animate-bounce">📅</div>
+                <CalendarDays size={44} className="relative z-10 animate-bounce" style={{ stroke: 'url(#calendar-gradient)', strokeWidth: 2.5 }} />
                 <h2 className="text-3xl md:text-4xl font-bold text-brand-dark mb-4">
                   4. Plan Your Week
                 </h2>
@@ -152,10 +165,24 @@ function HowItWorks() {
                 </p>
               </div>
               <div className="md:w-1/2">
-                <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1]  rounded-3xl p-8 shadow-2xl">
-                  <div className="text-center">
-                    <div className="text-4xl mb-4">🗓️</div>
-                    <h3 className="text-xl font-bold  mb-2">Meal Planner</h3>
+                <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-3xl p-8 shadow-2xl relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="text-center relative z-10">
+                    <div className="mb-4 flex justify-center">
+                      <div className="relative">
+                        <div className="absolute inset-0 blur-xl bg-emerald-500/30 rounded-full" />
+                        <CalendarDays size={44} className="relative z-10" style={{ stroke: 'url(#calendar-gradient)', strokeWidth: 2.5 }} />
+                        <svg width="0" height="0" className="absolute">
+                          <defs>
+                            <linearGradient id="calendar-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                              <stop offset="0%" stopColor="#34d399" />
+                              <stop offset="100%" stopColor="#059669" />
+                            </linearGradient>
+                          </defs>
+                        </svg>
+                      </div>
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">Meal Planner</h3>
                     <p className="">Effortless weekly planning and organization</p>
                   </div>
                 </div>
@@ -171,14 +198,28 @@ function HowItWorks() {
                 </h2>
                 <p className="text-lg text-[#5e7054] leading-relaxed">
                   Share your culinary creations with the DailyDish community.
-                  Inspire others, exchange tips, and become a master home chef.
+                  Inspire others, exchange tips, and become a master home dr.Foodie.
                 </p>
               </div>
               <div className="md:w-1/2">
-                <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1]  rounded-3xl p-8 shadow-2xl">
-                  <div className="text-center">
-                    <div className="text-4xl mb-4">🤳</div>
-                    <h3 className="text-xl font-bold  mb-2">Community</h3>
+                <div className="bg-[#435334B2] backdrop-blur-2xl text-[#F4F8F1] rounded-3xl p-8 shadow-2xl relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="text-center relative z-10">
+                    <div className="mb-4 flex justify-center">
+                      <div className="relative">
+                        <div className="absolute inset-0 blur-xl bg-indigo-500/30 rounded-full" />
+                        <Users size={44} className="relative z-10" style={{ stroke: 'url(#users-gradient)', strokeWidth: 2.5 }} />
+                        <svg width="0" height="0" className="absolute">
+                          <defs>
+                            <linearGradient id="users-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                              <stop offset="0%" stopColor="#818cf8" />
+                              <stop offset="100%" stopColor="#4f46e5" />
+                            </linearGradient>
+                          </defs>
+                        </svg>
+                      </div>
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">Community</h3>
                     <p className="">Connect, share, and grow with fellow foodies</p>
                   </div>
                 </div>

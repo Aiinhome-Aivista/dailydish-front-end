@@ -2,6 +2,7 @@ import axiosApi from '../../../lib/axiosApi';
 import { API_ENDPOINTS } from '../../../config/endpoints';
 import type { LoginPayload, LoginResponse } from '../types/login';
 import type { SignUpPayload, SignUpResponse } from '../types/signUp';
+import type { CaptchaResponse } from '../types/captcha';
 
 
 export const authService = {
@@ -18,4 +19,10 @@ export const authService = {
             data: userData,
         });
     },
+
+    getCaptcha: async (): Promise<CaptchaResponse | null> => {
+        return await axiosApi<CaptchaResponse>(API_ENDPOINTS.CAPTCHA, {
+            method: 'GET'
+        });
+    }
 };

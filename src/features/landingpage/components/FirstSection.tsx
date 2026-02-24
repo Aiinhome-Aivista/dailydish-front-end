@@ -3,14 +3,15 @@ import { useState, useEffect } from "react";
 import RecipeLogo from "../../../assets/icons/Recipe logo.svg";
 import ChatModal from "../../../components/modal/pages/ChatModal";
 import AnimatedChef from "../../../assets/animated_chef-removebg-preview.png";
-import Image1 from "../../../assets/1.svg";
-import Image2 from "../../../assets/2.svg";
-import Image3 from "../../../assets/3.svg";
 import { useNavigate } from "react-router-dom";
 import LogoLoop from "../../../animations/pages/LogoLoop";
 import { motion } from "framer-motion";
 import BlurText from "../../../animations/pages/BlurText";
 import ShinyText from "../../../animations/pages/ShinyText";
+import video1 from "../../../assets/videos/video 1.mp4";
+import video2 from "../../../assets/videos/video 2.mp4";
+import video3 from "../../../assets/videos/video 3.mp4";
+
 
 interface FirstSectionProps {
   onGetStarted?: () => void;
@@ -86,14 +87,18 @@ const FirstSection = ({ onGetStarted }: FirstSectionProps) => {
       {/* Background Layer */}
       <div className="absolute inset-0 z-0 flex pointer-events-none">
         <div className="flex-1 relative">
-          <img src={Image1} alt="" className="w-full h-full object-cover" />
+          {/* <img src={Image1} alt="" className="w-full h-full object-cover" /> */}
+          <video src={video1} autoPlay loop muted playsInline className="w-full h-full object-cover"></video>
         </div>
         <div className="flex-1 relative">
-          <img src={Image2} alt="" className="w-full h-full object-cover" />
+          {/* <img src={Image2} alt="" className="w-full h-full object-cover" /> */}
+          <video src={video2} autoPlay loop muted playsInline className="w-full h-full object-cover"></video>
         </div>
         <div className="flex-1 relative">
-          <img src={Image3} alt="" className="w-full h-full object-cover" />
+          {/* <img src={Image3} alt="" className="w-full h-full object-cover" /> */}
+          <video src={video3} autoPlay loop muted playsInline className="w-full h-full object-cover"></video>
         </div>
+      
         {/* Overlay for readability */}
         <div className="absolute inset-0 bg-black/50"></div>
       </div>
