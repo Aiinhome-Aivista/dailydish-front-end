@@ -5,7 +5,13 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const isAdminRoute = config.url?.includes('/admin/');
+    const adminToken = localStorage.getItem('admin_token');
+    const userToken = localStorage.getItem('token');
+
+    // Select token based on route type
+    const token = isAdminRoute ? adminToken : userToken;
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -35,12 +41,12 @@ const axiosApi = async <T = any>(url: string, options: AxiosRequestConfig = {}):
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-        const message = error.response?.data?.message || error.message || "An unknown API error occurred.";
-        console.error("AxiosApi Error:", message);
-        throw new Error(message);
+      const message = error.response?.data?.message || error.message || "An unknown API error occurred.";
+      console.error("AxiosApi Error:", message);
+      throw new Error(message);
     } else {
-        console.error("AxiosApi Error:", (error as Error).message);
-        throw error;
+      console.error("AxiosApi Error:", (error as Error).message);
+      throw error;
     }
   }
 };

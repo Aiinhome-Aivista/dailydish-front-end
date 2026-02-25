@@ -49,7 +49,9 @@ export interface CommunityPost {
     comment: string;
     image_url: string;
     created_at: string;
+    username: string;
     meal_details: CommunityMealDetails;
+    status: 'pending' | 'approved' | 'rejected';
 }
 
 export interface CommunityFeedResponse {

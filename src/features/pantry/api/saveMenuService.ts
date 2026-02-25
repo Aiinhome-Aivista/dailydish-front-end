@@ -21,6 +21,21 @@ export const pantryService = {
             throw error;
         }
     },
+    editCommunityPost: async (formData: FormData) => {
+        try {
+            const response = await axiosApi<ShareToCommunityResponse>(API_ENDPOINTS.USER_EDIT_POST, {
+                method: 'POST',
+                data: formData,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            return response;
+        } catch (error) {
+            console.error('Error editing post:', error);
+            throw error;
+        }
+    },
     saveMenu: async (data: SaveRecipeRequest) => {
         try {
             const response = await axiosApi<SaveRecipeResponse>(API_ENDPOINTS.SAVEMENU, {

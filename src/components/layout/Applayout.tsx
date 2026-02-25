@@ -65,7 +65,7 @@ const AppLayout = () => {
           <img
             src={BgImage}
             alt="Healthy Food Background"
-            className="object-cover w-full h-full"
+            className="object-cover w-full h-full opacity-30"
           />
         </div>
 

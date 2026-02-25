@@ -28,6 +28,8 @@ const PrivacyPolicy = lazy(() => import("../legal/PrivacyPolicy"));
 const HelpCenter = lazy(() => import("../support/HelpCenter"));
 const AdminLogin = lazy(() => import("../features/admin/pages/AdminLogin"));
 const AdminDashboard = lazy(() => import("../features/admin/pages/AdminDashboard"));
+const AllBlogPost = lazy(() => import("../features/admin/pages/AllBlogPost"));
+const ManageBlogPost = lazy(() => import("../features/community/pages/ManageBlogPost"));
 
 const SplashToLanding = () => {
   const location = useLocation();
@@ -115,7 +117,7 @@ function AppRoutes() {
         <Route path="privacy-policy" element={<PrivacyPolicy />} />
         <Route path="help-center" element={<HelpCenter />} />
         <Route path="/admin" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
 
         {/* --- PROTECTED ROUTES --- */}
         <Route element={<PrivateRoute />}>
@@ -127,11 +129,18 @@ function AppRoutes() {
             <Route path="saved-recipes" element={<SavedRecipes />} />
             <Route path="meal-plan" element={<MealPlan />} />
             <Route path="share-masterpiece" element={<ShareMasterpiece />} />
-          
+            <Route path="manage-blog-post" element={<ManageBlogPost />} />
+
 
 
             {/* Add more protected routes here */}
           </Route>
+        </Route>
+
+
+        <Route element={<PrivateRoute />}>
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/all-blog-posts" element={<AllBlogPost />} />
         </Route>
 
         {/* --- 404 CATCH-ALL --- */}

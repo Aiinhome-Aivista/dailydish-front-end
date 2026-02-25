@@ -111,6 +111,13 @@ const SideBar = ({ isOpen, onClose }: SideBarProps) => {
               isActive={currentPath === '/meal-plan' || currentPath === '/share-masterpiece'}
               isCollapsed={isCollapsed}
             />
+            <NavItem
+              icon="article_shortcut"
+              label="Manage Posts"
+              to="/manage-blog-post"
+              isActive={currentPath === '/manage-blog-post'}
+              isCollapsed={isCollapsed}   
+          />
           </div>
 
           {/* Bottom Section */}

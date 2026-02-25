@@ -14,4 +14,16 @@ export const communityService = {
             throw error;
         }
     },
+
+    getMyPosts: async () => {
+        try {
+            const response = await axiosApi<CommunityFeedResponse>(API_ENDPOINTS.USER_ALL_POSTS, {
+                method: 'GET',
+            });
+            return response;
+        } catch (error) {
+            console.error('Error fetching my posts:', error);
+            throw error;
+        }
+    },
 };

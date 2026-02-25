@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Check, Loader2 } from 'lucide-react';
 import { pantryService } from '../api/saveMenuService';
+import { BASE_URL } from '../../../config/endpoints';
 
 const ShareMasterpiece = () => {
     const navigate = useNavigate();
@@ -9,9 +10,16 @@ const ShareMasterpiece = () => {
     const meal = location.state?.meal || { details: { menu_name: "Masterpiece" } };
     const mealId = meal.id;
 
-    const [rating, setRating] = useState(4);
-    const [story, setStory] = useState('');
-    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const getImageUrl = (url: string) => {
+        if (!url) return null;
+        if (url.startsWith('http')) return url;
+        const cleanUrl = url.replace(/^\/+/, '');
+        return `${BASE_URL.replace(/\/$/, '')}/${cleanUrl}`;
+    };
+
+    const [rating, setRating] = useState(meal.rating || 4);
+    const [story, setStory] = useState(meal.comment || '');
+    const [selectedImage, setSelectedImage] = useState<string | null>(meal.image_url ? getImageUrl(meal.image_url) : null);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [isShared, setIsShared] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +37,7 @@ const ShareMasterpiece = () => {
     };
 
     const handleShare = async () => {
-        if (!imageFile) {
+        if (!imageFile && !selectedImage) {
             alert('Please select an image first.');
             return;
         }
@@ -37,21 +45,43 @@ const ShareMasterpiece = () => {
         setIsLoading(true);
         try {
             const formData = new FormData();
-            formData.append('meal_id', mealId.toString());
-            formData.append('rating', rating.toString());
-            formData.append('comment', story);
-            formData.append('image', imageFile);
 
-            const response = await pantryService.shareToCommunity(formData);
-            if (response?.status === 'success') {
-                setIsShared(true);
-                setTimeout(() => {
-                    navigate('/community');
-                }, 2000);
+            // If post_id exists, it's an edit
+            if (meal.post_id) {
+                formData.append('post_id', meal.post_id.toString());
+                formData.append('rating', rating.toString());
+                formData.append('comment', story);
+                if (imageFile) {
+                    formData.append('image', imageFile);
+                }
+
+                const response = await pantryService.editCommunityPost(formData);
+                if (response?.status === 'success') {
+                    setIsShared(true);
+                    setTimeout(() => {
+                        navigate('/community');
+                    }, 2000);
+                }
+            } else {
+                // Otherwise it's a new share
+                formData.append('meal_id', mealId.toString());
+                formData.append('rating', rating.toString());
+                formData.append('comment', story);
+                if (imageFile) {
+                    formData.append('image', imageFile);
+                }
+
+                const response = await pantryService.shareToCommunity(formData);
+                if (response?.status === 'success') {
+                    setIsShared(true);
+                    setTimeout(() => {
+                        navigate('/community');
+                    }, 2000);
+                }
             }
         } catch (error) {
-            console.error('Failed to share:', error);
-            alert('Failed to share masterpiece. Please try again.');
+            console.error('Failed to process post:', error);
+            alert('Failed to process post. Please try again.');
         } finally {
             setIsLoading(false);
         }
@@ -63,7 +93,7 @@ const ShareMasterpiece = () => {
 
             {/* Upload Area */}
             <div
-                className={`relative w-full aspect-[33/9] rounded-[2.5rem] border-2 border-dashed border-[#7A8F63]/30 bg-[#CEDEBD36] flex flex-col items-center justify-center gap-6`}
+                className={`relative w-full aspect-[33/9] rounded-[2.5rem] border-2 border-dashed border-[#7A8F63]/30 bg-[#F1EDDC] flex flex-col items-center justify-center gap-6`}
                 onClick={() => {
                     if (!selectedImage) return;
                     setSelectedImage(null);
@@ -158,7 +188,7 @@ const ShareMasterpiece = () => {
                     value={story}
                     onChange={(e) => setStory(e.target.value)}
                     placeholder="Tell the community how it went. Any custom tweaks to the recipe?"
-                    className="w-full h-30 bg-[#CEDEBD36] border border-[#95B97480] rounded-2xl p-4 text-brand-accent placeholder:text-brand-accent focus:outline-none focus:border-[#7A8F63]/40  text-xs"
+                    className="w-full h-30 bg-[#F1EDDC] border border-[#95B97480] rounded-2xl p-4 text-brand-accent placeholder:text-brand-accent focus:outline-none focus:border-[#7A8F63]/40  text-xs"
                 />
             </div>
 

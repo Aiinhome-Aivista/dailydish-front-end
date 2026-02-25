@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Eye, EyeOff, RefreshCw, LogIn } from 'lucide-react';
+import { Eye, EyeOff, RefreshCw, Mail, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../../assets/icons/Recipe logo.svg';
 import { authService } from '../../auth/api/authService';
@@ -74,26 +74,22 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[#0a0f0a]">
-      <div className="w-full max-w-[440px] flex flex-col items-center">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-[#435334]">
+      <div className="w-full max-w-[480px] flex flex-col items-center">
 
-        {/* Branding Logo */}
-        <div className="mb-2">
-          <div className="w-20 h-20  flex items-center justify-center p-4">
-            <img src={logo} alt="DailyDish Logo" className="w-full h-full object-contain" />
+        {/* Branding & Login Card */}
+        <div className="w-full bg-white/10 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-8 md:p-8 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)]">
+
+          {/* Logo Section */}
+          <div className="flex flex-col items-center mb-8 text-center">
+            <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center p-3 mb-4">
+              <img src={logo} alt="DailyDish Logo" className="w-full h-full object-contain brightness-0 invert" />
+            </div>
+            <h1 className="text-white text-3xl font-bold tracking-tight mb-2">
+              DailyDish Admin Login
+            </h1>
+            <p className="text-white/60 text-sm font-medium">Everyday ingredients. Everyday magic</p>
           </div>
-        </div>
-
-        {/* Heading */}
-        <div className="text-center mb-4">
-          <h1 className="text-white text-3xl font-bold tracking-tight mb-2 drop-shadow-[0_0_15px_rgba(111,154,78,0.4)]">
-            DailyDish Admin Panel
-          </h1>
-          <p className="text-brand-light/60 text-sm font-medium">Sign in to access your dashboard</p>
-        </div>
-
-        {/* Login Card */}
-        <div className="w-full bg-[#162416] border border-white/5 rounded-[2.5rem] p-10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)]">
 
           {error && (
             <div className="mb-6 bg-red-500/10 border border-red-500/20 rounded-xl p-4">
@@ -101,47 +97,48 @@ const AdminLogin = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-7">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Field */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-brand-light/40 uppercase tracking-[0.2em] ml-1">Email Address</label>
+            <div className="relative group">
+              <div className="absolute left-5 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-white transition-colors">
+                <Mail size={20} />
+              </div>
               <input
                 type="email"
-                placeholder="admin@dailydish.com"
+                placeholder="Email Address"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-[#0a0f0a] border border-white/5 rounded-2xl py-4 px-5 text-white placeholder-white/20 focus:outline-none focus:border-brand-accent/50 focus:ring-1 focus:ring-brand-accent/30 transition-all font-medium"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-5 text-white placeholder-white/40 focus:outline-none focus:border-white/20 focus:ring-1 focus:ring-white/20 transition-all font-medium"
               />
             </div>
 
             {/* Password Field */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-brand-light/40 uppercase tracking-[0.2em] ml-1">Password</label>
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="••••••••"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-[#0a0f0a] border border-white/5 rounded-2xl py-4 px-5 text-white placeholder-white/20 focus:outline-none focus:border-brand-accent/50 focus:ring-1 focus:ring-brand-accent/30 transition-all font-medium"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-5 top-1/2 -translate-y-1/2 text-white/30 hover:text-brand-accent transition-colors"
-                >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
+            <div className="relative group">
+              <div className="absolute left-5 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-white transition-colors">
+                <Lock size={20} />
               </div>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-14 text-white placeholder-white/40 focus:outline-none focus:border-white/20 focus:ring-1 focus:ring-white/20 transition-all font-medium"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-5 top-1/2 -translate-y-1/2 text-white/20 hover:text-white transition-colors"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
             </div>
 
             {/* Captcha Section */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-brand-light/40 uppercase tracking-[0.2em] ml-1">Captcha</label>
+            <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <div className="flex-1 bg-black/40 bg-[radial-gradient(#ffffff_0.5px,transparent_0.5px)] [background-size:6px_6px] rounded-2xl p-2 flex items-center justify-center min-h-[56px] border border-white/5 shadow-inner relative overflow-hidden">
+                <div className="flex-1 bg-white/5 backdrop-blur-sm rounded-2xl p-2 flex items-center justify-center min-h-[56px] border border-white/10 relative overflow-hidden">
                   {captchaData ? (
                     (() => {
                       const image = captchaData.captcha_image || (captchaData as any).image;
@@ -149,9 +146,9 @@ const AdminLogin = () => {
                         const src = image.startsWith('http') || image.startsWith('data:image')
                           ? image
                           : `data:image/png;base64,${image}`;
-                        return <img src={src} alt="Captcha" className="max-h-[36px] invert opacity-80 relative z-10" />;
+                        return <img src={src} alt="Captcha" className="max-h-[36px] brightness-0 invert opacity-70 relative z-10" />;
                       }
-                      return <span className="text-white font-mono text-xl tracking-[0.3em] relative z-10">{(captchaData as any).captcha}</span>;
+                      return <span className="text-white/80 font-mono text-xl tracking-[0.3em] relative z-10">{(captchaData as any).captcha}</span>;
                     })()
                   ) : (
                     <div className="w-full h-8 bg-white/5 animate-pulse rounded-lg" />
@@ -161,7 +158,7 @@ const AdminLogin = () => {
                   type="button"
                   onClick={fetchCaptcha}
                   disabled={isRefreshingCaptcha}
-                  className="p-4 bg-[#0a0f0a] hover:bg-white/5 text-brand-accent rounded-2xl border border-white/5 transition-all shadow-lg disabled:opacity-50"
+                  className="p-4 bg-white/5 hover:bg-white/10 text-white rounded-2xl border border-white/10 transition-all disabled:opacity-50"
                 >
                   <RefreshCw size={22} className={isRefreshingCaptcha ? 'animate-spin' : ''} />
                 </button>
@@ -172,7 +169,7 @@ const AdminLogin = () => {
                 required
                 value={captcha}
                 onChange={(e) => setCaptcha(e.target.value)}
-                className="w-full bg-[#0a0f0a] border border-white/5 rounded-2xl py-4 px-5 text-white placeholder-white/20 focus:outline-none focus:border-brand-accent/50 transition-all text-center tracking-[0.1em]"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-5 text-white placeholder-white/40 focus:outline-none focus:border-white/20 transition-all text-center tracking-[0.1em]"
               />
             </div>
 
@@ -180,20 +177,18 @@ const AdminLogin = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-4 bg-brand-accent hover:bg-brand-primary text-white rounded-2xl font-bold text-lg transition-all shadow-[0_15px_30px_-5px_rgba(111,154,78,0.4)] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3"
+              className="w-full py-4 bg-[#7A8F63] hover:bg-[#8CA274] text-white rounded-2xl font-bold text-lg transition-all shadow-lg active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3"
             >
               {isLoading ? (
                 <RefreshCw className="animate-spin text-white" size={24} />
               ) : (
                 <>
-                  <LogIn size={24} />
                   Login
                 </>
               )}
             </button>
           </form>
 
-          {/* Status Indicator */}
 
         </div>
       </div>
