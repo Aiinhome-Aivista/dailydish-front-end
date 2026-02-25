@@ -152,7 +152,7 @@ const MealPlan = () => {
     }
 
     return (
-        <div className="h-full text-brand-dark overflow-y-auto pb-10 space-y-6">
+        <div className={`h-full text-brand-dark pb-10 space-y-6 ${viewMode === 'month' ? 'overflow-hidden no-scrollbar' : 'overflow-y-auto'}`}>
 
 
             {activeMeal ? (
@@ -344,7 +344,7 @@ const MealPlan = () => {
                     </div>
 
                     {/* Grid */}
-                    <div className="grid grid-cols-7 gap-4 min-h-125">
+                    <div className={`grid grid-cols-7 ${viewMode === 'week' ? 'gap-4 min-h-125' : 'gap-2'}`}>
                         {(viewMode === 'week' ? getWeekDays(currentDate) : getDaysInMonth(currentDate)).map((dayObj, index) => {
                             const date = viewMode === 'week' ? dayObj : (dayObj as any).date;
                             const isCurrentMonth = viewMode === 'week' ? true : (dayObj as any).isCurrentMonth;
@@ -354,84 +354,115 @@ const MealPlan = () => {
                             if (!isCurrentMonth && viewMode === 'month') return <div key={index} className="opacity-0"></div>; // Or render faded
 
                             return (
-                                <div key={index} className="flex flex-col min-h-37.5">
+                                <div key={index} className={`flex flex-col ${viewMode === 'week' ? 'min-h-37.5' : 'h-24 p-2 transition-colors'}`}>
                                     {/* Date Number */}
                                     <div className="flex justify-center mb-2">
-                                        <span className={`text-xl font-bold ${isToday ? 'text-brand-accent scale-110' : 'text-brand-dark'}`}>
+                                        <span className={`${viewMode === 'month' ? 'text-lg' : 'text-xl'} font-bold ${isToday ? 'text-brand-accent scale-110' : 'text-brand-dark'}`}>
                                             {date.getDate().toString().padStart(2, '0')}
                                         </span>
                                     </div>
 
-                                    {/* Meal Cards */}
-                                    <div className="flex flex-col gap-3">
-                                        {dayMeals.map((mealItem) => {
-                                            const meal = mealItem.details;
-                                            const ingredientsCount = (meal.ingredients_used?.length || 0) + (meal.ingredients_analysis?.current?.length || 0) + (meal.ingredients_analysis?.missing?.length || 0);
-
-                                            return (
-                                                <div
-                                                    key={mealItem.id}
-                                                    onClick={() => setSelectedCardId(mealItem.id === selectedCardId ? null : mealItem.id)}
-                                                    className={`rounded-3xl p-3 transition-all hover:scale-[1.02] group cursor-pointer border-2 ${selectedCardId === mealItem.id
-                                                        ? 'border-brand-accent bg-[#CEDEBD60] shadow-md'
-                                                        : 'border-transparent bg-[#CEDEBD36]'
-                                                        }`}
-                                                >
-                                                    <div className="flex items-start gap-3 mb-2">
-                                                        <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 mt-1">
+                                    {/* Meal Render Section */}
+                                    <div className={`flex flex-col gap-3 overflow-y-auto no-scrollbar ${viewMode === 'month' ? 'flex-1 items-center px-1 pb-2' : ''}`}>
+                                        {viewMode === 'month' ? (
+                                            <>
+                                                <div className="flex flex-wrap gap-2 justify-center">
+                                                    {dayMeals.slice(0, 4).map((mealItem) => (
+                                                        <div
+                                                            key={mealItem.id}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setSelectedCardId(mealItem.id === selectedCardId ? null : mealItem.id);
+                                                            }}
+                                                            className={`w-10 h-10 rounded-full border-2 overflow-hidden shrink-0 shadow-sm transition-all hover:scale-110 cursor-pointer ${selectedCardId === mealItem.id ? 'border-brand-accent ring-2 ring-brand-accent/20' : 'border-white'}`}
+                                                            title={mealItem.details.menu_name}
+                                                        >
                                                             <img
                                                                 src={defaultRecipeImage}
-                                                                alt={meal.menu_name}
+                                                                alt={mealItem.details.menu_name}
                                                                 className="w-full h-full object-cover"
                                                             />
                                                         </div>
-                                                        <div className="min-w-0">
-                                                            <h3 className="font-bold text-sm text-[#3e5035] leading-tight truncate w-full">{meal.menu_name}</h3>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="text-center mb-2">
-                                                        <span className="text-3xl font-extrabold text-[#3e5035] block leading-none">{ingredientsCount}</span>
-                                                        <span className="text-xs font-medium text-brand-dark">Ingredients</span>
-                                                    </div>
-
-                                                    <div className="flex items-center justify-between mt-auto pt-2">
-                                                        <span className="text-xs font-semibold text-brand-accent">
-                                                            {meal.time_breakdown?.cook_time || '30mins'}
-                                                        </span>
-                                                        <div className="flex items-center gap-2">
-                                                            <button
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    navigate('/share-masterpiece', { state: { meal: mealItem } });
-                                                                }}
-                                                                className="text-brand-accent hover:text-brand-dark transition-colors cursor-pointer"
-                                                                title="Share Masterpiece"
-                                                            >
-                                                                <Share2 size={16} />
-                                                            </button>
-                                                            <button
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    navigate('/recipe-details', {
-                                                                        state: {
-                                                                            menu_name: meal.menu_name,
-                                                                            cooking_time: meal.time_breakdown?.cook_time,
-                                                                            image_url: defaultRecipeImage,
-                                                                            details: meal
-                                                                        }
-                                                                    });
-                                                                }}
-                                                                className="text-brand-accent hover:text-brand-dark transition-colors cursor-pointer"
-                                                                title="View Details"
-                                                            >
-                                                                <ArrowRight size={17} />
-                                                            </button>
-                                                        </div>
-                                                    </div>
+                                                    ))}
                                                 </div>
-                                            );
-                                        })}
+                                                {dayMeals.length > 4 && (
+                                                    <div className="mt-2 py-1 px-3 bg-brand-accent/10 rounded-full">
+                                                        <span className="text-[10px] font-black text-brand-accent uppercase tracking-widest leading-none">
+                                                            +{dayMeals.length - 4} more
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </>
+                                        ) : (
+                                            dayMeals.map((mealItem) => {
+                                                const meal = mealItem.details;
+                                                const ingredientsCount = (meal.ingredients_used?.length || 0) + (meal.ingredients_analysis?.current?.length || 0) + (meal.ingredients_analysis?.missing?.length || 0);
+
+                                                return (
+                                                    <div
+                                                        key={mealItem.id}
+                                                        onClick={() => setSelectedCardId(mealItem.id === selectedCardId ? null : mealItem.id)}
+                                                        className={`rounded-3xl p-3 transition-all hover:scale-[1.02] group cursor-pointer border-2 ${selectedCardId === mealItem.id
+                                                            ? 'border-brand-accent bg-[#F1EDDC] shadow-md'
+                                                            : 'border-transparent bg-[#F1EDDC]'
+                                                            }`}
+                                                    >
+                                                        <div className="flex items-start gap-3 mb-2">
+                                                            <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 mt-1">
+                                                                <img
+                                                                    src={defaultRecipeImage}
+                                                                    alt={meal.menu_name}
+                                                                    className="w-full h-full object-cover"
+                                                                />
+                                                            </div>
+                                                            <div className="min-w-0">
+                                                                <h3 className="font-bold text-sm text-[#3e5035] leading-tight truncate w-full">{meal.menu_name}</h3>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="text-center mb-2">
+                                                            <span className="text-3xl font-extrabold text-[#3e5035] block leading-none">{ingredientsCount}</span>
+                                                            <span className="text-xs font-medium text-brand-dark">Ingredients</span>
+                                                        </div>
+
+                                                        <div className="flex items-center justify-between mt-auto pt-2">
+                                                            <span className="text-xs font-semibold text-brand-accent">
+                                                                {meal.time_breakdown?.cook_time || '30mins'}
+                                                            </span>
+                                                            <div className="flex items-center gap-2">
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        navigate('/share-masterpiece', { state: { meal: mealItem } });
+                                                                    }}
+                                                                    className="text-brand-accent hover:text-brand-dark transition-colors cursor-pointer"
+                                                                    title="Share Masterpiece"
+                                                                >
+                                                                    <Share2 size={16} />
+                                                                </button>
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        navigate('/recipe-details', {
+                                                                            state: {
+                                                                                menu_name: meal.menu_name,
+                                                                                cooking_time: meal.time_breakdown?.cook_time,
+                                                                                image_url: defaultRecipeImage,
+                                                                                details: meal
+                                                                            }
+                                                                        });
+                                                                    }}
+                                                                    className="text-brand-accent hover:text-brand-dark transition-colors cursor-pointer"
+                                                                    title="View Details"
+                                                                >
+                                                                    <ArrowRight size={17} />
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })
+                                        )}
                                     </div>
                                 </div>
                             );

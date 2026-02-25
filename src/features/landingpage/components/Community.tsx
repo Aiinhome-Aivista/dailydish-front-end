@@ -70,17 +70,17 @@ const Community = () => {
                     animation-play-state: paused;
                 }
             `}</style>
-                <div className="flex gap-8 w-max animate-scroll px-4 py-8">
+                <div className="flex gap-10 w-max animate-scroll px-4 py-8">
                     {loopedMasterpieces.map((post, index) => (
                         <div
                             key={`${post.post_id}-${index}`}
-                            className="w-[300px] flex-shrink-0 cursor-pointer group"
-                            onClick={() => navigate(`/community/${createSlug(post.menu_name)}`, { state: { post } })}
+                            className="w-[380px] shrink-0 cursor-pointer group"
+                            onClick={() => navigate(`/blog/${createSlug(post.menu_name)}`, { state: { post } })}
                         >
                             <div className="bg-brand-accent/40 backdrop-blur-xl border border-white/30 rounded-3xl overflow-hidden shadow-md hover:shadow-xl hover:scale-[1.01] transition-all duration-500 flex flex-col h-full p-4">
                                 {/* Small Image & Header */}
                                 <div className="flex gap-4 mb-4">
-                                    <div className="relative w-20 h-20 rounded-2xl overflow-hidden flex-shrink-0 border border-white/50 shadow-sm">
+                                    <div className="relative w-20 h-20 rounded-2xl overflow-hidden shrink-0 border border-white/50 shadow-sm">
                                         <img
                                             src={getImageUrl(post.image_url)}
                                             alt={post.menu_name}
@@ -107,7 +107,7 @@ const Community = () => {
                                         const normalizedRating = post.rating / 2;
                                         return (
                                             <span key={i} className="relative">
-                                                <Star size={14} className="text-gray-300" />
+                                                <Star size={14} className="text-[#43533426]" />
                                                 {normalizedRating >= starValue ? (
                                                     <Star size={14} className="text-brand-accent fill-brand-accent absolute inset-0" />
                                                 ) : normalizedRating >= starValue - 0.5 ? (
@@ -116,13 +116,13 @@ const Community = () => {
                                             </span>
                                         );
                                     })}
-                                    <span className="text-xs font-bold text-[#435334] ml-1">
+                                    <span className="text-xs font-bold text-brand-dark ml-1">
                                         {(post.rating / 2).toFixed(1)}
                                     </span>
                                 </div>
 
                                 {/* Story */}
-                                <div className="flex flex-col flex-grow max-h-[160px] overflow-hidden">
+                                <div className="flex flex-col flex-grow max-h-40 overflow-hidden">
                                     <p className="text-brand-dark font-medium text-sm mb-4 line-clamp-3 ">
                                         "{post.comment}"
                                     </p>
@@ -141,7 +141,7 @@ const Community = () => {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-1.5 text-[#7A8F63] hover:text-[#435334] font-bold text-[9px] uppercase tracking-widest transition-colors group/btn">
+                                    <div className="flex items-center gap-1.5 text-[#7A8F63] hover:text-brand-dark font-bold text-[9px] uppercase tracking-widest transition-colors group/btn">
                                         Review
                                         <ArrowRight size={12} className="group-hover/btn:translate-x-1 transition-transform" />
                                     </div>

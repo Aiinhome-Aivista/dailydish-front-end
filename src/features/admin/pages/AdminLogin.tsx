@@ -74,11 +74,11 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[#435334]">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-brand-dark">
       <div className="w-full max-w-[480px] flex flex-col items-center">
 
         {/* Branding & Login Card */}
-        <div className="w-full bg-white/10 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-8 md:p-8 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)]">
+        <div className="w-full rounded-3xl border border-[#FFFFFF40] bg-white/10  shadow-2xl backdrop-blur-lg p-8 md:p-8 ">
 
           {/* Logo Section */}
           <div className="flex flex-col items-center mb-8 text-center">

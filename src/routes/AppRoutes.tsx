@@ -29,7 +29,10 @@ const HelpCenter = lazy(() => import("../support/HelpCenter"));
 const AdminLogin = lazy(() => import("../features/admin/pages/AdminLogin"));
 const AdminDashboard = lazy(() => import("../features/admin/pages/AdminDashboard"));
 const AllBlogPost = lazy(() => import("../features/admin/pages/AllBlogPost"));
+const ViewPost = lazy(() => import("../features/admin/pages/ViewPost"));
 const ManageBlogPost = lazy(() => import("../features/community/pages/ManageBlogPost"));
+const AdminLayout = lazy(() => import("../features/admin/components/layout/AdminLayout"));
+
 
 const SplashToLanding = () => {
   const location = useLocation();
@@ -92,19 +95,31 @@ const PublicRoute = () => {
   return <Navigate to="/recipe-configuration-chat" replace />;
 };
 
+const AdminRoute = () => {
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    const token = localStorage.getItem('admin_token');
+    setIsAdmin(!!token);
+  }, [location]);
+
+  if (isAdmin === null) return <DailyDishLoader />;
+  return isAdmin ? <Outlet /> : <Navigate to="/admin" replace />;
+};
+
 function AppRoutes() {
   return (
     <Suspense fallback={<DailyDishLoader />}>
       <Routes>
         <Route path="blog" element={<Community />} />
-        <Route path="community/:slug" element={<CommunityPostDetails />} />
+        <Route path="blog/:slug" element={<CommunityPostDetails />} />
 
         {/* --- PUBLIC ROUTES --- */}
         <Route element={<PublicRoute />}>
           <Route path="/" element={<SplashToLanding />} />
 
-          {/* Login and SignUp pages kept as fallbacks */}
-          <Route path="login" element={<SplashToLanding />} />
+      
           <Route path="signup" element={<SplashToLanding />} />
         </Route>
 
@@ -138,9 +153,12 @@ function AppRoutes() {
         </Route>
 
 
-        <Route element={<PrivateRoute />}>
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/all-blog-posts" element={<AllBlogPost />} />
+        <Route element={<AdminRoute />}>
+          <Route element={<AdminLayout />}>
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/all-blog-posts" element={<AllBlogPost />} />
+            <Route path="/admin/view-post/:postId" element={<ViewPost />} />
+          </Route>
         </Route>
 
         {/* --- 404 CATCH-ALL --- */}

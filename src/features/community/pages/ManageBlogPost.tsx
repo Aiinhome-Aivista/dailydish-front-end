@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, ArrowLeft } from "lucide-react";
+import { ArrowLeft, Star, StarHalf } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { communityService } from "../api/communityService";
 import type { CommunityPost } from "../types/community";
@@ -136,16 +136,39 @@ const ManageBlogPost = () => {
                     {post.menu_name}
                   </h3>
 
-                  <p className="text-sm leading-relaxed text-[#5e7054] mb-6 line-clamp-3">
+                  <p className="text-sm leading-relaxed text-[#5e7054] mb-4 line-clamp-3">
                     {post.comment}
                   </p>
+
+                  {/* Rating Section - Matching Community.tsx style */}
+                  <div className="flex items-center gap-1 mb-6">
+                    {[...Array(5)].map((_, i) => {
+                      const starValue = i + 1;
+                      const normalizedRating = post.rating / 2;
+                      return (
+                        <span key={i} className="relative">
+                          <Star size={14} className="text-[#43533426]" />
+                          {normalizedRating >= starValue ? (
+                            <Star size={14} className="text-brand-accent fill-brand-accent absolute inset-0" />
+                          ) : normalizedRating >= starValue - 0.5 ? (
+                            <StarHalf size={14} className="text-brand-accent fill-brand-accent absolute inset-0" />
+                          ) : null}
+                        </span>
+                      );
+                    })}
+                    <span className="text-xs font-bold text-brand-dark ml-1">
+                      {(post.rating / 2).toFixed(1)}
+                    </span>
+                  </div>
 
                   {/* Footer: Meta & Action */}
                   <div className="mt-auto flex flex-col gap-4">
                     {activeTab === 'rejected' && (post as any).rejection_reason && (
-                      <div className="p-3 bg-red-500/5 rounded-2xl border border-red-500/10">
-                        <span className="text-[10px] text-red-500 font-bold uppercase tracking-wider block mb-1">Rejection Reason</span>
-                        <p className="text-xs text-red-600/80 font-medium italic line-clamp-2">"{(post as any).rejection_reason}"</p>
+                      <div className="p-4 bg-red-400/10 rounded-2xl border border-red-500/10 text-center">
+                        <span className="text-[10px] text-red-500 font-black uppercase tracking-[0.2em] block mb-2">Rejection Reason</span>
+                        <p className="text-xs text-red-700 font-bold italic leading-relaxed">
+                          "{(post as any).rejection_reason}"
+                        </p>
                       </div>
                     )}
 

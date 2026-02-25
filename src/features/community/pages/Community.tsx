@@ -126,7 +126,7 @@ const Community = () => {
                             animate={{ opacity: 1, y: 0 }}
                             className="text-4xl md:text-5xl font-bold mb-4 tracking-tight"
                         >
-                            A Global <span className="text-brand-accent">Community</span> of <span className="text-brand-accent italic">dr.Foodie</span>
+                            A Global <span className="text-brand-accent">Community</span> of <span className="text-brand-accent italic">dailydish</span>
                         </motion.h1>
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}
@@ -232,7 +232,7 @@ const Community = () => {
                     {/* Trending Challenges Section */}
                     <section className="py-24 bg-white relative overflow-hidden">
                         {/* Decorative Divider */}
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4/5 h-px bg-gradient-to-r from-transparent via-brand-accent/20 to-transparent" />
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4/5 h-px bg-linear-to-r from-transparent via-brand-accent/20 to-transparent" />
 
                         <div className="max-w-7xl mx-auto px-6">
                             <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
@@ -330,7 +330,7 @@ const Community = () => {
                                             variants={itemVariants}
                                             key={post.post_id}
                                             className="group h-full cursor-pointer"
-                                            onClick={() => navigate(`/community/${createSlug(post.menu_name)}`, { state: { post } })}
+                                            onClick={() => navigate(`/blog/${createSlug(post.menu_name)}`, { state: { post } })}
                                         >
                                             <div className="bg-[#CEDEBDB2] backdrop-blur-xl border border-white/30 rounded-3xl overflow-hidden shadow-[0_4px_9px_5px_rgba(0,0,0,0.05)] hover:shadow-xl hover:scale-[1.01] transition-all duration-500 flex flex-col h-full p-4">
                                                 {/* Image & Header Row */}
@@ -367,7 +367,7 @@ const Community = () => {
                                                         const normalizedRating = post.rating / 2;
                                                         return (
                                                             <span key={i} className="relative">
-                                                                <Star size={14} className="text-gray-300" />
+                                                                <Star size={14} className="text-[#43533426]" />
                                                                 {normalizedRating >= starValue ? (
                                                                     <Star size={14} className="text-brand-accent fill-brand-accent absolute inset-0" />
                                                                 ) : normalizedRating >= starValue - 0.5 ? (

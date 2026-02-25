@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, Clock, Users, Check } from 'lucide-react';
+import {  Check } from 'lucide-react';
 import { communityService } from '../api/communityService';
 import type { CommunityPost } from '../types/community';
 import { BASE_URL } from '../../../config/endpoints';
-import cookerIcon from '../../../assets/cooker.svg';
+
 import defaultRecipeImage from '../../../assets/Recipe_default_image.webp';
 import LandingFooter from '../../../components/layout/Footer';
 import DailyDishLoader from '../../../components/feedback/DailyDishLoader';
 import SocialShare from '../../../helper/SocialShare';
+import NavBar from '../../../components/layout/NavBar';
 
 const CommunityPostDetails = () => {
     const { slug } = useParams();
@@ -86,32 +87,21 @@ const CommunityPostDetails = () => {
     if (error || !post) return (
         <div className="min-h-full bg-[#FAF1E4] flex flex-col items-center justify-center gap-4 py-20">
             <p className="text-red-500 font-bold">{error || 'Post not found'}</p>
-            <button onClick={() => navigate('/community')} className="text-brand-accent hover:underline">Back to Community</button>
+            <button onClick={() => navigate('/blog')} className="text-brand-accent hover:underline">Back to Community</button>
         </div>
     );
 
     return (
         <div className="bg-[#FAF1E4] text-brand-dark selection:bg-brand-accent/30 w-full overflow-x-hidden">
             {/* Header */}
-            <header className="w-full bg-brand-light flex items-center justify-between sticky top-0 z-50 py-4 px-6 md:px-12 shadow-sm">
-                <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
-                    <img src={cookerIcon} alt="DailyDish Logo" className="w-8 h-8" />
-                    <span className="text-brand-dark font-bold text-xl italic">DailyDish</span>
-                </div>
-                <button
-                    onClick={() => navigate("/community")}
-                    className="p-2 text-brand-dark   hover:bg-[#43533414] rounded-full transition-colors cursor-pointer flex items-center justify-center"
-                >
-                    <ArrowLeft size={24} />
-                </button>
-            </header>
+         <NavBar />
 
             <main className="max-w-[1280px] mx-auto px-6 py-8">
                 <div className="flex flex-col md:flex-row justify-between items-center mb-10">
                     <nav className="flex items-center gap-2 text-sm text-brand-dark mb-4 md:mb-0">
                         <button onClick={() => navigate('/')} className="hover:text-brand-dark transition-colors">Home</button>
                         <span className="opacity-40">&gt;</span>
-                        <button onClick={() => navigate('/community')} className="hover:text-brand-dark transition-colors">Recipes</button>
+                        <button onClick={() => navigate('/blog')} className="hover:text-brand-dark transition-colors">Recipes</button>
                         <span className="opacity-40">&gt;</span>
                         <span className="font-bold text-brand-dark truncate max-w-full">{post.menu_name}</span>
                     </nav>
