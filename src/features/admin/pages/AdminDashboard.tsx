@@ -2,14 +2,11 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Users,
-  FileText,
   CheckCircle,
   Clock,
   Star,
   XCircle,
   Eye,
-  Trash2,
-  X
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { adminPostService, type AdminPost } from '../api/adminPostService';
@@ -18,7 +15,6 @@ import DailyDishLoader from '../../../components/feedback/DailyDishLoader';
 import defaultRecipeImage from '../../../assets/Recipe_default_image.webp';
 import { BASE_URL } from '../../../config/endpoints';
 import RejectPostModal from '../components/modal/RejectPostModal';
-import DeleteConfirmationModal from '../components/modal/DeleteConfirmationModal';
 import { useOutletContext } from 'react-router-dom';
 
 
@@ -31,9 +27,14 @@ const AdminDashboard = () => {
   const { searchQuery } = useOutletContext<{ searchQuery: string }>();
   // Modal State
   const [postToReject, setPostToReject] = useState<AdminPost | null>(null);
-  const [postToDelete, setPostToDelete] = useState<AdminPost | null>(null);
-  const [editingPost, setEditingPost] = useState<AdminPost | null>(null);
-  const [editFormData, setEditFormData] = useState<Partial<AdminPost>>({});
+  const [expandedReasons, setExpandedReasons] = useState<Record<number, boolean>>({});
+
+  const toggleReason = (postId: number) => {
+    setExpandedReasons(prev => ({
+      ...prev,
+      [postId]: !prev[postId]
+    }));
+  };
 
   const fetchPosts = async () => {
     setLoading(true);
@@ -98,41 +99,10 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleDelete = async (postId: number) => {
-    try {
-      await adminPostService.deletePost(postId);
-      showToast('success', 'Success', 'Post deleted successfully');
-      setPostToDelete(null);
-      fetchPosts();
-    } catch (error) {
-      showToast('error', 'Error', 'Failed to delete post');
-    }
-  };
-
   const handleViewPost = (post: AdminPost) => {
-    navigate(`/admin/view-post/${post.id}`, { state: { post } });
+    navigate(`/admin/view-post/${post.id}`, { state: { post, from: 'dashboard' } });
   };
 
-  const handleOpenEdit = (post: AdminPost) => {
-    setEditingPost(post);
-    setEditFormData({
-      menu_name: post.menu_name,
-      comment: post.comment,
-      rating: post.rating
-    });
-  };
-
-  const handleUpdate = async () => {
-    if (!editingPost) return;
-    try {
-      await adminPostService.updatePost(editingPost.id, editFormData);
-      showToast('success', 'Updated', 'Post updated successfully');
-      setEditingPost(null);
-      fetchPosts();
-    } catch (error) {
-      showToast('error', 'Error', 'Failed to update post');
-    }
-  };
 
   const filteredPosts = posts.filter(post =>
     post.status === activeTab &&
@@ -259,7 +229,7 @@ const AdminDashboard = () => {
                         <h4 className="text-xl font-bold mb-1 text-[#3e5035] line-clamp-1">{post.menu_name}</h4>
                         <div className="flex items-center gap-2 text-[#5e7054] text-xs font-medium">
                           <Users size={14} className="text-brand-accent" />
-                          <span>By <span className="text-[#3e5035] font-bold">{post.username}</span></span>
+                          <span>By <span className="text-[#3e5035] font-bold">{post.shared_by}</span></span>
                           <span className="w-1 h-1 rounded-full bg-brand-dark/10" />
                           <span>{new Date(post.created_at).toLocaleDateString()}</span>
                         </div>
@@ -292,14 +262,45 @@ const AdminDashboard = () => {
                             </div>
                           </div>
                         ) : (
-                          <div className="flex items-center justify-between w-full">
-                            <button
-                              onClick={() => handleViewPost(post)}
-                              className="flex items-center gap-2 text-brand-accent text-xs font-bold uppercase tracking-widest hover:underline transition-all"
-                            >
-                              <Eye size={16} /> View Post
-                            </button>
-                      
+                          <div className="flex flex-col w-full gap-4">
+                            <div className="flex items-center justify-between w-full">
+                              <button
+                                onClick={() => handleViewPost(post)}
+                                className="flex items-center gap-2 text-brand-accent text-xs font-bold uppercase tracking-widest hover:underline transition-all"
+                              >
+                                <Eye size={16} /> View Post
+                              </button>
+
+                              {post.status === 'rejected' && (
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleReason(post.id);
+                                  }}
+                                  className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-600 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-1.5"
+                                >
+                                  {expandedReasons[post.id] ? 'Hide Reason' : 'View Reason'}
+                                </button>
+                              )}
+                            </div>
+
+                            <AnimatePresence>
+                              {post.status === 'rejected' && expandedReasons[post.id] && (
+                                <motion.div
+                                  initial={{ height: 0, opacity: 0 }}
+                                  animate={{ height: 'auto', opacity: 1 }}
+                                  exit={{ height: 0, opacity: 0 }}
+                                  className="overflow-hidden"
+                                >
+                                  <div className="p-3 bg-red-500/5 rounded-xl border border-red-500/10 text-center mt-2">
+                                    <span className="text-[10px] text-red-500 font-black uppercase tracking-widest block mb-1">Rejection Reason</span>
+                                    <p className="text-xs text-red-700/80 font-bold italic leading-relaxed">
+                                      "{(post as any).rejected_reason || 'No specific reason provided'}"
+                                    </p>
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
                           </div>
                         )}
                       </div>
@@ -319,7 +320,7 @@ const AdminDashboard = () => {
         post={postToReject}
       />
 
- 
+
 
     </div >
   );

@@ -4,9 +4,11 @@ import { ArrowLeft, Star, StarHalf } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { communityService } from "../api/communityService";
 import type { CommunityPost } from "../types/community";
+import { BASE_URL } from "../../../config/endpoints";
 import defaultRecipeImage from '../../../assets/Recipe_default_image.webp';
 import { useToast } from "../../../shared/context/ToastContext";
 import DailyDishLoader from "../../../components/feedback/DailyDishLoader";
+import ViewRejectedReasonModal from "../../../components/modal/pages/ViewRejectedReasonModal";
 
 const ManageBlogPost = () => {
   const navigate = useNavigate();
@@ -14,6 +16,20 @@ const ManageBlogPost = () => {
   const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'published' | 'pending' | 'rejected'>('published');
+  const [selectedPost, setSelectedPost] = useState<CommunityPost | null>(null);
+  const [isReasonModalOpen, setIsReasonModalOpen] = useState(false);
+
+  const getImageUrl = (url: string) => {
+    if (!url) return defaultRecipeImage;
+    if (url.startsWith('http')) return url;
+    const cleanUrl = url.replace(/^\/+/, '');
+    return `${BASE_URL.replace(/\/$/, '')}/${cleanUrl}`;
+  };
+
+  const handleOpenReason = (post: CommunityPost) => {
+    setSelectedPost(post);
+    setIsReasonModalOpen(true);
+  };
 
   useEffect(() => {
     const fetchMyPosts = async () => {
@@ -52,12 +68,7 @@ const ManageBlogPost = () => {
       {/* Header / Tabs Section */}
       <div className="w-full flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div className="flex items-start gap-2">
-          <button
-            onClick={() => navigate(-1)}
-            className="mt-1 -ml-1 hover:bg-black/5 rounded-full text-brand-dark transition-colors cursor-pointer"
-          >
-            <ArrowLeft size={24} />
-          </button>
+        
           <div>
             <h1 className="text-2xl font-bold text-brand-dark leading-tight">
               Manage Blog Posts
@@ -69,7 +80,7 @@ const ManageBlogPost = () => {
         </div>
 
         {/* Tab Switcher */}
-        <motion.div layout className="flex bg-[#43533414] rounded-full p-1.5 w-fit">
+        <motion.div layout className="flex bg-[#F1EDDC] rounded-full p-1.5 w-fit">
           <motion.button
             layout
             onClick={() => setActiveTab('published')}
@@ -115,12 +126,12 @@ const ManageBlogPost = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 className="group relative flex flex-col p-4 rounded-4xl cursor-pointer transition-all duration-500 bg-[#CEDEBDB2] backdrop-blur-xl border border-white/30 hover:shadow-xl hover:scale-[1.01]"
-                onClick={() => navigate(`/community/${encodeURIComponent(post.menu_name.toLowerCase().trim().replace(/\s+/g, '-'))}`, { state: { post } })}
+                onClick={() => navigate(`/blog/${encodeURIComponent(post.menu_name.toLowerCase().trim().replace(/\s+/g, '-'))}`, { state: { post } })}
               >
                 {/* Image Container */}
                 <div className="h-40 w-full mb-5 overflow-hidden rounded-2xl">
                   <img
-                    src={post.image_url || defaultRecipeImage}
+                    src={getImageUrl(post.image_url)}
                     loading="lazy"
                     alt={post.menu_name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -162,23 +173,20 @@ const ManageBlogPost = () => {
                   </div>
 
                   {/* Footer: Meta & Action */}
-                  <div className="mt-auto flex flex-col gap-4">
-                    {activeTab === 'rejected' && (post as any).rejection_reason && (
-                      <div className="p-4 bg-red-400/10 rounded-2xl border border-red-500/10 text-center">
-                        <span className="text-[10px] text-red-500 font-black uppercase tracking-[0.2em] block mb-2">Rejection Reason</span>
-                        <p className="text-xs text-red-700 font-bold italic leading-relaxed">
-                          "{(post as any).rejection_reason}"
-                        </p>
-                      </div>
-                    )}
+                  <div className="mt-auto">
+                    {activeTab === 'rejected' && (
+                      <div className="flex flex-col gap-4">
+                        <div className="flex items-center justify-between">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleOpenReason(post);
+                            }}
+                            className="w-fit px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-1.5"
+                          >
+                            View Rejection Reason
+                          </button>
 
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-
-                      </div>
-
-                      <div className="flex items-center gap-3">
-                        {activeTab === 'rejected' && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -195,15 +203,19 @@ const ManageBlogPost = () => {
                                 }
                               });
                             }}
-                            className="px-4 py-2 bg-brand-accent text-brand-dark rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-[#84a863] transition-all active:scale-95 flex items-center gap-1.5 shadow-sm"
+                            className="w-10 h-10 flex items-center justify-center bg-[#7A8F63] text-white rounded-xl shadow-lg transition-all active:scale-95 hover:bg-[#6b7e56] hover:shadow-xl group/edit"
                           >
-                            <span className="material-symbols-outlined text-sm">edit</span>
-                            Edit
+                            <span className="material-symbols-outlined text-lg transition-transform group-hover/edit:rotate-12">edit</span>
                           </button>
-                        )}
-
+                        </div>
                       </div>
-                    </div>
+                    )}
+
+                    {activeTab !== 'rejected' && (
+                      <div className="flex items-center justify-between">
+                        {/* Any other footer info for published/pending could go here if needed */}
+                      </div>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -229,6 +241,11 @@ const ManageBlogPost = () => {
           )}
         </AnimatePresence>
       </div>
+      <ViewRejectedReasonModal
+        isOpen={isReasonModalOpen}
+        onClose={() => setIsReasonModalOpen(false)}
+        post={selectedPost}
+      />
     </div>
   );
 };

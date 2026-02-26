@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Check, ArrowLeft, Loader2, Heart } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import defaultRecipeImage from '../../../assets/Recipe_default_image.webp';
 import { pantryService } from '../api/saveMenuService';
 import { getRecipeDetails } from '../api/recipeDetailsService';
@@ -10,6 +10,7 @@ import { useToast } from '../../../shared/context/ToastContext';
 import { AxiosError } from 'axios';
 import type { RecipeDetailData, IngredientAnalysisItem } from '../types/recipeDetails';
 import DailyDishLoader from '../../../components/feedback/DailyDishLoader';
+import SuitabilityModal from '../../../components/modal/pages/SuitabilityModal';
 
 
 export default function RecipeDetails() {
@@ -17,13 +18,17 @@ export default function RecipeDetails() {
   const [servings, setServings] = useState(4);
   const location = useLocation();
   const navigate = useNavigate();
-  const { menu_name, cooking_time, image_url, details } = location.state || {};
+  const { menu_name, cooking_time, details } = location.state || {};
   const [recipeData, setRecipeData] = useState<RecipeDetailData | null>(details || null);
   const [loading, setLoading] = useState(!details);
   const [saving, setSaving] = useState(false);
   const [updatingServings, setUpdatingServings] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const dataFetchedRef = useRef(!!details);
+
+  // Suitability Modal State
+  const [isSuitabilityModalOpen, setIsSuitabilityModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<'adult' | 'child' | 'senior' | null>(null);
 
   useEffect(() => {
     const fetchRecipeDetails = async () => {
@@ -377,11 +382,25 @@ export default function RecipeDetails() {
                 >
                   <h3 className="text-lg font-bold mb-3">Suitability</h3>
                   <div className="flex flex-wrap gap-2">
-                    {recipeData.suitability.map((item, idx) => (
-                      <span key={idx} className={`${getSuitabilityColor(item)} text-brand-beige px-3 py-1 rounded-full text-sm font-bold shadow-sm`}>
-                        {item}
-                      </span>
-                    ))}
+                    {recipeData.suitability.map((item, idx) => {
+                      const categoryMatch = item.toLowerCase().match(/(adult|child|senior)/);
+                      const category = categoryMatch ? categoryMatch[0] as 'adult' | 'child' | 'senior' : null;
+
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => {
+                            if (category && recipeData.suitability_reasons) {
+                              setSelectedCategory(category);
+                              setIsSuitabilityModalOpen(true);
+                            }
+                          }}
+                          className={`${getSuitabilityColor(item)} text-brand-beige px-3 py-1 rounded-full text-sm font-bold shadow-sm transition-all active:scale-95 ${category && recipeData.suitability_reasons ? 'cursor-pointer hover:brightness-110' : 'cursor-default'}`}
+                        >
+                          {item}
+                        </button>
+                      );
+                    })}
                   </div>
                 </motion.div>
               )}
@@ -436,6 +455,14 @@ export default function RecipeDetails() {
           </div>
         </motion.div>
       )}
+
+      {/* Suitability Modal */}
+      <SuitabilityModal
+        isOpen={isSuitabilityModalOpen}
+        onClose={() => setIsSuitabilityModalOpen(false)}
+        category={selectedCategory}
+        reasons={selectedCategory && recipeData?.suitability_reasons ? recipeData.suitability_reasons[selectedCategory] : []}
+      />
     </div>
   );
 }

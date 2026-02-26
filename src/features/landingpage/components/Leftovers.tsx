@@ -1,11 +1,20 @@
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import RiceDaalIcon from "../../../assets/Rice_Daal.svg";
 import DaalIcon from "../../../assets/Daal.jpg";
 
-
-
 const LandingLeftovers = () => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start end", "end start"]
+    });
+
+    const y1 = useTransform(scrollYProgress, [0, 1], [0, -150]);
+    const y2 = useTransform(scrollYProgress, [0, 1], [0, -250]);
+
     return (
-        <div className="py-20 px-6 md:px-12 bg-brand-beige">
+        <div ref={containerRef} className="py-20 px-6 md:px-12 bg-brand-beige overflow-hidden">
             <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16">
 
                 <div className="flex-1 scroll-animate scroll-animate-left">
@@ -30,9 +39,12 @@ const LandingLeftovers = () => {
                     </div>
                 </div>
 
-                <div className="flex-1 relative flex justify-center scroll-animate scroll-animate-right delay-2">
+                <div className="flex-1 relative flex justify-center scroll-animate scroll-animate-right delay-2 min-h-[400px]">
                     {/* Card 1 */}
-                    <div className="bg-brand-light rounded-2xl p-3 transform -rotate-8 w-60 absolute left-6 top-0 z-10 shadow-[0_4px_9px_5px_rgba(0,0,0,0.05)] group transition-all duration-500 hover:shadow-xl hover:scale-[1.01] cursor-pointer">
+                    <motion.div
+                        style={{ y: y1 }}
+                        className="bg-brand-light rounded-2xl p-3 transform -rotate-8 w-60 absolute left-6 top-10 z-10 shadow-[0_4px_9px_5px_rgba(0,0,0,0.05)] group transition-all duration-500 hover:shadow-xl hover:scale-[1.01] cursor-pointer"
+                    >
                         <div className="bg-gray-800 h-50 rounded-xl mb-3 overflow-hidden">
                             <img src={DaalIcon} alt="Dal Makhani" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                         </div>
@@ -45,10 +57,13 @@ const LandingLeftovers = () => {
                                 Score A
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
 
                     {/* Card 2 */}
-                    <div className="bg-brand-light rounded-2xl p-3  transform rotate-6 w-60 mt-20 ml-80 shadow-[0_4px_9px_5px_rgba(0,0,0,0.05)] group transition-all duration-500 hover:shadow-xl hover:scale-[1.01] cursor-pointer">
+                    <motion.div
+                        style={{ y: y2 }}
+                        className="bg-brand-light rounded-2xl p-3 transform rotate-6 w-60 mt-40 ml-40 shadow-[0_4px_9px_5px_rgba(0,0,0,0.05)] group transition-all duration-500 hover:shadow-xl hover:scale-[1.01] cursor-pointer"
+                    >
                         <div className="bg-gray-800 h-50 rounded-lg mb-3 overflow-hidden">
                             <img src={RiceDaalIcon} alt="Dal Makhani" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                         </div>
@@ -61,7 +76,7 @@ const LandingLeftovers = () => {
                                 Score B
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
 
                 </div>
 
@@ -71,3 +86,4 @@ const LandingLeftovers = () => {
 };
 
 export default LandingLeftovers;
+

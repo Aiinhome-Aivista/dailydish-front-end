@@ -30,13 +30,7 @@ function HowItWorks() {
     setShowSignUpModal(false);
   };
 
-  const handleBack = () => {
-    setIsLeaving(true);
-    setIsTransitioning(true);
-    setTimeout(() => {
-      navigate('/', { state: { skipSplash: true } });
-    }, 2500);
-  };
+
 
   return (
     <div className="min-h-screen bg-brand-beige relative overflow-hidden">

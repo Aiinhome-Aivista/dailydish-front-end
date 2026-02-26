@@ -3,12 +3,14 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Check, Loader2 } from 'lucide-react';
 import { pantryService } from '../api/saveMenuService';
 import { BASE_URL } from '../../../config/endpoints';
+import { useToast } from '../../../shared/context/ToastContext';
 
 const ShareMasterpiece = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const meal = location.state?.meal || { details: { menu_name: "Masterpiece" } };
     const mealId = meal.id;
+    const { showToast } = useToast();
 
     const getImageUrl = (url: string) => {
         if (!url) return null;
@@ -57,9 +59,10 @@ const ShareMasterpiece = () => {
 
                 const response = await pantryService.editCommunityPost(formData);
                 if (response?.status === 'success') {
+                    showToast("success", "Post Updated", "Your changes have been submitted and are waiting for admin approval.");
                     setIsShared(true);
                     setTimeout(() => {
-                        navigate('/community');
+                        navigate('/manage-blog-post');
                     }, 2000);
                 }
             } else {
@@ -73,9 +76,10 @@ const ShareMasterpiece = () => {
 
                 const response = await pantryService.shareToCommunity(formData);
                 if (response?.status === 'success') {
+                    showToast("success", "Post Submitted", "Your post is waiting for admin approval. Once approved, it will be visible in the community.");
                     setIsShared(true);
                     setTimeout(() => {
-                        navigate('/community');
+                        navigate('/blog');
                     }, 2000);
                 }
             }

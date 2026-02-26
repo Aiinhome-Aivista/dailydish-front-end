@@ -140,17 +140,17 @@ const ViewPost = () => {
 
         {/* Content Section - Single Column Full Width */}
         <div className="px-4 md:px-10">
-          <div className="max-w-5xl"> {/* Limiting text width for readability while container stays wide */}
-            <h1 className="text-xl md:text-xl lg:text-xl font-black text-brand-dark  uppercase tracking-tighter leading-[0.9]">
+          <div className="max-w-5xl"> 
+            <h1 className="text-xl md:text-xl lg:text-xl font-black text-brand-dark  pb-4">
               {post.menu_name}
             </h1>
 
-            <div className="flex items-center gap-6  pb-12 border-b border-brand-dark/10">
+            <div className="flex items-center gap-6 pb-8 border-b border-brand-dark/10">
               <div className="w-12 h-12 rounded-full bg-brand-accent/20 flex items-center justify-center text-brand-accent font-black text-2xl border border-brand-accent/20 shadow-sm">
-                {post.username?.charAt(0) || 'A'}
+                {post.shared_by?.charAt(0) || 'A'}
               </div>
               <div>
-                <p className="text-lg font-black text-brand-dark uppercase tracking-widest">{post.username}</p>
+                <p className="text-lg font-black text-brand-dark uppercase tracking-widest">{post.shared_by}</p>
                 <p className="text-base text-brand-primary font-semibold">{new Date(post.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
               </div>
             </div>

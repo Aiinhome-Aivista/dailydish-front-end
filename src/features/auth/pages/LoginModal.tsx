@@ -93,6 +93,7 @@ function LoginModal({ isOpen, onClose, onSwitchToSignUp }: LoginModalProps) {
         }
       } else {
         onClose();
+        navigate('/recipe-configuration-chat');
       }
     } catch (err) {
       // Refresh captcha on error

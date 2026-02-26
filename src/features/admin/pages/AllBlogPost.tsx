@@ -135,7 +135,7 @@ const AllBlogPost = () => {
                         <h4 className="text-xl font-bold mb-1 text-[#3e5035] line-clamp-1">{post.menu_name}</h4>
                         <div className="flex items-center gap-2 text-[#5e7054] text-xs font-medium">
                           <Users size={14} className="text-brand-accent" />
-                          <span>By <span className="text-[#3e5035] font-bold">{post.username}</span></span>
+                          <span>By <span className="text-[#3e5035] font-bold">{post.shared_by}</span></span>
                           <span className="w-1 h-1 rounded-full bg-brand-dark/10" />
                           <span>{new Date(post.created_at).toLocaleDateString()}</span>
                         </div>
@@ -145,7 +145,7 @@ const AllBlogPost = () => {
 
                       <div className="mt-auto pt-6 border-t border-brand-dark/5 flex items-center justify-between gap-3">
                         <button
-                          onClick={() => navigate(`/admin/view-post/${post.id}`, { state: { post } })}
+                          onClick={() => navigate(`/admin/view-post/${post.id}`, { state: { post, from: 'all-blog-posts' } })}
                           className="flex items-center gap-2 text-brand-accent text-xs font-bold uppercase tracking-widest hover:underline transition-all cursor-pointer"
                         >
                           <Eye size={16} />

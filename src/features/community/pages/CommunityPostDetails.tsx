@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import {  Check } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { communityService } from '../api/communityService';
 import type { CommunityPost } from '../types/community';
 import { BASE_URL } from '../../../config/endpoints';
@@ -10,6 +10,7 @@ import LandingFooter from '../../../components/layout/Footer';
 import DailyDishLoader from '../../../components/feedback/DailyDishLoader';
 import SocialShare from '../../../helper/SocialShare';
 import NavBar from '../../../components/layout/NavBar';
+import SuitabilityModal from '../../../components/modal/pages/SuitabilityModal';
 
 const CommunityPostDetails = () => {
     const { slug } = useParams();
@@ -19,6 +20,10 @@ const CommunityPostDetails = () => {
     const [allPosts, setAllPosts] = useState<CommunityPost[]>([]);
     const [loading, setLoading] = useState(!post);
     const [error, setError] = useState<string | null>(null);
+
+    // Suitability Modal State
+    const [isSuitabilityModalOpen, setIsSuitabilityModalOpen] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState<'adult' | 'child' | 'senior' | null>(null);
 
     const createSlug = (name: string) => {
         return encodeURIComponent(name.toLowerCase().trim().replace(/\s+/g, '-'));
@@ -94,7 +99,7 @@ const CommunityPostDetails = () => {
     return (
         <div className="bg-[#FAF1E4] text-brand-dark selection:bg-brand-accent/30 w-full overflow-x-hidden">
             {/* Header */}
-         <NavBar />
+            <NavBar />
 
             <main className="max-w-[1280px] mx-auto px-6 py-8">
                 <div className="flex flex-col md:flex-row justify-between items-center mb-10">
@@ -206,20 +211,40 @@ const CommunityPostDetails = () => {
                             )}
 
                             {post.meal_details?.steps && (
-                                <section className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 backdrop-blur-xl shadow-sm">
-                                    <h3 className="text-xl font-black text-brand-dark mb-8 pb-4 border-b border-[#43533414]">Cooking Method</h3>
-                                    <div className="space-y-6">
-                                        {post.meal_details.steps.cooking.map((step, idx) => (
-                                            <div key={idx} className="flex gap-4">
-                                                <div className="shrink-0 w-8 h-8 rounded-full bg-[#4A5D3B] text-white flex items-center justify-center font-bold text-sm shadow-sm">
-                                                    {idx + 1}
-                                                </div>
-                                                <div>
-                                                    <p className="text-sm md:text-base text-brand-dark leading-relaxed font-medium">{step}</p>
-                                                </div>
+                                <section className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 backdrop-blur-xl shadow-sm space-y-10">
+                                    <h3 className="text-xl font-black text-brand-dark mb-2 pb-4 border-b border-[#43533414]">Preparation & Cooking</h3>
+
+                                    {post.meal_details.steps.preparation && post.meal_details.steps.preparation.length > 0 && (
+                                        <div className="space-y-6">
+                                            <h4 className="text-sm font-black text-brand-accent uppercase tracking-[0.2em] mb-4">Preparation Steps</h4>
+                                            <div className="space-y-6">
+                                                {post.meal_details.steps.preparation.map((step, idx) => (
+                                                    <div key={idx} className="flex gap-4">
+                                                        <div className="shrink-0 w-8 h-8 rounded-full bg-[#95B974] text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                                                            {idx + 1}
+                                                        </div>
+                                                        <p className="text-sm md:text-base text-brand-dark leading-relaxed font-medium">{step}</p>
+                                                    </div>
+                                                ))}
                                             </div>
-                                        ))}
-                                    </div>
+                                        </div>
+                                    )}
+
+                                    {post.meal_details.steps.cooking && post.meal_details.steps.cooking.length > 0 && (
+                                        <div className="space-y-6 pt-4">
+                                            <h4 className="text-sm font-black text-brand-accent uppercase tracking-[0.2em] mb-4">Cooking Method</h4>
+                                            <div className="space-y-6">
+                                                {post.meal_details.steps.cooking.map((step, idx) => (
+                                                    <div key={idx} className="flex gap-4">
+                                                        <div className="shrink-0 w-8 h-8 rounded-full bg-[#4A5D3B] text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                                                            {idx + 1}
+                                                        </div>
+                                                        <p className="text-sm md:text-base text-brand-dark leading-relaxed font-medium">{step}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
                                 </section>
                             )}
                         </div>
@@ -303,6 +328,39 @@ const CommunityPostDetails = () => {
                                 </div>
                             )}
 
+                            {post.meal_details.suitability && post.meal_details.suitability.length > 0 && (
+                                <div className="bg-[#CEDEBD36] border border-[#43533414] rounded-3xl p-8 backdrop-blur-xl shadow-sm">
+                                    <h3 className="text-xl font-black text-brand-dark mb-6">Suitability Analysis</h3>
+                                    <div className="flex flex-wrap gap-3">
+                                        {post.meal_details.suitability.map((item, idx) => {
+                                            const categoryMatch = item.toLowerCase().match(/(adult|child|senior)/);
+                                            const category = categoryMatch ? categoryMatch[0] as 'adult' | 'child' | 'senior' : null;
+
+                                            return (
+                                                <button
+                                                    key={idx}
+                                                    onClick={() => {
+                                                        if (category && post.meal_details.suitability_reasons) {
+                                                            setSelectedCategory(category);
+                                                            setIsSuitabilityModalOpen(true);
+                                                        }
+                                                    }}
+                                                    className={`px-6 py-2.5 rounded-2xl text-sm font-black uppercase tracking-widest transition-all active:scale-95 shadow-lg border border-white/20 ${item.toLowerCase().includes('adult') ? 'bg-[#4A5D3B] text-white' :
+                                                        item.toLowerCase().includes('child') ? 'bg-[#95B974] text-white' :
+                                                            'bg-brand-accent text-white'
+                                                        } ${category && post.meal_details.suitability_reasons ? 'cursor-pointer hover:brightness-110' : 'cursor-default'}`}
+                                                >
+                                                    {item}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                    <p className="mt-4 text-[10px] font-bold text-brand-dark/40 uppercase tracking-widest text-center">
+                                        Click tags for detailed insights
+                                    </p>
+                                </div>
+                            )}
+
 
                         </div>
                     </aside>
@@ -310,6 +368,13 @@ const CommunityPostDetails = () => {
             </main>
 
             <LandingFooter />
+
+            <SuitabilityModal
+                isOpen={isSuitabilityModalOpen}
+                onClose={() => setIsSuitabilityModalOpen(false)}
+                category={selectedCategory}
+                reasons={selectedCategory && post.meal_details?.suitability_reasons ? post.meal_details.suitability_reasons[selectedCategory] : []}
+            />
         </div>
     );
 };
